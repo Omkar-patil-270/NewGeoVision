@@ -66,15 +66,11 @@ export const ExplorePage = () => {
     return () => { active = false; };
   }, [currentLocation?.id, currentLocation?.name, activeStoryStage]);
 
-  // 7-Stage Analytical Story Framework
+  // Tri-Temporal Analytical Story Framework (Past, Current, Future 2030)
   const STORY_STAGES = [
-    { key: "past", label: "Past Evolution", icon: "🏛️" },
-    { key: "present", label: "Present Reality", icon: "🧭" },
-    { key: "change", label: "Forces of Change", icon: "⚡" },
-    { key: "future", label: "Future ML Forecast", icon: "🔮" },
-    { key: "impact", label: "Socio-Ecological Impact", icon: "🌊" },
-    { key: "insight", label: "Strategic Insights", icon: "💡" },
-    { key: "decision", label: "Actionable Decision", icon: "🎯" },
+    { key: "past", label: "Past: How It Was", icon: "🏛️" },
+    { key: "present", label: "Current: How It Is", icon: "🧭" },
+    { key: "future", label: "Future 2030: How It Will Be", icon: "🔮" },
   ];
 
   const handleSearchSubmit = async (e) => {
@@ -419,18 +415,19 @@ export const ExplorePage = () => {
                       <span className="text-[10px] font-mono uppercase font-bold text-stone-700 block mb-1.5">
                         Analytical Horizon Lens
                       </span>
-                      <div className="grid grid-cols-2 gap-1.5">
-                        {STORY_STAGES.slice(0, 4).map(st => (
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {STORY_STAGES.map(st => (
                           <button
                             key={st.key}
                             onClick={() => setActiveStoryStage(st.key)}
-                            className={`px-2 py-1 rounded-lg text-[10px] text-left transition-all border ${
+                            className={`px-2 py-1.5 rounded-lg text-[10px] text-center transition-all border ${
                               activeStoryStage === st.key
-                                ? 'bg-orange-100 border-primary text-primary font-bold'
-                                : 'bg-white border-stone-200 text-stone-600'
+                                ? 'bg-orange-100 border-primary text-primary font-bold shadow-xs'
+                                : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'
                             }`}
                           >
-                            <span>{st.icon} {st.label}</span>
+                            <span className="block text-xs mb-0.5">{st.icon}</span>
+                            <span className="block truncate font-medium">{st.label.split(':')[0]}</span>
                           </button>
                         ))}
                       </div>

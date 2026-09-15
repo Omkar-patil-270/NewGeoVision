@@ -44,13 +44,9 @@ export const TheoryTransparencyModal = ({ isOpen, onClose }) => {
   ];
 
   const STORY_STAGES = [
-    { name: "Past Evolution", icon: "🏛️", desc: "Historical baseline, decadal demographic shift & historical climate" },
-    { name: "Present Reality", icon: "🧭", desc: "Current ground truth: AQI telemetry, population density & water table" },
-    { name: "Forces of Change", icon: "⚡", desc: "Yesterday vs Today delta, industrial sprawl & environmental pressures" },
-    { name: "Future Forecast", icon: "🔮", desc: "Machine Learning multi-year trajectories & projections" },
-    { name: "Socio-Ecological Impact", icon: "🌊", desc: "Groundwater stress, thermal heat island & air quality burden" },
-    { name: "Strategic Insights", icon: "💡", desc: "Empirical anomalies, moving average shifts & correlation metrics" },
-    { name: "Actionable Decision", icon: "🎯", desc: "Evidence-backed policy roadmap, conservation mandates & urban planning" }
+    { name: "Past: How Location Was", icon: "🏛️", desc: "Historical baseline, cultural roots, traditional water bodies & ancient climate" },
+    { name: "Current: How Location Is", icon: "🧭", desc: "Current ground truth: AQI telemetry, population density & monitored water table" },
+    { name: "Future: How Location Will Be", icon: "🔮", desc: "2030 sustainable transition, clean energy adoption & aquifer replenishment" },
   ];
 
   return (

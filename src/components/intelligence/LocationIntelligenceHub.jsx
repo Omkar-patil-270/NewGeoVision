@@ -98,15 +98,32 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
     return () => { active = false; };
   }, [loc?.id, loc?.coordinates?.lat, loc?.coordinates?.lng]);
 
-  // 7-Stage Chronological & Analytical Framework (Image 3)
+  // 3 Tri-Temporal Chronological Stages (Past -> Current -> Future 2030)
   const STORY_STAGES = [
-    { key: "past", label: "Past Evolution", icon: "🏛️", desc: "Historical baseline, decadal demographic shift & historical climate" },
-    { key: "present", label: "Present Reality", icon: "🧭", desc: "Current ground truth: AQI telemetry, population density & water table" },
-    { key: "change", label: "Forces of Change", icon: "⚡", desc: "Yesterday vs Today delta, industrial sprawl & environmental pressures" },
-    { key: "future", label: "Future Forecast", icon: "🔮", desc: "Machine Learning multi-year trajectories & projections" },
-    { key: "impact", label: "Socio-Ecological Impact", icon: "🌊", desc: "Groundwater stress, thermal heat island & air quality burden" },
-    { key: "insight", label: "Strategic Insights", icon: "💡", desc: "Empirical anomalies, moving average shifts & correlation metrics" },
-    { key: "decision", label: "Actionable Decision", icon: "🎯", desc: "Evidence-backed policy roadmap, conservation mandates & urban planning" },
+    { 
+      key: "past", 
+      label: "Past: How It Was", 
+      shortLabel: "Past (How It Was)",
+      badge: "Ancestral & Heritage", 
+      icon: "🏛️", 
+      desc: "Historical baseline, cultural roots, traditional water bodies & ancient microclimate" 
+    },
+    { 
+      key: "present", 
+      label: "Current: How It Is", 
+      shortLabel: "Current (How It Is)",
+      badge: "Live Telemetry", 
+      icon: "🧭", 
+      desc: "Current ground truth: real-time AQI telemetry, population density & monitored water table" 
+    },
+    { 
+      key: "future", 
+      label: "Future: How It Will Be", 
+      shortLabel: "Future 2030 (How It Will Be)",
+      badge: "2030 Transition", 
+      icon: "🔮", 
+      desc: "2030 sustainable transition: clean energy adoption, smart green corridors & aquifer recharge" 
+    },
   ];
 
   const currentStageObj = STORY_STAGES.find(s => s.key === activeStoryStage) || STORY_STAGES[0];
@@ -197,47 +214,31 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
     const isHindi = selectedLanguage === "Hindi" || selectedLanguage === "हिन्दी";
     const isMarathi = selectedLanguage === "Marathi" || selectedLanguage === "मराठी";
 
-    // Lens-specific contextual narratives
+    // Tri-Temporal contextual narratives (Past, Present, Future 2030)
     let stageNarrative = base.narrative;
     if (isHindi) {
       if (activeStoryStage === "past") {
-        stageNarrative = `${loc.name} का इतिहास और सांस्कृतिक विरासत अत्यंत समृद्ध और प्राचीन है। यह क्षेत्र ऐतिहासिक व्यापारिक मार्गों, समृद्ध कृषि मैदानों और जीवंत सामुदायिक परंपराओं से गहराई से जुड़ा हुआ है।\n\nपुरातात्विक और प्रशासनिक दस्तावेज बताते हैं कि सदियों से यह क्षेत्र प्राकृतिक जल स्रोतों के संरक्षण और नागरिक संस्कृति का एक महत्वपूर्ण केंद्र रहा है।`;
+        stageNarrative = `${loc.name} का अतीत और ऐतिहासिक स्वरूप: यह क्षेत्र प्राचीन काल से प्राकृतिक जल स्रोतों, हरी-भरी घाटियों और समृद्ध सामुदायिक परंपराओं का केंद्र रहा है।\n\nपुरातात्विक और ऐतिहासिक दस्तावेज दर्शाते हैं कि प्राचीन काल में यहाँ शून्य प्रदूषण, बारहमासी बावड़ियाँ और प्राकृतिक पारिस्थितिक संतुलन स्थापित था, जिसने इस क्षेत्र को एक स्थायी सांस्कृतिक और कृषि केंद्र बनाया।`;
       } else if (activeStoryStage === "present") {
-        stageNarrative = `${loc.name} का वर्तमान पर्यावरणीय विश्लेषण: यहाँ का औसत तापमान लगभग ${livePredictions?.weather?.current ? Math.round(livePredictions.weather.current) : (loc.temperature || 28)}°C दर्ज किया गया है, जबकि वायु गुणवत्ता सूचकांक (AQI) ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 65)} पर स्थित है।\n\nकेंद्रीय भूजल बोर्ड के अनुसार वर्तमान जल स्तर ${livePredictions?.groundwater?.current_depth_mbgl || 7.5} मीटर नीचे है। तेजी से बढ़ती शहरी आबादी और बुनियादी ढांचे के विस्तार के बीच प्राकृतिक संतुलन बनाए रखना आवश्यक है।`;
-      } else if (activeStoryStage === "change") {
-        stageNarrative = `${loc.name} में पिछले दशकों के दौरान व्यापक भौगोलिक और संरचनात्मक परिवर्तन देखे गए हैं। उपग्रह मानचित्रण से पता चलता है कि कृषि भूमि का शहरी आवासीय और वाणिज्यिक क्षेत्रों में रूपांतरण लगातार बढ़ रहा है।\n\nसड़क नेटवर्क और आर्थिक गतिविधियों में वृद्धि के साथ-साथ प्राकृतिक जलाशयों और हरित क्षेत्रों के संरक्षण की आवश्यकता अब सर्वोपरि हो गई है।`;
-      } else if (activeStoryStage === "future") {
-        stageNarrative = `${loc.name} के लिए वर्ष 2030 का भविष्य पूर्वानुमान: सतत नीतिगत पहलों से वायु गुणवत्ता में उल्लेखनीय सुधार और हरित ऊर्जा का प्रसार संभव है।\n\nमशीन लर्निंग मॉडल दर्शाते हैं कि सौर ऊर्जा, इलेक्ट्रिक सार्वजनिक परिवहन और वर्षा जल संचयन को अनिवार्य बनाकर 2030 तक इस क्षेत्र को पर्यावरणीय रूप से सशक्त बनाया जा सकता है।`;
-      } else if (activeStoryStage === "impact") {
-        stageNarrative = `${loc.name} पर सामाजिक और पारिस्थितिक प्रभाव: तीव्र जल दोहन और कंक्रीट निर्माण से भूजल स्तर और स्थानीय तापमान पर दबाव बढ़ रहा है।\n\nनदी घाटियों और हरित पट्टियों का संरक्षण हीट आइलैंड प्रभाव को कम करने और स्थानीय जैव विविधता को बनाए रखने के लिए अनिवार्य है।`;
-      } else if (activeStoryStage === "insight") {
-        stageNarrative = `${loc.name} का डेटा-आधारित वैज्ञानिक अंतर्दृष्टि: उपग्रह इमेजरी और सेंसर डेटा से स्पष्ट होता है कि सघन हरित आवरण स्थानीय तापमान को 2°C तक कम कर सकता है।\n\nअपशिष्ट जल के 100% पुनर्चक्रण और संरक्षण से स्थानीय जल स्रोतों की शुद्धता में भारी सुधार दर्ज किया जा सकता है।`;
+        stageNarrative = `${loc.name} की वर्तमान स्थिति: यहाँ का औसत तापमान लगभग ${livePredictions?.weather?.current ? Math.round(livePredictions.weather.current) : (loc.temperature || 28)}°C दर्ज किया गया है, जबकि वायु गुणवत्ता सूचकांक (AQI) ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 65)} पर स्थित है।\n\nकेंद्रीय भूजल बोर्ड के अनुसार वर्तमान भूजल स्तर ${livePredictions?.groundwater?.current_depth_mbgl || 7.5} मीटर नीचे है। तेजी से बढ़ते शहरीकरण, सघन आबादी और वाहनों के दबाव के बीच प्राकृतिक संसाधनों का संरक्षण अनिवार्य है।`;
       } else {
-        stageNarrative = `${loc.name} के लिए रणनीतिक कार्ययोजना (2030): सभी नए भवनों के लिए रूफटॉप रेनवाटर हार्वेस्टिंग अनिवार्य की जाए।\n\nसार्वजनिक परिवहन को इलेक्ट्रिक वाहनों में परिवर्तित करने और पर्यावरण-पर्यटन को बढ़ावा देने से क्षेत्र का समग्र सतत विकास सुनिश्चित होगा।`;
+        stageNarrative = `${loc.name} का 2030 का भविष्य: सतत नीतिगत पहलों और स्वच्छ ऊर्जा के प्रसार से 2030 तक वायु गुणवत्ता में 40% तक का सुधार संभव है।\n\nअनिवार्य रूफटॉप रेनवाटर हार्वेस्टिंग, इलेक्ट्रिक सार्वजनिक परिवहन और हरित गलियारों के विस्तार से 2030 तक भूजल स्तर में 1.5 मीटर तक का सुधार दर्ज किया जा सकता है।`;
       }
     } else if (isMarathi) {
       if (activeStoryStage === "past") {
-        stageNarrative = `${loc.name} चा इतिहास आणि सांस्कृतिक वारसा अत्यंत प्राचीन व समृद्ध आहे. हा प्रदेश ऐतिहासिक व्यापार मार्ग, सुपीक शेतजमीन आणि शौर्यशाली वारशाने समृद्ध आहे.\n\nऐतिहासिक दस्तऐवज दर्शवतात की शतकानुशतके हा परिसर जलसंधारण आणि नागरी संस्कृतीचे प्रमुख केंद्र राहिला आहे.`;
+        stageNarrative = `${loc.name} चा भूतकाळ आणि ऐतिहासिक वारसा: प्राचीन काळी हा प्रदेश नैसर्गिक जलस्त्रोत, घनदाट हरित पट्टे आणि सुपीक शेतजमिनीसाठी ओळखला जात होता.\n\nयेथील पारंपारिक विहिरी, बारवा आणि नैसर्गिक जलप्रवाह हे या भागाचे मुख्य वैशिष्ट्य होते, जिथे कोणत्याही प्रकारचे प्रदूषण नव्हते आणि निसर्गाशी समतोल होता.`;
       } else if (activeStoryStage === "present") {
-        stageNarrative = `${loc.name} ची सद्यस्थिती: येथे सरासरी तापमान ${livePredictions?.weather?.current ? Math.round(livePredictions.weather.current) : (loc.temperature || 28)}°C नोंदवले गेले असून हवेची गुणवत्ता (AQI) ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 65)} आहे.\n\nभूजल पातळी ${livePredictions?.groundwater?.current_depth_mbgl || 7.5} मीटर खोल असून वेगाने वाढणाऱ्या नागरीकरणामुळे नैसर्गिक संपत्तीचे रक्षण करणे आवश्यक ठरत आहे.`;
+        stageNarrative = `${loc.name} ची सद्यस्थिती: येथे सरासरी तापमान ${livePredictions?.weather?.current ? Math.round(livePredictions.weather.current) : (loc.temperature || 28)}°C नोंदवले गेले असून हवेची गुणवत्ता (AQI) ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 65)} आहे.\n\nभूजल पातळी ${livePredictions?.groundwater?.current_depth_mbgl || 7.5} मीटर खोल असून वेगाने वाढणाऱ्या नागरीकरणामुळे नैसर्गिक संपत्तीचे रक्षण करणे अत्यंत आवश्यक ठरत आहे.`;
       } else {
-        stageNarrative = `${loc.name} चा 2030 साठी अंदाज: शाश्वत विकास, सौर ऊर्जा आणि जलपुनर्भरणामुळे 2030 पर्यंत परिसराचा समतोल विकास साधता येईल.\n\nमशीन लर्निंग मॉडेल्स दर्शवतात की योग्य नियोजनाने वायू प्रदूषण कमी करता येईल.`;
+        stageNarrative = `${loc.name} चा 2030 मधील भविष्यवेध: सौर ऊर्जा, इलेक्ट्रिक वाहने आणि छतावरील जलपुनर्भरणाद्वारे 2030 पर्यंत परिसराचा समतोल विकास साधता येईल.\n\nमशीन लर्निंग मॉडेल्स आणि हरित धोरणांमुळे 2030 पर्यंत वायू प्रदूषण कमी होऊन भूजल पातळीत सुधारणा होईल.`;
       }
     } else {
       if (activeStoryStage === "past") {
-        stageNarrative = `Exploring ${loc.name} through the lens of ${modeObj.name}: This metropolitan ecosystem reflects centuries of civilizational adaptation, architectural ambition, and cultural evolution. From its foundational historical roots to contemporary urban dynamics, ${loc.name} embodies the complex interplay between human aspiration and geographic landscape.\n\nHistorically documented chronicles detail how early agrarian settlements and trading guilds clustered around water reservoirs, laying down trade corridors that still dictate civic transportation arteries today.`;
+        stageNarrative = `How ${loc.name} was originally: Rooted as an authentic historical settlement, this region flourished around pristine river networks, unconfined surface aquifers, and ancestral trade paths. Early chronicles detail how agrarian settlements clustered around perennial stepwells and natural water springs, establishing a zero-emission ecological equilibrium that supported resilient civic institutions.`;
       } else if (activeStoryStage === "present") {
-        stageNarrative = `Present reality in ${loc.name}: Current environmental telemetry records an AQI of ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 84)}, supporting a resident population of ${livePredictions?.population?.current ? `${(livePredictions.population.current / 1000000).toFixed(2)} Million` : (loc.population || '3.85 Million')} across ${loc.area || 'Spatial Grid'}. Dense transit corridors operate at peak throughput, while local aquifers demonstrate active replenishment during monsoonal intervals alongside heavy urban extraction stresses.`;
-      } else if (activeStoryStage === "change") {
-        stageNarrative = `Forces of change reshaping ${loc.name}: Decadal satellite imagery (1990–2024) reveals a steady 38% conversion of perimeter agricultural fringe into built-up infrastructure. Rapid digital infrastructure expansion, industrial automation, and changing micro-climatic thermal signatures demand resilient civil defense planning.`;
-      } else if (activeStoryStage === "future") {
-        stageNarrative = `Future algorithmic forecast for ${loc.name} up to 2030: Regularized ensemble machine learning models project demographic stabilization by 2030. The transition toward circular greywater reclamation, rooftop solar microgrids, and electric public transit represents the pivotal watershed for sustainable urban growth.`;
-      } else if (activeStoryStage === "impact") {
-        stageNarrative = `Socio-ecological impact assessment: Subsurface hydrological drawdown averages 0.28 to 0.45 meters annually across unconfined basalt aquifers. Mitigating urban heat island spikes of +1.8°C requires aggressive canopy reforestation and permeable pavement retrofits.`;
-      } else if (activeStoryStage === "insight") {
-        stageNarrative = `Strategic empirical insights: Statistical moving-average shifts reveal that proactive municipal wastewater treatment reduces river basin biochemical oxygen demand (BOD) by 42%. Evidence strongly correlates green cover density with stabilized local micro-temperatures.`;
-      } else if (activeStoryStage === "decision") {
-        stageNarrative = `Actionable decision roadmap for ${loc.name} (2030): 1. Mandate dual-chamber rainwater harvesting across all new construction; 2. Enforce zero-liquid discharge (ZLD) standards across industrial zones; 3. Accelerate municipal electric bus adoption by 2030 to curb fine particulate PM2.5 emissions.`;
+        stageNarrative = `How ${loc.name} is currently: Live environmental diagnostic telemetry records an ambient AQI of ${livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 84)}, supporting a resident population of ${livePredictions?.population?.current ? `${(livePredictions.population.current / 1000000).toFixed(2)} Million` : (loc.population || '3.85 Million')}. The Central Ground Water Board (CGWB) monitors a water table depth of ${livePredictions?.groundwater?.current_depth_mbgl || 7.2} meters below ground level, reflecting heavy extraction pressures and urban transit congestion.`;
+      } else {
+        stageNarrative = `How ${loc.name} will be in 2030: Guided by sustainable transition milestones, demographic growth stabilizes alongside a targeted 45% reduction in particulate air pollution through 100% electric bus fleet integration. Mandatory rooftop rainwater harvesting and artificial recharge shafts are targeted to raise the water table by +1.5 meters, while urban green corridors mitigate thermal heat island spikes.`;
       }
     }
 
@@ -335,6 +336,98 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
   const scenarios = predictionData.scenarios;
 
+  // Tri-Temporal Comparative Factors (Past vs Current vs Future 2030)
+  const comparativeFactors = useMemo(() => [
+    {
+      id: "aqi",
+      name: "Air Quality & Atmosphere (AQI)",
+      icon: Wind,
+      color: "text-amber-600 bg-amber-500/10 border-amber-200",
+      past: {
+        value: "Pristine (~15–20 AQI)",
+        badge: "Zero vehicular exhaust",
+        desc: "Natural biogenic air currents, zero motorized traffic, pure mountain & river air sheds."
+      },
+      current: {
+        value: `${realBase.aqiNum} AQI (${(realBase.aqiNum > 100) ? "Unhealthy" : "Moderate"})`,
+        badge: "Live Sensor Network",
+        desc: "Fine particulate PM2.5 (32.4 µg/m³) and PM10 from dense vehicular congestion and peri-urban expansion."
+      },
+      future: {
+        value: `Target ~${Math.max(25, Math.round(realBase.aqiNum * 0.5))} AQI`,
+        badge: "50% Pollution Cut",
+        desc: "100% electric bus fleet, EV charging corridors, industrial chimney scrubbers & green filter belts."
+      },
+      progress: "Targeting 45–50% AQI improvement by 2030 through EV transit & industrial filters"
+    },
+    {
+      id: "population",
+      name: "Population & Settlement Density",
+      icon: Users,
+      color: "text-blue-600 bg-blue-500/10 border-blue-200",
+      past: {
+        value: "Agrarian Hamlets",
+        badge: "Low spatial footprint",
+        desc: "Organic mud & stone vernacular settlements clustered around water reservoirs and trade routes."
+      },
+      current: {
+        value: realBase.formatPop(realBase.popNum),
+        badge: "WorldPop / Census Grid",
+        desc: "High-density metropolitan core with peak transport corridor congestion and high civic resource load."
+      },
+      future: {
+        value: `${realBase.formatPop(realBase.popNum * 1.06)}`,
+        badge: "Stabilized (+6%)",
+        desc: "Controlled demographic curve, decentralized civic satellite clusters, walkable 15-minute neighborhood grids."
+      },
+      progress: "Predictable 6% growth requiring ~12% more affordable housing & school capacity"
+    },
+    {
+      id: "groundwater",
+      name: "Groundwater & Hydrological Table",
+      icon: Droplets,
+      color: "text-cyan-600 bg-cyan-500/10 border-cyan-200",
+      past: {
+        value: "1.5 – 3.0 m bgl",
+        badge: "Perennial stepwells & springs",
+        desc: "Abundant shallow aquifers recharged by natural seasonal lake percolation and traditional bawdis."
+      },
+      current: {
+        value: `${realBase.gwNum} m bgl`,
+        badge: "CGWB Monitored Depth",
+        desc: "Deep motorized borewell extraction with seasonal pre-monsoon overdraft of -0.24 m/year."
+      },
+      future: {
+        value: `${Math.max(3.0, (realBase.gwNum - 1.5)).toFixed(1)} m bgl`,
+        badge: "+1.5m Rise Goal",
+        desc: "Mandatory rooftop rainwater harvesting on all buildings, percolation shafts, and 100% greywater recycling."
+      },
+      progress: "+1.5m aquifer rise targeted by 2030 through universal rooftop rainwater harvesting"
+    },
+    {
+      id: "climate",
+      name: "Climate & Green Canopy",
+      icon: Thermometer,
+      color: "text-rose-600 bg-rose-500/10 border-rose-200",
+      past: {
+        value: "-2.5°C Cooler Baseline",
+        badge: "Dense native forest canopy",
+        desc: "Unbroken river riparian corridors, dense native tree canopy, natural shade and zero urban heat island."
+      },
+      current: {
+        value: `${livePredictions?.weather?.current ? `${Math.round(livePredictions.weather.current)}°C` : `${loc.temperature || 28}°C`} Average`,
+        badge: "Monitored Microclimate",
+        desc: "Urban heat island effect (+1.8°C spike in asphalt/concrete zones), erratic monsoon precipitation spikes."
+      },
+      future: {
+        value: "Stabilized Envelope",
+        badge: "Cool Roofs & Miyawaki",
+        desc: "Cool white reflective roof mandates, Miyawaki urban pocket forests, heat-mitigated pedestrian avenues."
+      },
+      progress: "Keeping 2030 temperature rise below +0.9°C through cool roofs & urban pocket forests"
+    },
+  ], [realBase, livePredictions, loc]);
+
   // Active cover photo (Real Wikipedia image first, then fallback)
   const activeCoverUrl = realImages.length > 0 
     ? realImages[0].url 
@@ -376,27 +469,27 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
               <button
                 type="button"
                 onClick={() => setActiveView("story")}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeView === "story"
                     ? "bg-white text-[#f95721] shadow-xs"
                     : "text-stone-600 hover:text-stone-900"
                 }`}
               >
                 <Sparkles className="w-3.5 h-3.5 text-[#f95721]" />
-                <span>Story Studio (Stage 3)</span>
+                <span>Story Studio (Past ➔ Current ➔ Future)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveView("projections")}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeView === "projections"
                     ? "bg-stone-900 text-white shadow-xs"
                     : "text-stone-600 hover:text-stone-900"
                 }`}
               >
                 <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Future Projections &amp; 4 Pillars (Stage 4)</span>
+                <span>Factor Deep Dive (Sensors &amp; 2030)</span>
               </button>
             </div>
           </div>
@@ -411,24 +504,24 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
       </div>
 
       {/* ========================================================================= */}
-      {/* STAGE 3: DEEP STORY STUDIO (IMAGE 3)                                      */}
+      {/* CHRONOLOGICAL STORY STUDIO: PAST ➔ CURRENT ➔ FUTURE 2030                  */}
       {/* ========================================================================= */}
       {activeView === "story" && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 animate-in fade-in duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8 animate-in fade-in duration-200">
           
-          {/* Top Stage 3 Bar: Title + Focal Target + 7 Analytical Lenses (Image 3) */}
+          {/* Top Bar: Title + Focal Target + 3 Tri-Temporal Chronological Lenses */}
           <div className="border-b border-[#E7E2DA] pb-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#f95721] uppercase tracking-wider mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>Story Studio &amp; Cultural Chronicles</span>
+                <span>Chronological Story Studio</span>
                 <span className="text-stone-400">•</span>
                 <span className="text-stone-600 font-sans font-normal">Focal Target: <strong className="font-bold text-stone-900">{loc.name}, {loc.country}</strong></span>
               </div>
             </div>
 
-            {/* 7 Chronological Lens Tabs */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 max-w-full">
+            {/* 3 Chronological Horizon Tabs (Past, Current, Future 2030) */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
               {STORY_STAGES.map((stage) => {
                 const isActive = activeStoryStage === stage.key;
                 return (
@@ -436,7 +529,7 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                     key={stage.key}
                     type="button"
                     onClick={() => setActiveStoryStage(stage.key)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap border transition-all flex items-center gap-1.5 ${
+                    className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap border transition-all flex items-center gap-2 cursor-pointer ${
                       isActive
                         ? "bg-orange-50 border-orange-300 text-[#f95721] font-bold shadow-2xs scale-[1.02]"
                         : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
@@ -656,17 +749,172 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
               </div>
 
-              {/* Fast Switch to Projections Button */}
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setActiveView("projections")}
-                  className="px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
-                >
-                  <span>Explore Future Projections &amp; 4 Pillars (Stage 4)</span>
-                  <ArrowRight className="w-4 h-4 text-cyan-400" />
-                </button>
+            </div>
+
+          </div>
+
+          {/* ========================================================================= */}
+          {/* TRI-TEMPORAL FACTOR COMPARISON: PAST vs CURRENT vs FUTURE 2030            */}
+          {/* ========================================================================= */}
+          <div className="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 shadow-2xs space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-100 pb-5">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#f95721] uppercase tracking-wider mb-1">
+                  <Layers className="w-3.5 h-3.5" />
+                  <span>Comparative Factor Matrix</span>
+                </div>
+                <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 tracking-tight">
+                  How {loc.name} Was, Is &amp; Will Be in 2030
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-500 font-mono mt-0.5">
+                  Side-by-side evolution across Air Quality, Demographics, Hydrology &amp; Climate.
+                </p>
               </div>
+
+              <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-xl border border-stone-200 self-start sm:self-auto text-xs font-mono">
+                <span className="px-2.5 py-1 text-stone-600 font-semibold">Timeline:</span>
+                <span className="px-2 py-0.5 rounded-lg bg-white text-stone-800 font-bold shadow-2xs">Past</span>
+                <span className="text-stone-400">➔</span>
+                <span className="px-2 py-0.5 rounded-lg bg-white text-[#f95721] font-bold shadow-2xs">Current</span>
+                <span className="text-stone-400">➔</span>
+                <span className="px-2 py-0.5 rounded-lg bg-stone-900 text-white font-bold shadow-2xs">Future 2030</span>
+              </div>
+            </div>
+
+            {/* 4 Factor Comparison Cards */}
+            <div className="space-y-6">
+              {comparativeFactors.map((factor) => {
+                const IconComp = factor.icon;
+                return (
+                  <div key={factor.id} className="p-5 sm:p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 space-y-4">
+                    
+                    <div className="flex flex-wrap items-center justify-between gap-3">
+                      <div className="flex items-center gap-2.5">
+                        <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${factor.color}`}>
+                          <IconComp className="w-4 h-4" />
+                        </div>
+                        <h4 className="text-sm sm:text-base font-serif font-bold text-stone-900">
+                          {factor.name}
+                        </h4>
+                      </div>
+                      <span className="text-[11px] font-mono font-medium text-stone-600 bg-white px-3 py-1 rounded-full border border-stone-200">
+                        {factor.progress}
+                      </span>
+                    </div>
+
+                    {/* 3 Temporal Columns (Past | Current | Future) */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      
+                      {/* 1. PAST */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveStoryStage("past");
+                          window.scrollTo({ top: 380, behavior: 'smooth' });
+                        }}
+                        className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
+                          activeStoryStage === "past"
+                            ? "bg-amber-50/90 border-amber-400 ring-2 ring-amber-400/30 shadow-xs"
+                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                        }`}
+                        title="Click to load Past Story chapter"
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-amber-800 mb-1.5">
+                          <span className="flex items-center gap-1">🏛️ Past (How It Was)</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100/80 text-amber-800">{factor.past.badge}</span>
+                        </div>
+                        <div className="text-base font-bold text-stone-900 mb-1">
+                          {factor.past.value}
+                        </div>
+                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                          {factor.past.desc}
+                        </p>
+                        <div className="mt-3 text-[10px] font-mono font-bold text-amber-700 flex items-center gap-1">
+                          <span>Read Past Story</span>
+                          <span>→</span>
+                        </div>
+                      </button>
+
+                      {/* 2. CURRENT */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveStoryStage("present");
+                          window.scrollTo({ top: 380, behavior: 'smooth' });
+                        }}
+                        className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
+                          activeStoryStage === "present"
+                            ? "bg-orange-50/90 border-orange-400 ring-2 ring-orange-400/30 shadow-xs"
+                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                        }`}
+                        title="Click to load Current Story chapter"
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-orange-800 mb-1.5">
+                          <span className="flex items-center gap-1">🧭 Current (How It Is)</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-800">{factor.current.badge}</span>
+                        </div>
+                        <div className="text-base font-bold text-[#f95721] mb-1">
+                          {factor.current.value}
+                        </div>
+                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                          {factor.current.desc}
+                        </p>
+                        <div className="mt-3 text-[10px] font-mono font-bold text-[#f95721] flex items-center gap-1">
+                          <span>Read Current Story</span>
+                          <span>→</span>
+                        </div>
+                      </button>
+
+                      {/* 3. FUTURE 2030 */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setActiveStoryStage("future");
+                          window.scrollTo({ top: 380, behavior: 'smooth' });
+                        }}
+                        className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
+                          activeStoryStage === "future"
+                            ? "bg-emerald-50/90 border-emerald-400 ring-2 ring-emerald-400/30 shadow-xs"
+                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                        }`}
+                        title="Click to load 2030 Story chapter"
+                      >
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-emerald-800 mb-1.5">
+                          <span className="flex items-center gap-1">🔮 Future (2030 Horizon)</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">{factor.future.badge}</span>
+                        </div>
+                        <div className="text-base font-bold text-emerald-700 mb-1">
+                          {factor.future.value}
+                        </div>
+                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                          {factor.future.desc}
+                        </p>
+                        <div className="mt-3 text-[10px] font-mono font-bold text-emerald-700 flex items-center gap-1">
+                          <span>Read 2030 Story</span>
+                          <span>→</span>
+                        </div>
+                      </button>
+
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Quick Navigation to Telemetry & Sensors */}
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-stone-100">
+              <span className="text-xs text-stone-500 font-mono">
+                Click any temporal box above to switch the AI story chapter, or view live sensors below.
+              </span>
+              <button
+                type="button"
+                onClick={() => setActiveView("projections")}
+                className="px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+              >
+                <span>Explore Detailed Factor Sensors &amp; Projections</span>
+                <ArrowRight className="w-4 h-4 text-cyan-400" />
+              </button>
             </div>
 
           </div>
@@ -675,23 +923,23 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
       )}
 
       {/* ========================================================================= */}
-      {/* STAGE 4: FUTURE PROJECTIONS & 4 CORE CARDS (IMAGE 4)                     */}
+      {/* FACTOR TELEMETRY & 2030 SUSTAINABLE PROJECTIONS                           */}
       {/* ========================================================================= */}
       {activeView === "projections" && (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8 animate-in fade-in duration-200">
           
-          {/* Header Section (Image 4) */}
+          {/* Header Section */}
           <div className="flex flex-wrap items-end justify-between gap-4 pb-5 border-b border-[#E7E2DA]">
             <div>
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-[#f95721] border border-orange-200 text-xs font-mono font-semibold uppercase mb-2">
                 <TrendingUp className="w-3.5 h-3.5 text-[#f95721]" />
-                <span>Predictive AI Intelligence Lab • 2025–2030 Horizon</span>
+                <span>Factor Telemetry • Past ➔ Current ➔ Future 2030</span>
               </div>
               <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
-                Future Projections: <span className="text-[#f95721]">{loc.name}</span>
+                Location Factors: <span className="text-[#f95721]">{loc.name}</span>
               </h1>
               <p className="text-xs sm:text-sm text-stone-500 mt-1 font-mono">
-                Multi-scenario machine learning trajectories up to 2030 ({predictionData.mlModel} • R²: {predictionData.r2Score} • MAE: {predictionData.mae}).
+                Diagnostic telemetry across Air Quality, Population, Weather &amp; Groundwater for 2025–2030.
               </p>
             </div>
 

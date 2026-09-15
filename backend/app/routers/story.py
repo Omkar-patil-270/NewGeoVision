@@ -612,19 +612,19 @@ async def _generate_llm_text(prompt: str) -> Optional[str]:
     """
     Multi-provider LLM caller with robust 14s timeout: checks Groq, Gemini, and OpenAI asynchronously.
     """
-    # 1. Groq API (Primary - high throughput and fast)
+    # 1. Groq API (Primary - ultra-fast inference at 850+ tokens/sec)
     groq_key = os.getenv("GROQ_API_KEY", "").strip()
     if groq_key:
-        for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
+        for model_name in ["llama-3.1-8b-instant", "llama3-8b-8192", "llama-3.3-70b-versatile"]:
             try:
                 headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
                 payload = {
                     "model": model_name,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.65,
-                    "max_tokens": 550,
+                    "max_tokens": 400,
                 }
-                async with httpx.AsyncClient(timeout=14.0) as client:
+                async with httpx.AsyncClient(timeout=5.0) as client:
                     res = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
                     if res.status_code == 200:
                         choices = res.json().get("choices", [])
@@ -714,7 +714,8 @@ async def generate_story_section(req: SectionRequest):
         wiki_title = None
         if not context:
             try:
-                wiki = await get_wikipedia_summary(loc_name)
+                import asyncio
+                wiki = await asyncio.wait_for(get_wikipedia_summary(loc_name), timeout=1.0)
                 if wiki:
                     context = wiki.get("full_extract") or wiki.get("extract") or ""
                     wiki_title = wiki.get("title")

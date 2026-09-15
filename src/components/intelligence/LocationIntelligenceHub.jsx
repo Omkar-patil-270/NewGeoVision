@@ -127,9 +127,25 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
     }
   };
 
-  // Centralized story section fetcher (supporting language, tone, modality, and live lens)
+  const storyMemoryCache = useRef(new Map());
+
+  // Centralized fast story section fetcher (supporting language, tone, modality, and live lens)
   const fetchSectionStory = async (forceFresh = false) => {
     if (!loc?.name) return;
+    const cacheKey = `${loc.id}-${activeStoryStage}-${selectedMode}-${selectedLanguage}-${selectedTone}-${selectedLength}`;
+
+    // Instant local memory cache hit (0ms latency)
+    if (!forceFresh && storyMemoryCache.current.has(cacheKey)) {
+      setGroqStory(storyMemoryCache.current.get(cacheKey));
+      setIsLoadingGroq(false);
+      return;
+    }
+
+    // Immediately clear previous story so the lens narrative updates instantly (0ms)
+    if (!forceFresh) {
+      setGroqStory(null);
+    }
+
     setIsLoadingGroq(true);
     if (forceFresh) setIsGenerating(true);
     try {
@@ -145,12 +161,14 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
       });
       if (res && res.text) {
         const modeObj = storyModes.find(m => m.id === selectedMode) || storyModes[0];
-        setGroqStory({
+        const storyPayload = {
           title: res.title || `${loc.name} — ${currentStageObj.label}`,
           subtitle: `AI Synthesized Story (${selectedLanguage}) • Lens: ${currentStageObj.label} • Mode: ${res.mode || "verified"}`,
           narrative: res.text,
           audioDuration: selectedLength === "short" ? "1m 45s" : selectedLength === "long" ? "5m 20s" : "3m 15s"
-        });
+        };
+        setGroqStory(storyPayload);
+        storyMemoryCache.current.set(cacheKey, storyPayload);
       }
       if (forceFresh) {
         confetti({ particleCount: 60, spread: 65, origin: { y: 0.8 } });

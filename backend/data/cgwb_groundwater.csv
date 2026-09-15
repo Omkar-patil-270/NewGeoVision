@@ -1,0 +1,30 @@
+state,district,taluka,station_name,latitude,longitude,depth_2015,depth_2016,depth_2017,depth_2018,depth_2019,depth_2020,depth_2021,depth_2022,depth_2023,depth_2024,category,recharge_rate_m_yr
+Maharashtra,Kolhapur,Karvir,Kolhapur City (Bawda),16.7050,74.2433,5.80,6.10,6.40,6.20,6.60,6.90,6.70,7.10,7.30,7.50,Safe,-0.18
+Maharashtra,Kolhapur,Karvir,Uchgaon Piezo,16.6820,74.2690,6.20,6.50,6.90,6.80,7.10,7.40,7.30,7.60,7.90,8.10,Safe,-0.20
+Maharashtra,Kolhapur,Panhala,Panhala Hill Station,16.8124,74.1207,7.40,7.70,8.10,7.90,8.30,8.70,8.50,8.90,9.20,9.50,Semi-Critical,-0.22
+Maharashtra,Kolhapur,Panhala,Kodoli Dugwell,16.8840,74.1950,5.10,5.30,5.60,5.40,5.80,6.10,5.90,6.30,6.50,6.70,Safe,-0.17
+Maharashtra,Kolhapur,Hatkanangale,Ichalkaranji Industrial,16.6980,74.4630,8.90,9.40,9.90,9.70,10.30,10.80,10.60,11.20,11.70,12.10,Critical,-0.34
+Maharashtra,Kolhapur,Hatkanangale,Hatkanangale Town,16.7450,74.4440,7.80,8.20,8.60,8.40,8.90,9.30,9.10,9.60,9.90,10.30,Semi-Critical,-0.26
+Maharashtra,Kolhapur,Shirol,Jaysingpur Central,16.7820,74.5610,6.90,7.30,7.70,7.50,8.00,8.40,8.20,8.60,8.90,9.20,Safe,-0.24
+Maharashtra,Kolhapur,Shirol,Kurundwad Confluence,16.6890,74.6020,4.80,5.10,5.30,5.20,5.50,5.80,5.70,6.00,6.20,6.40,Safe,-0.16
+Maharashtra,Kolhapur,Kagal,Kagal MIDC Well,16.5780,74.3160,7.10,7.50,7.90,7.70,8.20,8.60,8.40,8.90,9.20,9.50,Semi-Critical,-0.25
+Maharashtra,Kolhapur,Kagal,Murgud Lake Basin,16.4890,74.2280,4.20,4.40,4.70,4.50,4.80,5.10,5.00,5.30,5.50,5.70,Safe,-0.15
+Maharashtra,Kolhapur,Radhanagari,Radhanagari Dam Catchment,16.4167,74.0000,3.20,3.30,3.60,3.40,3.70,3.90,3.80,4.00,4.20,4.30,Safe,-0.11
+Maharashtra,Kolhapur,Radhanagari,Dajipur Sanctuary Well,16.3680,73.8740,2.80,2.90,3.10,3.00,3.20,3.40,3.30,3.50,3.60,3.70,Safe,-0.09
+Maharashtra,Kolhapur,Shahuwadi,Malkapur Ghat,16.9290,73.9180,4.50,4.70,5.00,4.90,5.20,5.50,5.40,5.70,5.90,6.10,Safe,-0.16
+Maharashtra,Kolhapur,Shahuwadi,Bambavade Valley,16.8920,73.9850,4.80,5.00,5.30,5.10,5.50,5.80,5.60,6.00,6.20,6.40,Safe,-0.17
+Maharashtra,Kolhapur,Bhudargad,Gargoti Riverbank,16.3140,74.1480,4.10,4.30,4.50,4.40,4.70,4.90,4.80,5.10,5.30,5.40,Safe,-0.13
+Maharashtra,Kolhapur,Ajra,Ajra Ghansal Valley,16.1170,74.2080,3.60,3.80,4.00,3.90,4.20,4.40,4.30,4.60,4.70,4.90,Safe,-0.13
+Maharashtra,Kolhapur,Chandgad,Chandgad Forest Range,15.9320,74.3850,3.40,3.50,3.80,3.70,3.90,4.20,4.10,4.30,4.50,4.60,Safe,-0.12
+Maharashtra,Kolhapur,Gadhinglaj,Gadhinglaj Town Basin,16.2290,74.3510,6.50,6.80,7.20,7.00,7.50,7.90,7.70,8.20,8.50,8.80,Safe,-0.24
+Maharashtra,Kolhapur,Gaganbawda,Gaganbawda High Rainfall,16.5440,73.8290,2.10,2.20,2.40,2.30,2.50,2.70,2.60,2.80,2.90,3.00,Safe,-0.08
+Maharashtra,Pune,Haveli,Pune Shivaji Nagar,18.5314,73.8446,8.20,8.60,9.10,8.90,9.50,10.00,9.80,10.40,10.80,11.20,Semi-Critical,-0.31
+Maharashtra,Mumbai,Mumbai Suburban,Andheri CGWB Well,19.1197,72.8468,4.50,4.70,4.90,4.80,5.10,5.40,5.30,5.60,5.80,6.00,Safe,-0.15
+Karnataka,Bengaluru Urban,Bengaluru North,Yelahanka CGWB Piezo,13.1007,77.5963,18.50,19.60,20.80,20.20,21.50,22.80,22.30,23.60,24.80,25.90,Over-Exploited,-0.78
+Delhi,New Delhi,Chanakyapuri,Delhi Lodhi Estate,28.5910,77.2270,16.20,17.10,18.00,17.70,18.80,19.90,19.50,20.60,21.50,22.40,Over-Exploited,-0.65
+Tamil Nadu,Chennai,Guindy,Chennai Guindy Well,13.0067,80.2021,9.80,10.50,11.20,10.90,11.80,12.60,12.20,13.10,13.90,14.60,Critical,-0.50
+Telangana,Hyderabad,Charminar,Hyderabad Old City,17.3616,78.4747,11.20,11.90,12.60,12.30,13.10,13.90,13.60,14.40,15.10,15.80,Over-Exploited,-0.48
+Rajasthan,Jaipur,Jaipur,Jaipur Malviya Nagar,26.8530,75.8050,22.40,23.80,25.20,24.80,26.40,27.90,27.40,29.10,30.50,31.90,Over-Exploited,-1.01
+Gujarat,Ahmedabad,Ahmedabad,Ahmedabad Ellisbridge,23.0225,72.5714,14.50,15.30,16.20,15.80,16.90,17.80,17.40,18.50,19.40,20.20,Over-Exploited,-0.60
+Uttar Pradesh,Lucknow,Lucknow,Lucknow Hazratganj,26.8467,80.9462,8.90,9.40,9.90,9.70,10.30,10.90,10.70,11.40,11.90,12.40,Semi-Critical,-0.36
+West Bengal,Kolkata,Kolkata,Kolkata Alipore,22.5320,88.3240,4.90,5.10,5.40,5.30,5.60,5.90,5.80,6.10,6.30,6.50,Safe,-0.16

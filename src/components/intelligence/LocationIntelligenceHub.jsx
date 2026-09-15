@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
 import { storyService, STORY_MODES } from '../../services/storyService';

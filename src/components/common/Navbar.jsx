@@ -10,27 +10,18 @@ export const Navbar = () => {
   const { 
     currentPage, 
     setCurrentPage, 
-    setSearchModalOpen, 
-    currentLanguage, 
-    setCurrentLanguage,
+    setSearchModalOpen 
   } = useApp();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Exact 6 core links
+  // Exact 5 core links
   const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'explore', label: 'Explore Earth' },
     { id: 'story', label: 'Story Studio' },
     { id: 'predictions', label: 'Forecast' },
     { id: 'compare', label: 'Compare' },
-  ];
-
-  const languages = [
-    { code: 'en', label: 'EN' },
-    { code: 'hi', label: 'हिन्दी' },
-    { code: 'mr', label: 'मराठी' },
-    { code: 'ja', label: '日本語' }
   ];
 
   const handleNavClick = (pageId) => {
@@ -112,27 +103,6 @@ export const Navbar = () => {
             <span className="text-[11px] font-bold font-mono">4</span>
           </button>
 
-          {/* 21hrs.space Inspired Atmospheric Sound Toggle */}
-          <SoundToggle isDark={isDark} className="hidden md:inline-flex" />
-
-          {/* Language Selector: flex-nowrap to prevent Japanese or any text from breaking */}
-          <div className={`flex items-center rounded-full border p-0.5 shadow-sm shrink-0 flex-nowrap ${
-            isDark ? 'border-white/20 bg-white/10' : 'border-stone-300/80 bg-white'
-          }`}>
-            {languages.map((lang) => (
-              <button
-                key={lang.code}
-                onClick={() => setCurrentLanguage(lang.code)}
-                className={`px-2.5 py-0.5 text-[11px] font-medium rounded-full transition-all whitespace-nowrap ${
-                  currentLanguage === lang.code
-                    ? 'bg-[#0284C7] text-white font-bold shadow-xs'
-                    : (isDark ? 'text-stone-400 hover:text-white' : 'text-stone-600 hover:text-stone-900')
-                }`}
-              >
-                {lang.label}
-              </button>
-            ))}
-          </div>
 
           {/* Mobile Menu Toggle */}
           <button

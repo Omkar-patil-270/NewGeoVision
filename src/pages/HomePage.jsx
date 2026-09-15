@@ -45,15 +45,11 @@ export const HomePage = () => {
         <EarthHero3D />
       </div>
 
-      {/* 3. Top Row: Feature Badge & Ambient Soundscape Toggle */}
-      <div className="relative z-10 w-full max-w-5xl pt-4 px-2 flex items-center justify-between pointer-events-auto">
+      {/* 3. Top Row: Feature Badge */}
+      <div className="relative z-10 w-full max-w-5xl pt-4 px-2 flex items-center justify-center pointer-events-auto">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-950/40 border border-cyan-500/30 text-cyan-300 text-xs font-semibold tracking-wide uppercase shadow-lg shadow-cyan-500/10 backdrop-blur-md">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-spin-slow" />
           <span>GLOBAL LOCATION EXPLORATION &amp; AI STORYTELLING</span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <SoundToggle showLabel={true} isDark={true} />
         </div>
       </div>
 

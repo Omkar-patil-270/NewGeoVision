@@ -126,17 +126,18 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
     { name: "Tokyo", id: "tokyo", badge: "East Asia" }
   ];
 
-  // Select location and transition into Stage 2 (Quick Story Dossier)
+  // Select location and navigate directly to the second page (Explore Earth / 3D Globe)
   const handleSelectLocation = (locOrId) => {
+    let targetId = locOrId;
     if (typeof locOrId === 'object' && locOrId !== null) {
       const registered = locationService.registerCustomLocation(locOrId);
-      selectLocation(registered.id);
-    } else {
-      selectLocation(locOrId);
+      targetId = registered.id;
     }
+    selectLocation(targetId);
     setIsDropdownOpen(false);
     setSearchQuery("");
-    setIsDossierOpen(true);
+    setIsDossierOpen(false);
+    setCurrentPage('explore');
   };
 
   // Fetch real Wikipedia / Wikimedia Commons photos from backend

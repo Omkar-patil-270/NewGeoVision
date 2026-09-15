@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { locationService } from '../services/locationService';
@@ -6,10 +6,11 @@ import { storyService } from '../services/storyService';
 import { predictionService } from '../services/predictionService';
 import { weatherService } from '../services/weatherService';
 import { airQualityService } from '../services/airQualityService';
+import { apiClient } from '../services/apiClient';
 import { 
   Search, MapPin, Globe, Sparkles, Volume2, TrendingUp, 
   X, ChevronDown, ChevronUp, Compass, ArrowRight, Wind, 
-  Droplets, Thermometer, Users, BookOpen, Layers, CheckCircle2
+  Droplets, Thermometer, Users, BookOpen, Layers, CheckCircle2, Loader2
 } from 'lucide-react';
 
 export const ExplorePage = () => {
@@ -24,16 +25,46 @@ export const ExplorePage = () => {
   const [activeTab, setActiveTab] = useState("story"); // 'story' | 'forecast' | 'telemetry'
   const [activeStoryMode, setActiveStoryMode] = useState("story");
   const [activeStoryStage, setActiveStoryStage] = useState("present");
-  const [forecastHorizon, setForecastHorizon] = useState("2035");
+  const [forecastHorizon, setForecastHorizon] = useState("2030");
   const [panelOpen, setPanelOpen] = useState(true);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isSearchingOnline, setIsSearchingOnline] = useState(false);
+  const [realCoverImage, setRealCoverImage] = useState(null);
+  const [realStoryText, setRealStoryText] = useState(null);
 
   const allLocations = locationService.getAllLocations();
   const storyModes = storyService.getStoryModes();
   const currentStory = storyService.getLocationStory(currentLocation.id, activeStoryMode);
-  const forecastData = predictionService.getFutureScenarios(currentLocation.id, forecastHorizon);
+  const forecastData = predictionService.getFutureScenarios(currentLocation.id, "2030");
   const weather = weatherService.getWeatherData(currentLocation.id);
   const aqi = airQualityService.getAQIData(currentLocation.id);
+
+  // Dynamically fetch Wikipedia images and real Groq story
+  useEffect(() => {
+    let active = true;
+    if (currentLocation?.name) {
+      apiClient.getLocationImages(currentLocation.name, currentLocation.coordinates?.lat, currentLocation.coordinates?.lng, 2).then(res => {
+        if (active && res && res.images && res.images.length > 0) {
+          setRealCoverImage(res.images[0].url);
+        } else if (active) {
+          setRealCoverImage(null);
+        }
+      }).catch(() => {});
+
+      apiClient.getStorySection({
+        locationName: currentLocation.name,
+        section: activeStoryStage,
+        levelLabel: currentLocation.type || "District"
+      }).then(res => {
+        if (active && res && res.text) {
+          setRealStoryText(res.text);
+        } else if (active) {
+          setRealStoryText(null);
+        }
+      }).catch(() => {});
+    }
+    return () => { active = false; };
+  }, [currentLocation?.id, currentLocation?.name, activeStoryStage]);
 
   // 7-Stage Analytical Story Framework
   const STORY_STAGES = [
@@ -46,15 +77,48 @@ export const ExplorePage = () => {
     { key: "decision", label: "Actionable Decision", icon: "🎯" },
   ];
 
-  const handleSearchSubmit = (e) => {
+  const handleSearchSubmit = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    const found = locationService.searchLocations(searchQuery);
-    if (found.length > 0) {
-      selectLocation(found[0].id);
-      setPanelOpen(true);
-      setIsMinimized(false);
-      setSearchQuery("");
+    const q = searchQuery.trim();
+    setIsSearchingOnline(true);
+    try {
+      const found = locationService.searchLocations(q);
+      if (found.length > 0) {
+        selectLocation(found[0].id);
+        setPanelOpen(true);
+        setIsMinimized(false);
+        setSearchQuery("");
+        return;
+      }
+      // Worldwide online geocoding fallback
+      const onlineHits = await apiClient.searchLocations(q);
+      if (onlineHits && onlineHits.length > 0) {
+        const top = onlineHits[0];
+        const safeName = top.name || top.display_name?.split(',')[0] || q;
+        const lat = parseFloat(top.lat ?? top.latitude ?? 0);
+        const lon = parseFloat(top.lon ?? top.longitude ?? 0);
+        const registered = locationService.registerCustomLocation({
+          name: safeName,
+          country: top.country || "Global",
+          country_code: top.country_code || "",
+          region: top.state || top.admin1 || top.country || "",
+          badge: top.country_code ? top.country_code.toUpperCase() : "GLOBAL",
+          type: "city",
+          coordinates: { lat, lng: lon },
+          population: top.population ? `${(top.population / 1000000).toFixed(2)}M` : "Urban Area",
+          parent: top.display_name || `${safeName}, ${top.country || ''}`,
+          description: top.display_name || `${safeName} location`
+        });
+        selectLocation(registered.id);
+        setPanelOpen(true);
+        setIsMinimized(false);
+        setSearchQuery("");
+      }
+    } catch (err) {
+      console.warn("Explore search error:", err);
+    } finally {
+      setIsSearchingOnline(false);
     }
   };
 
@@ -165,7 +229,7 @@ export const ExplorePage = () => {
             {!isMinimized ? (
               <div className="relative h-40 w-full overflow-hidden">
                 <img 
-                  src={currentLocation.bannerImage} 
+                  src={realCoverImage || currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80"} 
                   alt={currentLocation.name} 
                   className="w-full h-full object-cover"
                 />
@@ -195,7 +259,7 @@ export const ExplorePage = () => {
                     {currentLocation.name}
                   </h2>
                   <p className="text-xs text-stone-200 font-mono">
-                    {currentLocation.region}, {currentLocation.country} • [{currentLocation.coordinates.lat.toFixed(4)}°N, {currentLocation.coordinates.lng.toFixed(4)}°E]
+                    {currentLocation.region}, {currentLocation.country} • [{currentLocation.coordinates?.lat.toFixed(4)}°N, {currentLocation.coordinates?.lng.toFixed(4)}°E]
                   </p>
                 </div>
               </div>
@@ -203,7 +267,7 @@ export const ExplorePage = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
                   <img 
-                    src={currentLocation.bannerImage} 
+                    src={realCoverImage || currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"} 
                     alt={currentLocation.name} 
                     className="w-10 h-10 rounded-xl object-cover border border-stone-200"
                   />
@@ -332,7 +396,7 @@ export const ExplorePage = () => {
                         {currentStory.subtitle}
                       </p>
                       <p className="text-xs text-stone-700 leading-relaxed whitespace-pre-line font-serif">
-                        {currentStory.narrative}
+                        {realStoryText || currentStory.narrative}
                       </p>
                     </div>
 
@@ -379,24 +443,12 @@ export const ExplorePage = () => {
                 {activeTab === "forecast" && (
                   <div className="space-y-4 animate-in fade-in duration-200">
                     
-                    {/* Horizon Selector: 2030 | 2035 | 2050 */}
-                    <div className="flex items-center justify-between p-2.5 bg-stone-100 rounded-2xl border border-stone-200">
+                    {/* Horizon Locked: 2025–2030 */}
+                    <div className="flex items-center justify-between p-2.5 bg-orange-50/80 rounded-2xl border border-orange-200">
                       <span className="text-xs font-mono font-semibold text-stone-700">Forecast Horizon:</span>
-                      <div className="flex items-center gap-1">
-                        {["2030", "2035", "2050"].map((year) => (
-                          <button
-                            key={year}
-                            onClick={() => setForecastHorizon(year)}
-                            className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all ${
-                              forecastHorizon === year
-                                ? "bg-primary text-white shadow-xs"
-                                : "text-stone-600 hover:text-stone-900"
-                            }`}
-                          >
-                            {year}
-                          </button>
-                        ))}
-                      </div>
+                      <span className="px-3 py-1 rounded-xl bg-primary text-white text-xs font-mono font-bold shadow-xs">
+                        2025–2030 (5-Year Forecast)
+                      </span>
                     </div>
 
                     {/* 3 Scenario Cards */}

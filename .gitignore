@@ -38,3 +38,6 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Large raw offline dumps
+backend/data/aqi_all_india.csv

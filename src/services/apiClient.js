@@ -19,6 +19,7 @@ async function fetchWithCache(url, options = {}, ttlMs = 60000) {
 
   const res = await fetch(url, {
     ...options,
+    signal: options.signal || AbortSignal.timeout(3000),
     headers: {
       "Content-Type": "application/json",
       ...(options.headers || {}),
@@ -166,7 +167,8 @@ export const apiClient = {
       if (forceFresh) {
         const res = await fetch(`${API_BASE_URL}/api/story/section`, {
           ...fetchOptions,
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
+          signal: AbortSignal.timeout(3000)
         });
         if (!res.ok) throw new Error(`API error ${res.status}`);
         return await res.json();
@@ -174,7 +176,7 @@ export const apiClient = {
 
       return await fetchWithCache(
         `${API_BASE_URL}/api/story/section`,
-        fetchOptions,
+        { ...fetchOptions, signal: AbortSignal.timeout(3000) },
         180000
       );
     } catch (err) {
@@ -240,6 +242,7 @@ export const apiClient = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(3000),
       });
       if (res.ok) {
         return await res.json();
@@ -284,7 +287,8 @@ export const apiClient = {
       const res = await fetch(`${API_BASE_URL}/api/story/generate-plan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: AbortSignal.timeout(3000),
       });
       if (res.ok) {
         return await res.json();

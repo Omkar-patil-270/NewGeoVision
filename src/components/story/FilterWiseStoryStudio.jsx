@@ -4,7 +4,8 @@ import {
   MapPin, Clock, GitCompare, Brain, TrendingUp, Sliders, CheckCircle2, 
   ChevronRight, ChevronLeft, Copy, Check, Download, Layers, ShieldCheck, 
   Wind, Droplets, Thermometer, Users, Terminal, ArrowRight, Zap, 
-  RefreshCw, Send, Search, ExternalLink, Code2, PlayCircle, Eye
+  RefreshCw, Send, Search, ExternalLink, Code2, PlayCircle, Eye,
+  HelpCircle, MessageSquare
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
@@ -14,6 +15,10 @@ import {
   generateStoryPlan,
   createDeterministicStoryPlan 
 } from '../../services/storyPlannerService';
+import { 
+  askPlaceQuestion, 
+  getSuggestedQuestions 
+} from '../../services/placeQAService';
 
 export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntelligence = null }) => {
   const { currentLocation, selectLocation, playNarration, stopAudio } = useApp();
@@ -28,6 +33,11 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
   const [futureYear, setFutureYear] = useState(2035);
   const [enablePrediction, setEnablePrediction] = useState(true);
   const [selectedFilterIds, setSelectedFilterIds] = useState(["vegetation", "urban_growth"]);
+
+  // Direct AI Q&A Answer State
+  const [aiDirectAnswer, setAiDirectAnswer] = useState(null);
+  const [isSpeakingAnswer, setIsSpeakingAnswer] = useState(false);
+  const suggestedQuestions = getSuggestedQuestions(selectedLocName);
 
   // Execution & Output States
   const [isGenerating, setIsGenerating] = useState(false);
@@ -44,6 +54,18 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
 
   // Pipeline Step Animation
   const [pipelineStep, setPipelineStep] = useState(6); // 1 to 6
+
+  const toggleNarrateAnswer = () => {
+    if (isSpeakingAnswer) {
+      if (typeof stopAudio === 'function') stopAudio();
+      setIsSpeakingAnswer(false);
+    } else if (aiDirectAnswer?.answer) {
+      setIsSpeakingAnswer(true);
+      if (typeof playNarration === 'function') {
+        playNarration(aiDirectAnswer.answer, selectedLocName);
+      }
+    }
+  };
 
   // Initialize with the default example on mount
   useEffect(() => {
@@ -72,18 +94,29 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
   const handleGeneratePlan = async (customQuery = null) => {
     setIsGenerating(true);
     setIsPlaying(false);
+    if (typeof stopAudio === 'function') stopAudio();
+    setIsSpeakingAnswer(false);
     setCurrentSceneIdx(0);
     setSceneProgress(0);
+    setPipelineStep(2); // Fast NLP processing
 
-    // Simulate animated pipeline progression
-    setPipelineStep(1); // User Input
-    setTimeout(() => setPipelineStep(2), 250); // NLP Processing
-    setTimeout(() => setPipelineStep(3), 500); // LLM Intent Extraction
-    setTimeout(() => setPipelineStep(4), 750); // Filter Identification
-    setTimeout(() => setPipelineStep(5), 1000); // Data Selection & JSON Plan
+    const q = customQuery !== null ? customQuery : (inputMode === "nlp" ? nlpQuery : "");
+    if (customQuery !== null) {
+      setNlpQuery(customQuery);
+    }
+
+    // 1. Instant Data-Grounded Answer to ANY user question (< 50ms)
+    askPlaceQuestion({
+      query: q,
+      location: { name: selectedLocName },
+      telemetry: {}
+    }).then(ans => {
+      setAiDirectAnswer(ans);
+    }).catch(err => {
+      console.warn("Direct QA warning:", err);
+    });
 
     try {
-      const q = customQuery !== null ? customQuery : (inputMode === "nlp" ? nlpQuery : "");
       const params = {
         query: q,
         filters: inputMode === "filters" ? selectedFilterIds : [],
@@ -94,6 +127,7 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
         language: "English"
       };
 
+      setPipelineStep(4);
       const plan = await generateStoryPlan(params);
       setStoryPlan(plan);
       setPipelineStep(6); // Playback Ready
@@ -104,7 +138,6 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
       }
       if (plan.location) {
         setSelectedLocName(plan.location);
-        // Find matching in local database if available
         const matched = allLocations.find(l => l.name.toLowerCase() === plan.location.toLowerCase());
         if (matched) selectLocation(matched.id);
       }
@@ -120,9 +153,8 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
       }
     } catch (err) {
       console.error("Story Plan Generation error:", err);
-      // Fallback
       const fallback = createDeterministicStoryPlan({
-        query: nlpQuery,
+        query: q || nlpQuery,
         location: selectedLocName,
         filters: selectedFilterIds,
         startYear,
@@ -315,21 +347,55 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
           </div>
         </div>
 
-        {/* Mode A: NLP Search Bar */}
+        {/* Mode A: NLP Search & Question Bar */}
         {inputMode === "nlp" && (
           <div className="space-y-4">
+            {/* Target Location Bar & Prompt Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-zinc-300 flex items-center gap-1.5">
+                  <MessageSquare className="w-3.5 h-3.5 text-cyan-400" />
+                  Ask Any Question or Story Prompt:
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-zinc-500">Targeting:</span>
+                <select
+                  value={selectedLocName}
+                  onChange={(e) => {
+                    setSelectedLocName(e.target.value);
+                    const matched = allLocations.find(l => l.name === e.target.value);
+                    if (matched) selectLocation(matched.id);
+                  }}
+                  className="rounded-lg bg-zinc-950 border border-zinc-700/80 px-2.5 py-1 text-xs text-cyan-300 font-semibold focus:border-cyan-400"
+                >
+                  {allLocations.map(l => (
+                    <option key={l.id} value={l.name}>{l.name} ({l.type || 'District'})</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
             <div className="relative">
               <textarea
                 rows={2}
                 value={nlpQuery}
                 onChange={(e) => setNlpQuery(e.target.value)}
-                placeholder="Ask in natural language, e.g. Create a story about Kolhapur showing vegetation and urban growth from 2015 to 2026 and predict 2035..."
-                className="w-full rounded-2xl bg-zinc-950/80 border border-zinc-700/80 hover:border-cyan-500/60 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 px-4 py-3.5 pr-32 text-sm text-zinc-100 placeholder-zinc-500 transition-all resize-none shadow-inner"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    if (nlpQuery.trim() && !isGenerating) {
+                      handleGeneratePlan(nlpQuery);
+                    }
+                  }
+                }}
+                placeholder={`Ask anything about ${selectedLocName} (e.g. "What happened to water bodies?", "Is AQI worsening?", "Predict 2035 green cover") or request an automated story...`}
+                className="w-full rounded-2xl bg-zinc-950/80 border border-zinc-700/80 hover:border-cyan-500/60 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20 px-4 py-3.5 pr-36 text-sm text-zinc-100 placeholder-zinc-500 transition-all resize-none shadow-inner"
               />
               <button
                 onClick={() => handleGeneratePlan(nlpQuery)}
                 disabled={isGenerating || !nlpQuery.trim()}
-                className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs transition-all shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 disabled:opacity-50"
+                className="absolute right-3 top-1/2 -translate-y-1/2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs transition-all shadow-lg shadow-cyan-500/20 flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
               >
                 {isGenerating ? (
                   <>
@@ -339,17 +405,91 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                 ) : (
                   <>
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Plan Story</span>
+                    <span>Ask &amp; Plan</span>
                   </>
                 )}
               </button>
             </div>
 
-            {/* Quick Sample Prompts */}
+            {/* Suggested Questions for this location */}
             <div className="space-y-2">
-              <div className="text-xs text-zinc-400 flex items-center gap-1.5 font-medium">
+              <div className="text-xs text-zinc-400 flex items-center gap-1.5 font-semibold">
+                <HelpCircle className="w-3.5 h-3.5 text-amber-400" />
+                <span>Suggested Questions for {selectedLocName} (click any for instant factual answer):</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {suggestedQuestions.map((qText, qIdx) => (
+                  <button
+                    key={qIdx}
+                    onClick={() => {
+                      setNlpQuery(qText);
+                      handleGeneratePlan(qText);
+                    }}
+                    className="text-left px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-500/60 hover:bg-zinc-800/80 text-xs text-zinc-300 hover:text-white transition-all cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>{qText}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Direct Grounded Answer Card */}
+            {aiDirectAnswer && (
+              <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-cyan-950/30 via-zinc-900 to-zinc-950 border border-cyan-500/30 shadow-xl space-y-3 animate-in fade-in duration-300">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xl">{aiDirectAnswer.icon || "💡"}</span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white tracking-wide">{aiDirectAnswer.topic || "Geospatial Intelligence"}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-mono text-cyan-300">
+                          {aiDirectAnswer.badge || "Verified Telemetry"}
+                        </span>
+                      </div>
+                      <span className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <Zap className="w-2.5 h-2.5" /> Direct Telemetry Answer (<span className="text-emerald-300">&lt; 0.05s</span>)
+                      </span>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={toggleNarrateAnswer}
+                    className="px-3 py-1.5 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/40 text-cyan-300 text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    {isSpeakingAnswer ? <Pause className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                    <span>{isSpeakingAnswer ? "Pause Voice" : "Listen to Answer"}</span>
+                  </button>
+                </div>
+
+                <p className="text-xs sm:text-sm text-zinc-200 leading-relaxed font-sans">
+                  {aiDirectAnswer.answer}
+                </p>
+
+                {aiDirectAnswer.metrics && aiDirectAnswer.metrics.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1">
+                    {aiDirectAnswer.metrics.map((m, mIdx) => {
+                      const colorClass = 
+                        m.status === "good" ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/10" :
+                        m.status === "warning" ? "text-amber-400 border-amber-500/30 bg-amber-500/10" :
+                        m.status === "danger" ? "text-rose-400 border-rose-500/30 bg-rose-500/10" :
+                        "text-cyan-400 border-cyan-500/30 bg-cyan-500/10";
+                      return (
+                        <div key={mIdx} className={`p-2.5 rounded-xl border ${colorClass} flex flex-col`}>
+                          <span className="text-[10px] text-zinc-400 uppercase tracking-wider">{m.label}</span>
+                          <span className="text-xs sm:text-sm font-bold mt-0.5">{m.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Quick Sample Prompts (Cinematic Full Story Templates) */}
+            <div className="space-y-2 pt-2 border-t border-zinc-800/60">
+              <div className="text-[11px] text-zinc-400 flex items-center gap-1.5 font-medium">
                 <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Try prompt templates:</span>
+                <span>Or run a full multi-filter cinematic story scenario:</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {SAMPLE_NLP_QUERIES.map((sample, sIdx) => (
@@ -359,7 +499,7 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                       setNlpQuery(sample);
                       handleGeneratePlan(sample);
                     }}
-                    className="text-left px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-500/40 hover:bg-zinc-800/60 text-xs text-zinc-300 hover:text-white transition-all max-w-xl truncate"
+                    className="text-left px-3 py-1.5 rounded-xl bg-zinc-950 border border-zinc-800 hover:border-cyan-500/40 hover:bg-zinc-800/60 text-xs text-zinc-400 hover:text-white transition-all max-w-xl truncate cursor-pointer"
                   >
                     "{sample}"
                   </button>

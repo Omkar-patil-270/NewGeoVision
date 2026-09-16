@@ -542,65 +542,42 @@ def _data_aware_fallback_section(sec: str, location_name: str, level_label: Opti
 
 async def _generate_llm_text(prompt: str) -> Optional[str]:
     """
-    Multi-provider LLM caller with robust 14s timeout: checks Groq, Gemini, and OpenAI asynchronously.
+    Ultra-fast LLM text generator: prioritizes Groq LLaMA-3.1-8b-instant (850 tokens/sec)
+    with strict 2.0s timeout to guarantee instant response times under 3-5 seconds.
     """
-    # 1. Groq API (Primary - ultra-fast inference at 850+ tokens/sec)
     groq_key = os.getenv("GROQ_API_KEY", "").strip()
     if groq_key:
-        for model_name in ["llama-3.1-8b-instant", "llama3-8b-8192", "llama-3.3-70b-versatile"]:
-            try:
-                headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-                payload = {
-                    "model": model_name,
-                    "messages": [{"role": "user", "content": prompt}],
-                    "temperature": 0.65,
-                    "max_tokens": 400,
-                }
-                async with httpx.AsyncClient(timeout=5.0) as client:
-                    res = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-                    if res.status_code == 200:
-                        choices = res.json().get("choices", [])
-                        if choices:
-                            content = choices[0].get("message", {}).get("content", "").strip()
-                            if content:
-                                return content
-            except Exception as e:
-                print(f"Groq API error with {model_name}: {e}")
-
-    # 2. Google Gemini API (if configured)
-    gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
-    if gemini_key:
         try:
-            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
-            payload = {"contents": [{"parts": [{"text": prompt}]}]}
-            async with httpx.AsyncClient(timeout=14.0) as client:
-                res = await client.post(url, json=payload)
+            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.1-8b-instant",
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.5,
+                "max_tokens": 300,
+            }
+            async with httpx.AsyncClient(timeout=2.0) as client:
+                res = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
                 if res.status_code == 200:
-                    candidates = res.json().get("candidates", [])
-                    if candidates:
-                        content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
+                    choices = res.json().get("choices", [])
+                    if choices:
+                        content = choices[0].get("message", {}).get("content", "").strip()
                         if content:
                             return content
         except Exception:
             pass
 
-    # 3. OpenAI API (if configured)
-    openai_key = os.getenv("OPENAI_API_KEY", "").strip()
-    if openai_key:
+    # Quick Gemini fallback if configured with fast 2.0s timeout
+    gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if gemini_key:
         try:
-            headers = {"Authorization": f"Bearer {openai_key}", "Content-Type": "application/json"}
-            payload = {
-                "model": "gpt-4o-mini",
-                "messages": [{"role": "user", "content": prompt}],
-                "temperature": 0.6,
-                "max_tokens": 500,
-            }
-            async with httpx.AsyncClient(timeout=14.0) as client:
-                res = await client.post("https://api.openai.com/v1/chat/completions", headers=headers, json=payload)
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+            payload = {"contents": [{"parts": [{"text": prompt}]}]}
+            async with httpx.AsyncClient(timeout=2.0) as client:
+                res = await client.post(url, json=payload)
                 if res.status_code == 200:
-                    choices = res.json().get("choices", [])
-                    if choices:
-                        content = choices[0].get("message", {}).get("content", "").strip()
+                    candidates = res.json().get("candidates", [])
+                    if candidates:
+                        content = candidates[0].get("content", {}).get("parts", [{}])[0].get("text", "").strip()
                         if content:
                             return content
         except Exception:
@@ -1189,30 +1166,29 @@ async def generate_story_plan(req: StoryPlanRequest):
             "Extract parameters and produce the structured JSON Story Plan now."
         )
 
-        for model_name in ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"]:
-            try:
-                headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
-                payload = {
-                    "model": model_name,
-                    "messages": [
-                        {"role": "system", "content": system_instruction},
-                        {"role": "user", "content": user_content},
-                    ],
-                    "response_format": {"type": "json_object"},
-                    "temperature": 0.3,
-                    "max_tokens": 1200,
-                }
-                async with httpx.AsyncClient(timeout=10.0) as client_http:
-                    res = await client_http.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
-                    if res.status_code == 200:
-                        content = res.json().get("choices", [])[0].get("message", {}).get("content", "").strip()
-                        plan_data = json.loads(content)
-                        if "location" in plan_data and "scenes" in plan_data and isinstance(plan_data["scenes"], list):
-                            plan_data["generator"] = f"groq_{model_name}"
-                            plan_data["language"] = req.language or "English"
-                            return plan_data
-            except Exception as e:
-                print(f"Groq Story Plan generation error with {model_name}: {e}")
+        try:
+            headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
+            payload = {
+                "model": "llama-3.1-8b-instant",
+                "messages": [
+                    {"role": "system", "content": system_instruction},
+                    {"role": "user", "content": user_content},
+                ],
+                "response_format": {"type": "json_object"},
+                "temperature": 0.2,
+                "max_tokens": 800,
+            }
+            async with httpx.AsyncClient(timeout=2.5) as client_http:
+                res = await client_http.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+                if res.status_code == 200:
+                    content = res.json().get("choices", [])[0].get("message", {}).get("content", "").strip()
+                    plan_data = json.loads(content)
+                    if "location" in plan_data and "scenes" in plan_data and isinstance(plan_data["scenes"], list):
+                        plan_data["generator"] = "groq_llama-3.1-8b-instant"
+                        plan_data["language"] = req.language or "English"
+                        return plan_data
+        except Exception as e:
+            print(f"Groq Story Plan generation error: {e}")
 
     # Fallback to deterministic NLP extraction & story planner
     return _fallback_story_plan(req)

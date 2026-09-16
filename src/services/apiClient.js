@@ -265,4 +265,33 @@ export const apiClient = {
       return null;
     }
   },
+
+  /**
+   * Filter-Wise NLP + LLM Story Plan Generation
+   * Converts natural language queries or filter selections into a structured JSON Story Plan
+   */
+  async generateStoryPlan({ query = "", filters = [], location = "", startYear = null, endYear = null, futureYear = null, language = "English" } = {}) {
+    try {
+      const payload = {
+        query,
+        filters,
+        location,
+        start_year: startYear ? parseInt(startYear) : null,
+        end_year: endYear ? parseInt(endYear) : null,
+        future_year: futureYear ? parseInt(futureYear) : null,
+        language
+      };
+      const res = await fetch(`${API_BASE_URL}/api/story/generate-plan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn("apiClient.generateStoryPlan backend fetch warning:", err);
+    }
+    return null;
+  },
 };

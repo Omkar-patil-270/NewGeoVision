@@ -3,13 +3,14 @@ import {
   Target, Database, Brain, MessageSquare, Globe, Sparkles, 
   CheckCircle2, X, ChevronRight, Cpu, Layers, ShieldCheck, 
   ArrowRight, ExternalLink, Zap, Network, Sliders, Eye,
-  Clock, GitCompare, Activity, FileText
+  Clock, GitCompare, Activity, FileText, Table
 } from 'lucide-react';
+import { FORECASTING_PLAN_MATRIX } from '../../data/forecasts';
 
 export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
-  const [activeTab, setActiveTab] = useState('objectives'); // 'objectives' | 'pipeline' | 'technologies'
+  const [activeTab, setActiveTab] = useState('objectives'); // 'objectives' | 'forecasting' | 'pipeline' | 'technologies'
 
   // The 7 Improved Academic Objectives
   const OBJECTIVES = [
@@ -31,19 +32,20 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
     },
     {
       num: '02',
-      title: 'ML Models for Change Detection & Forecasting',
-      objectiveText: 'To develop machine-learning models for geospatial change detection, spatial trend analysis, anomaly detection, and time-series forecasting.',
+      title: 'ML Models for Change Detection & Spatio-Temporal Forecasting',
+      objectiveText: 'To develop machine-learning models for geospatial change detection, spatial trend analysis, anomaly detection, and time-series forecasting using a defensible model-to-data-structure mapping.',
       icon: Brain,
       color: 'border-purple-500/40 bg-purple-950/20 text-purple-400',
       accentBg: 'bg-purple-500/10 text-purple-400 border-purple-500/30',
       status: 'Implemented & Validated',
-      techStack: ['SARIMA / ARIMA(1,1,0)', 'Random Forest Regressor', 'U-Net CNN Segmentation', 'Spectral Difference Indexing', 'Moving Averages'],
+      techStack: ['SARIMA', 'XGBoost Regression', 'SARIMA + XGBoost Hybrid', 'U-Net CNN Segmentation', 'GHSL / Sentinel-2 / ERA5 / OpenAQ'],
       deliverables: [
-        'Pixel-level change detection algorithms mapping urban expansion (+21.4%), vegetation loss (-12.8%), and water body fluctuations.',
-        'Multi-step demographic and environmental forecasting for 2015–2035 with calibrated statistical confidence intervals.',
-        'Cross-validation benchmarking reporting R² goodness-of-fit, Mean Absolute Error (MAE), and Root Mean Squared Error (RMSE).'
+        'Population: SARIMA model on World Bank / Census population series (handles temporal trend + generational seasonality).',
+        'Urban Growth, Vegetation (NDVI), and AQI: XGBoost Regressors capturing non-linear multi-feature interactions.',
+        'Temperature & Rainfall: 2-stage SARIMA + XGBoost Hybrid stacking astronomical seasonal baseline with atmospheric residuals.',
+        'Composite Environmental Risk: Multi-sensor XGBoost Classifier/Regressor integrating Sentinel-2, ERA5, GPM, and OpenAQ.'
       ],
-      academicValue: 'Overcomes non-stationary environmental drift through regularized ensemble learning and multi-band spectral difference analysis.'
+      academicValue: 'Replaces generic ML with a defensible paradigm: models strictly match data structures (time+seasonality vs multi-feature interaction).'
     },
     {
       num: '03',
@@ -236,23 +238,35 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 px-6 pt-3 pb-2 border-b border-slate-800 bg-[#060B18]">
+        {/* Navigation Tabs (4 TABS) */}
+        <div className="flex items-center gap-2 px-6 pt-3 pb-2 border-b border-slate-800 bg-[#060B18] overflow-x-auto no-scrollbar">
           <button
             onClick={() => setActiveTab('objectives')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'objectives'
                 ? 'bg-cyan-500 text-black shadow-md shadow-cyan-500/20 font-bold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>7 Core Objectives (7/7 Implemented)</span>
+            <span>7 Core Objectives (7/7)</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('forecasting')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
+              activeTab === 'forecasting'
+                ? 'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md shadow-purple-500/25 font-bold'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+            }`}
+          >
+            <Brain className="w-4 h-4 text-purple-300" />
+            <span>SARIMA + XGBoost Plan</span>
           </button>
 
           <button
             onClick={() => setActiveTab('pipeline')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'pipeline'
                 ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20 font-bold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
@@ -264,13 +278,13 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
 
           <button
             onClick={() => setActiveTab('technologies')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shrink-0 cursor-pointer ${
               activeTab === 'technologies'
-                ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-md shadow-purple-500/20 font-bold'
+                ? 'bg-gradient-to-r from-teal-500 to-emerald-600 text-white shadow-md shadow-teal-500/20 font-bold'
                 : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-purple-300" />
+            <Sparkles className="w-4 h-4 text-teal-300" />
             <span>Next-Gen Technologies (2026/2027)</span>
           </button>
         </div>
@@ -301,7 +315,6 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
               {/* 7 Detailed Objective Cards */}
               <div className="space-y-4">
                 {OBJECTIVES.map((obj) => {
-                  const IconComp = obj.icon;
                   return (
                     <div 
                       key={obj.num}
@@ -361,7 +374,146 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          {/* ================= TAB 2: PIPELINE & UI PHILOSOPHY ================= */}
+          {/* ================= TAB 2: SARIMA + XGBOOST FORECASTING PLAN ================= */}
+          {activeTab === 'forecasting' && (
+            <div className="space-y-6 animate-in fade-in duration-150">
+              
+              {/* Executive Methodology Rationale Banner */}
+              <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-950/50 via-indigo-950/40 to-slate-900 border border-purple-500/40 text-xs space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-purple-300 text-sm flex items-center gap-2">
+                    <Brain className="w-5 h-5 text-purple-400" />
+                    <span>Exact Model-to-Data-Structure Forecasting Framework</span>
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 font-mono text-[10px] font-bold">
+                    Defensible Hybrid Architecture
+                  </span>
+                </div>
+                
+                <p className="text-slate-200 leading-relaxed text-xs">
+                  <strong className="text-white">Core Principle:</strong> Don't use ML just for the sake of saying "we used ML." The machine learning model must strictly match the underlying physical data structure. For GeoVisionAI, this <strong>SARIMA + XGBoost hybrid approach</strong> is mathematically and empirically far more defensible than using a single model for everything.
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-[11px] font-mono">
+                  <div className="p-3 rounded-xl bg-black/50 border border-purple-500/30">
+                    <span className="font-bold text-purple-300 block mb-1">📈 SARIMA Rationale:</span>
+                    <span className="text-slate-300">Optimal when the primary pattern is univariate temporal trend and seasonal periodicity (e.g. annual census inertia, periodic baseline climate cycles).</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-black/50 border border-indigo-500/30">
+                    <span className="font-bold text-indigo-300 block mb-1">🌳 XGBoost Rationale:</span>
+                    <span className="text-slate-300">Optimal when prediction depends on many diverse, non-linear physical features simultaneously (e.g. multi-spectral bands, ambient gases, built-up sprawl).</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* The Architectural Pipeline Diagram */}
+              <div className="p-5 rounded-2xl bg-[#081026] border border-slate-800 space-y-4">
+                <div className="text-xs font-mono font-bold text-slate-400 uppercase flex items-center gap-2">
+                  <Network className="w-4 h-4 text-purple-400" />
+                  <span>The 4 Structured ML Forecasting Pipelines</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+                  
+                  {/* Pipeline 1: Population */}
+                  <div className="p-4 rounded-2xl bg-black/60 border border-sky-500/30 flex flex-col items-center text-center space-y-2">
+                    <span className="font-bold text-sky-400 text-[11px] uppercase">1. Population</span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="px-3 py-1 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold">
+                      SARIMA
+                    </span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="text-white font-bold text-[11px]">Future Population</span>
+                  </div>
+
+                  {/* Pipeline 2: Urban / Veg / AQI */}
+                  <div className="p-4 rounded-2xl bg-black/60 border border-purple-500/30 flex flex-col items-center text-center space-y-2">
+                    <span className="font-bold text-purple-400 text-[11px] uppercase">2. Urban / Veg / AQI</span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="px-3 py-1 rounded-xl bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold">
+                      XGBoost Regressor
+                    </span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="text-white font-bold text-[11px]">Future Prediction</span>
+                  </div>
+
+                  {/* Pipeline 3: Temp / Rainfall */}
+                  <div className="p-4 rounded-2xl bg-black/60 border border-amber-500/30 flex flex-col items-center text-center space-y-2">
+                    <span className="font-bold text-amber-400 text-[11px] uppercase">3. Temp / Rainfall</span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="px-3 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+                      SARIMA + XGBoost
+                    </span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="text-white font-bold text-[11px]">Hybrid Prediction</span>
+                  </div>
+
+                  {/* Pipeline 4: Environmental Risk */}
+                  <div className="p-4 rounded-2xl bg-black/60 border border-rose-500/30 flex flex-col items-center text-center space-y-2">
+                    <span className="font-bold text-rose-400 text-[11px] uppercase">4. All Indicators</span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="px-3 py-1 rounded-xl bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">
+                      XGBoost (Classif/Reg)
+                    </span>
+                    <span className="text-slate-500">↓</span>
+                    <span className="text-white font-bold text-[11px]">Environmental Risk</span>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* Exact Forecasting Plan Matrix Table */}
+              <div className="space-y-3">
+                <div className="text-xs font-mono font-bold text-slate-400 uppercase flex items-center justify-between">
+                  <span>Parameter-by-Parameter Model &amp; Dataset Matrix</span>
+                  <span className="text-emerald-400 text-[11px]">7 Parameters Validated</span>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-[#081026]">
+                  <table className="w-full text-left text-xs font-mono">
+                    <thead className="bg-[#030612] text-slate-400 border-b border-slate-800 text-[11px] uppercase">
+                      <tr>
+                        <th className="py-3 px-4">Forecasting Parameter</th>
+                        <th className="py-3 px-4">Model</th>
+                        <th className="py-3 px-4">Dataset</th>
+                        <th className="py-3 px-4">Main Input Features</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/60 text-slate-300">
+                      {FORECASTING_PLAN_MATRIX.map((row, idx) => (
+                        <tr key={idx} className="hover:bg-slate-900/60 transition-colors">
+                          <td className="py-3 px-4 font-bold text-white whitespace-nowrap flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                            <span>{row.parameter}</span>
+                          </td>
+                          <td className="py-3 px-4 whitespace-nowrap">
+                            <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border ${
+                              row.model.includes('+') 
+                                ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+                                : row.model.includes('SARIMA')
+                                ? 'bg-sky-500/20 text-sky-300 border-sky-500/40'
+                                : 'bg-purple-500/20 text-purple-300 border-purple-500/40'
+                            }`}>
+                              {row.model}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-cyan-300/90 whitespace-nowrap">
+                            {row.dataset}
+                          </td>
+                          <td className="py-3 px-4 text-slate-400">
+                            {row.mainInput}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* ================= TAB 3: PIPELINE & UI PHILOSOPHY ================= */}
           {activeTab === 'pipeline' && (
             <div className="space-y-5 animate-in fade-in duration-150">
               
@@ -462,7 +614,7 @@ export const ProjectObjectivesModal = ({ isOpen, onClose }) => {
             </div>
           )}
 
-          {/* ================= TAB 3: NEXT-GEN ADVANCED TECHNOLOGIES ================= */}
+          {/* ================= TAB 4: NEXT-GEN ADVANCED TECHNOLOGIES ================= */}
           {activeTab === 'technologies' && (
             <div className="space-y-5 animate-in fade-in duration-150">
               

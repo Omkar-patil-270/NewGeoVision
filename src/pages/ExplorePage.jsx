@@ -3,9 +3,7 @@ import { useApp } from '../context/AppContext';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { SatelliteTimeMachine } from '../components/visual/SatelliteTimeMachine';
 import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
-import { WhatIfSimulator } from '../components/visual/WhatIfSimulator';
 import { AIGeoStoryCinematic } from '../components/visual/AIGeoStoryCinematic';
-import { DigitalTwin3DView } from '../components/visual/DigitalTwin3DView';
 import { locationService } from '../services/locationService';
 import { storyService } from '../services/storyService';
 import { predictionService } from '../services/predictionService';
@@ -44,6 +42,13 @@ export const ExplorePage = () => {
   const allLocations = locationService.getAllLocations();
   const weather = weatherService.getWeatherData(currentLocation.id);
   const aqi = airQualityService.getAQIData(currentLocation.id);
+
+  // Normalize active visual module to 4 core streamlined modules
+  useEffect(() => {
+    if (!["earth", "timemachine", "changedetection", "story"].includes(activeVisualModule)) {
+      setActiveVisualModule("earth");
+    }
+  }, [activeVisualModule, setActiveVisualModule]);
 
   // Fetch real Groq LLaMA-3.1 narrative for the selected city
   useEffect(() => {
@@ -114,15 +119,12 @@ export const ExplorePage = () => {
 
   const quickFlyList = ["Kolhapur", "Mumbai", "Pune", "Tokyo", "Paris", "New York", "London", "Cairo"];
 
-  // 7 Major Core Visual Modules
+  // 4 Core Streamlined Visual Modules (Simple, Fast, Intuitive)
   const VISUAL_MODULES = [
     { key: "earth", label: "01 — 🌍 3D Earth", icon: Globe },
     { key: "timemachine", label: "02 — 🛰️ Time Machine", icon: Clock },
     { key: "changedetection", label: "03 — 🔍 Change Detection", icon: GitCompare },
-    { key: "future", label: "05 — 🔮 Future Earth (2035)", icon: TrendingUp },
-    { key: "whatif", label: "06 — 🎛️ What-If Simulator", icon: Sliders },
-    { key: "digitaltwin", label: "🏙️ 3D Digital Twin", icon: Building },
-    { key: "story", label: "07 — 🎬 AI GeoStory", icon: Play }
+    { key: "story", label: "04 — 🎬 AI GeoStory", icon: Play }
   ];
 
   return (
@@ -194,46 +196,14 @@ export const ExplorePage = () => {
       {/* ================= 2. MAIN 75–80% VISUAL CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* VIEW 1: 3D Earth / Cesium / WebGL (Earth Mode & Future Earth Mode) */}
-        {(activeVisualModule === "earth" || activeVisualModule === "future") && (
+        {/* VIEW 1: 3D Earth / Cesium / WebGL */}
+        {activeVisualModule === "earth" && (
           <div className="absolute inset-0 w-full h-full z-0">
             <Earth3DViewer 
               fullBleed={true}
               showInternalPanel={false}
               onLocationSelect={(loc) => selectLocation(loc.id)}
             />
-
-            {/* Future Earth 2035 Horizon Overlay HUD */}
-            {activeVisualModule === "future" && (
-              <div className="absolute top-4 left-4 z-20 max-w-md p-4 rounded-3xl bg-black/85 backdrop-blur-xl border-2 border-purple-500/60 shadow-2xl text-xs space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="font-mono font-bold text-purple-400 uppercase text-[11px] flex items-center gap-1.5">
-                    <TrendingUp className="w-4 h-4 text-purple-400" />
-                    <span>05 — Future Earth 2035 Projection</span>
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold border border-purple-500/40">
-                    ML Spatio-Temporal Model
-                  </span>
-                </div>
-                <p className="text-slate-300 text-xs leading-relaxed">
-                  Projected demographic expansion to <strong>4.90M citizens</strong> across {currentLocation.name}. Overlaid thermal contour highlights a +2.1°C urban heat island ring along primary transport arteries.
-                </p>
-                <div className="grid grid-cols-3 gap-1.5 pt-1 font-mono text-[10px]">
-                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
-                    <div className="text-slate-400">Urban Sprawl</div>
-                    <div className="text-sm font-bold text-rose-400 mt-0.5">+38.4%</div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
-                    <div className="text-slate-400">Canopy Deficit</div>
-                    <div className="text-sm font-bold text-amber-400 mt-0.5">-18.2%</div>
-                  </div>
-                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
-                    <div className="text-slate-400">Water Stress</div>
-                    <div className="text-sm font-bold text-rose-400 mt-0.5">High</div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -269,38 +239,7 @@ export const ExplorePage = () => {
           </div>
         )}
 
-        {/* VIEW 4: What-If Earth Simulator (Interactive Parameter Sliders) */}
-        {activeVisualModule === "whatif" && (
-          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
-            <Earth3DViewer 
-              fullBleed={true}
-              showInternalPanel={false}
-              onLocationSelect={(loc) => selectLocation(loc.id)}
-            />
-            
-            {/* Floating Simulator Controls Bar */}
-            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
-              <WhatIfSimulator
-                currentLocation={currentLocation}
-                onApplyScenarioOverlay={(scenario) => {
-                  console.log("Scenario applied:", scenario);
-                }}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* VIEW 5: 3D City Digital Twin View */}
-        {activeVisualModule === "digitaltwin" && (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <DigitalTwin3DView
-              currentLocation={currentLocation}
-              onClose={() => setActiveVisualModule("earth")}
-            />
-          </div>
-        )}
-
-        {/* VIEW 6: AI GeoStory Cinematic Studio (8 Scenes) */}
+        {/* VIEW 4: AI GeoStory Cinematic Studio */}
         {activeVisualModule === "story" && (
           <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
             <Earth3DViewer 
@@ -309,7 +248,7 @@ export const ExplorePage = () => {
               onLocationSelect={(loc) => selectLocation(loc.id)}
             />
 
-            {/* Floating 8-Scene Cinematic Player */}
+            {/* Floating Cinematic Player */}
             <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
               <AIGeoStoryCinematic
                 currentLocation={currentLocation}

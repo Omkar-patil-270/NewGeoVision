@@ -34,14 +34,13 @@ export const AppProvider = ({ children }) => {
     tourism: 0.9,
     heritage: 0.85
   });
-  const [activeHeatmap, setActiveHeatmap] = useState("population");
+  const [activeHeatmap, setActiveHeatmap] = useState("none"); // "none" for crisp natural satellite view
 
   // Past → Present → Future Timeline (1900 - 2050)
   const [timeMachineYear, setTimeMachineYear] = useState(2025);
 
-  // Active Visual Core Module (7 Core Modules)
-  const [activeVisualModule, setActiveVisualModule] = useState("earth"); 
-  // 'earth' | 'timemachine' | 'changedetection' | 'future' | 'whatif' | 'digitaltwin' | 'story'
+  // Active Visual Core Module: 'earth' | 'timemachine' | 'changedetection' | 'story'
+  const [activeVisualModule, setActiveVisualModule] = useState("earth");
 
   // Compare Mode (Default: Kolhapur vs Pune)
   const [compareLocations, setCompareLocations] = useState(["kolhapur", "pune"]);
@@ -109,13 +108,30 @@ export const AppProvider = ({ children }) => {
     setSavedLocations(updated);
   };
 
-  const playNarration = (title, locationName, text, durationSec = 180, ambientType = "temple_bells") => {
+  const playNarration = (titleOrText, locationName, text, durationSec = 180, ambientType = "temple_bells") => {
+    let actualText = text;
+    let actualTitle = titleOrText;
+    let actualLocation = locationName;
+
+    // Single-argument invocation, e.g. playNarration("Story text here")
+    if (text === undefined && locationName === undefined && typeof titleOrText === 'string') {
+      actualText = titleOrText;
+      actualTitle = "Narrative Intelligence";
+      actualLocation = currentLocation?.name || "Global";
+    } else if (!actualText && typeof titleOrText === 'string') {
+      actualText = titleOrText;
+    }
+
+    if (!actualText || typeof actualText !== 'string') {
+      actualText = `${currentLocation?.name || "This location"} environmental telemetry and geospatial observations.`;
+    }
+
     setAudioState(prev => ({
       ...prev,
-      title: title || "Location Echo",
-      location: locationName || currentLocation.name
+      title: actualTitle || "Location Echo",
+      location: actualLocation || currentLocation?.name || "Global"
     }));
-    globalAudioEngine.playStory(text, durationSec, ambientType);
+    globalAudioEngine.playStory(actualText, durationSec, ambientType);
   };
 
   const toggleLayer = (layerId) => {

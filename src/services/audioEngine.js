@@ -99,6 +99,11 @@ class AudioEngine {
   playStory(storyText, durationSeconds = 180, ambientType = "temple_bells", onStateChange) {
     if (onStateChange) this.subscribe(onStateChange);
 
+    if (!storyText || typeof storyText !== 'string') {
+      console.warn("audioEngine.playStory: Received empty or invalid storyText", storyText);
+      return;
+    }
+
     this.currentText = storyText;
     this.duration = durationSeconds;
     this.progress = 0;

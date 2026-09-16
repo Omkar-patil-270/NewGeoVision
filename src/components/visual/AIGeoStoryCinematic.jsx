@@ -103,7 +103,7 @@ export const AIGeoStoryCinematic = ({
   // Audio narration on scene change
   useEffect(() => {
     if (isPlaying && currentScene?.narration) {
-      playNarration(currentScene.narration);
+      playNarration(currentScene.title || "Scene Narration", currentLocation?.name || "Global", currentScene.narration);
     }
   }, [currentSceneIdx, isPlaying]);
 

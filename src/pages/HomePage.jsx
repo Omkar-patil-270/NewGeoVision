@@ -4,12 +4,13 @@ import { EarthHero3D } from '../components/home/EarthHero3D';
 import { SoundToggle } from '../components/common/SoundToggle';
 import { GlobalSearchExperience } from '../components/home/GlobalSearchExperience';
 import { 
-  Compass, Sparkles, ArrowRight
+  Compass, Sparkles, ArrowRight, Target
 } from 'lucide-react';
 
 export const HomePage = () => {
   const { 
-    setCurrentPage 
+    setCurrentPage,
+    setObjectivesModalOpen
   } = useApp();
 
   return (
@@ -83,11 +84,11 @@ export const HomePage = () => {
           />
         </div>
 
-        {/* Dual Primary Action Buttons with Electric Blue Glow */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mt-1">
+        {/* Action Buttons with Electric Blue Glow & Academic Scope */}
+        <div className="flex flex-wrap items-center justify-center gap-3 mt-1">
           <button
             onClick={() => setCurrentPage('explore')}
-            className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-400 hover:from-blue-500 hover:to-cyan-300 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_45px_rgba(6,182,212,0.65)] hover:scale-[1.03] transition-all cursor-pointer"
+            className="px-7 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-400 hover:from-blue-500 hover:to-cyan-300 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 shadow-[0_0_30px_rgba(6,182,212,0.4)] hover:shadow-[0_0_45px_rgba(6,182,212,0.65)] hover:scale-[1.03] transition-all cursor-pointer"
           >
             <Compass className="w-4 h-4" />
             <span>EXPLORE THE WORLD MAP</span>
@@ -96,10 +97,19 @@ export const HomePage = () => {
 
           <button
             onClick={() => setCurrentPage('story')}
-            className="px-8 py-3.5 rounded-2xl bg-black/50 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2.5 border border-white/20 hover:border-cyan-400/60 shadow-lg backdrop-blur-md transition-all hover:scale-[1.03] cursor-pointer"
+            className="px-7 py-3 rounded-2xl bg-black/50 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/20 hover:border-cyan-400/60 shadow-lg backdrop-blur-md transition-all hover:scale-[1.03] cursor-pointer"
           >
             <Sparkles className="w-4 h-4 text-cyan-400" />
             <span>DISCOVER A STORY</span>
+          </button>
+
+          <button
+            onClick={() => setObjectivesModalOpen(true)}
+            className="px-6 py-3 rounded-2xl bg-cyan-950/60 hover:bg-cyan-900/80 text-cyan-300 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-cyan-500/40 shadow-lg shadow-cyan-500/10 backdrop-blur-md transition-all hover:scale-[1.03] cursor-pointer"
+            title="View RIT Capstone Objectives & Advanced Tech Roadmap"
+          >
+            <Target className="w-4 h-4 text-cyan-400" />
+            <span>PROJECT OBJECTIVES</span>
           </button>
         </div>
 

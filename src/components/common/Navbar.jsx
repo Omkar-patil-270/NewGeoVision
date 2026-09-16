@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
-  Globe, Search, Menu, X, Bookmark
+  Globe, Search, Menu, X, Bookmark, Target
 } from 'lucide-react';
 import { AnimatedLogo } from './AnimatedLogo';
 import { SoundToggle } from './SoundToggle';
@@ -10,7 +10,8 @@ export const Navbar = () => {
   const { 
     currentPage, 
     setCurrentPage, 
-    setSearchModalOpen 
+    setSearchModalOpen,
+    setObjectivesModalOpen
   } = useApp();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -89,6 +90,20 @@ export const Navbar = () => {
             }`}>⌘K</kbd>
           </button>
 
+          {/* RIT Project Objectives Button */}
+          <button
+            onClick={() => setObjectivesModalOpen(true)}
+            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-sm transition-all hover:scale-[1.03] shrink-0 whitespace-nowrap cursor-pointer ${
+              isDark 
+                ? 'border-cyan-500/40 bg-cyan-950/50 text-cyan-300 hover:bg-cyan-900/60 hover:border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.2)]' 
+                : 'border-orange-300 bg-orange-50 text-[#f95721] hover:bg-orange-100'
+            }`}
+            title="View Project Objectives & Architecture (RIT Capstone)"
+          >
+            <Target className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="font-bold">Objectives</span>
+          </button>
+
           {/* Bookmark pill badge */}
           <button
             onClick={() => handleNavClick('explore')}
@@ -102,7 +117,6 @@ export const Navbar = () => {
             <Bookmark className="w-3.5 h-3.5 fill-cyan-400 text-cyan-400" />
             <span className="text-[11px] font-bold font-mono">4</span>
           </button>
-
 
           {/* Mobile Menu Toggle */}
           <button
@@ -133,6 +147,16 @@ export const Navbar = () => {
               <span>{link.label}</span>
             </button>
           ))}
+          <button
+            onClick={() => {
+              setObjectivesModalOpen(true);
+              setMobileMenuOpen(false);
+            }}
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold text-[#f95721] bg-orange-50 border border-orange-200 mt-2"
+          >
+            <Target className="w-4 h-4 text-[#f95721]" />
+            <span>Project Objectives & Architecture</span>
+          </button>
         </div>
       )}
     </header>

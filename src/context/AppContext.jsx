@@ -48,6 +48,9 @@ export const AppProvider = ({ children }) => {
   // Omni-search modal
   const [searchModalOpen, setSearchModalOpen] = useState(false);
 
+  // Project Objectives & RIT Capstone Architecture Modal
+  const [objectivesModalOpen, setObjectivesModalOpen] = useState(false);
+
   // Saved Bookmarks from localStorage
   const [savedLocations, setSavedLocations] = useState(storageService.getSavedLocations());
 
@@ -146,6 +149,8 @@ export const AppProvider = ({ children }) => {
       setGeoAIChatOpen,
       searchModalOpen,
       setSearchModalOpen,
+      objectivesModalOpen,
+      setObjectivesModalOpen,
       savedLocations,
       toggleSaveLocation,
       audioState,

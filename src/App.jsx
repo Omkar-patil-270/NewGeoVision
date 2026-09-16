@@ -5,6 +5,7 @@ import { Footer } from './components/common/Footer';
 import { GlobalAudioPlayer } from './components/common/GlobalAudioPlayer';
 import { SearchModal } from './components/common/SearchModal';
 import { GeoAIAssistant } from './components/common/GeoAIAssistant';
+import { ProjectObjectivesModal } from './components/modals/ProjectObjectivesModal';
 
 // Pages
 import { HomePage } from './pages/HomePage';
@@ -20,7 +21,7 @@ import { PhotoDiscoveryPage } from './pages/PhotoDiscoveryPage';
 import { GlobePage } from './pages/GlobePage';
 
 export const App = () => {
-  const { currentPage } = useApp();
+  const { currentPage, objectivesModalOpen, setObjectivesModalOpen } = useApp();
 
   // Scroll to top on page navigation
   useEffect(() => {
@@ -73,6 +74,10 @@ export const App = () => {
       <GeoAIAssistant />
       <GlobalAudioPlayer />
       <SearchModal />
+      <ProjectObjectivesModal 
+        isOpen={objectivesModalOpen} 
+        onClose={() => setObjectivesModalOpen(false)} 
+      />
     </div>
   );
 };

@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
+import { SatelliteTimeMachine } from '../components/visual/SatelliteTimeMachine';
+import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
+import { WhatIfSimulator } from '../components/visual/WhatIfSimulator';
+import { AIGeoStoryCinematic } from '../components/visual/AIGeoStoryCinematic';
+import { DigitalTwin3DView } from '../components/visual/DigitalTwin3DView';
 import { locationService } from '../services/locationService';
 import { storyService } from '../services/storyService';
 import { predictionService } from '../services/predictionService';
@@ -10,7 +15,9 @@ import { apiClient } from '../services/apiClient';
 import { 
   Search, MapPin, Globe, Sparkles, Volume2, TrendingUp, 
   X, ChevronDown, ChevronUp, Compass, ArrowRight, Wind, 
-  Droplets, Thermometer, Users, BookOpen, Layers, CheckCircle2, Loader2
+  Droplets, Thermometer, Users, BookOpen, Layers, CheckCircle2, 
+  Loader2, Clock, GitCompare, Sliders, Play, Building, ShieldCheck, 
+  Maximize2, Eye, Activity
 } from 'lucide-react';
 
 export const ExplorePage = () => {
@@ -18,39 +25,30 @@ export const ExplorePage = () => {
     currentLocation, 
     selectLocation, 
     setCurrentPage, 
-    playNarration 
+    playNarration,
+    activeVisualModule,
+    setActiveVisualModule,
+    setGeoAIChatOpen
   } = useApp();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("story"); // 'story' | 'forecast' | 'telemetry'
-  const [activeStoryMode, setActiveStoryMode] = useState("story");
-  const [activeStoryStage, setActiveStoryStage] = useState("present");
-  const [forecastHorizon, setForecastHorizon] = useState("2030");
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [panelOpen, setPanelOpen] = useState(true); // Right-hand 20-25% panel
   const [isMinimized, setIsMinimized] = useState(false);
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
-  const [realCoverImage, setRealCoverImage] = useState(null);
+  const [currentYear, setCurrentYear] = useState(2026);
+  const [isPlayingTimelapse, setIsPlayingTimelapse] = useState(false);
+  const [evidenceModalData, setEvidenceModalData] = useState(null);
   const [realStoryText, setRealStoryText] = useState(null);
+  const [activeStoryStage, setActiveStoryStage] = useState("present");
 
   const allLocations = locationService.getAllLocations();
-  const storyModes = storyService.getStoryModes();
-  const currentStory = storyService.getLocationStory(currentLocation.id, activeStoryMode);
-  const forecastData = predictionService.getFutureScenarios(currentLocation.id, "2030");
   const weather = weatherService.getWeatherData(currentLocation.id);
   const aqi = airQualityService.getAQIData(currentLocation.id);
 
-  // Dynamically fetch Wikipedia images and real Groq story
+  // Fetch real Groq LLaMA-3.1 narrative for the selected city
   useEffect(() => {
     let active = true;
     if (currentLocation?.name) {
-      apiClient.getLocationImages(currentLocation.name, currentLocation.coordinates?.lat, currentLocation.coordinates?.lng, 2).then(res => {
-        if (active && res && res.images && res.images.length > 0) {
-          setRealCoverImage(res.images[0].url);
-        } else if (active) {
-          setRealCoverImage(null);
-        }
-      }).catch(() => {});
-
       apiClient.getStorySection({
         locationName: currentLocation.name,
         section: activeStoryStage,
@@ -66,13 +64,7 @@ export const ExplorePage = () => {
     return () => { active = false; };
   }, [currentLocation?.id, currentLocation?.name, activeStoryStage]);
 
-  // Tri-Temporal Analytical Story Framework (Past, Current, Future 2030)
-  const STORY_STAGES = [
-    { key: "past", label: "Past: How It Was", icon: "🏛️" },
-    { key: "present", label: "Current: How It Is", icon: "🧭" },
-    { key: "future", label: "Future 2030: How It Will Be", icon: "🔮" },
-  ];
-
+  // Handle location search submit
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -82,12 +74,9 @@ export const ExplorePage = () => {
       const found = locationService.searchLocations(q);
       if (found.length > 0) {
         selectLocation(found[0].id);
-        setPanelOpen(true);
-        setIsMinimized(false);
         setSearchQuery("");
         return;
       }
-      // Worldwide online geocoding fallback
       const onlineHits = await apiClient.searchLocations(q);
       if (onlineHits && onlineHits.length > 0) {
         const top = onlineHits[0];
@@ -107,8 +96,6 @@ export const ExplorePage = () => {
           description: top.display_name || `${safeName} location`
         });
         selectLocation(registered.id);
-        setPanelOpen(true);
-        setIsMinimized(false);
         setSearchQuery("");
       }
     } catch (err) {
@@ -122,482 +109,483 @@ export const ExplorePage = () => {
     const loc = allLocations.find(l => l.name.toLowerCase() === cityName.toLowerCase());
     if (loc) {
       selectLocation(loc.id);
-      setPanelOpen(true);
-      setIsMinimized(false);
-    }
-  };
-
-  const handleLocationSelectFromGlobe = (resolved) => {
-    if (resolved) {
-      selectLocation(resolved.id);
-      setPanelOpen(true);
-      setIsMinimized(false);
     }
   };
 
   const quickFlyList = ["Kolhapur", "Mumbai", "Pune", "Tokyo", "Paris", "New York", "London", "Cairo"];
 
+  // 7 Major Core Visual Modules
+  const VISUAL_MODULES = [
+    { key: "earth", label: "01 — 🌍 3D Earth", icon: Globe },
+    { key: "timemachine", label: "02 — 🛰️ Time Machine", icon: Clock },
+    { key: "changedetection", label: "03 — 🔍 Change Detection", icon: GitCompare },
+    { key: "future", label: "05 — 🔮 Future Earth (2035)", icon: TrendingUp },
+    { key: "whatif", label: "06 — 🎛️ What-If Simulator", icon: Sliders },
+    { key: "digitaltwin", label: "🏙️ 3D Digital Twin", icon: Building },
+    { key: "story", label: "07 — 🎬 AI GeoStory", icon: Play }
+  ];
+
   return (
-    <div className="h-[calc(100vh-65px)] w-full relative overflow-hidden bg-[#060B18]">
+    <div className="h-[calc(100vh-65px)] w-full relative overflow-hidden bg-[#030712] select-none text-white font-sans flex flex-col">
       
-      {/* 1. Full-Screen Google Earth 3D WebGL Viewer (100% Bleed) */}
-      <div className="absolute inset-0 w-full h-full z-0">
-        <Earth3DViewer 
-          fullBleed={true}
-          showInternalPanel={false}
-          onLocationSelect={handleLocationSelectFromGlobe}
-        />
-      </div>
-
-      {/* 2. Floating Google Earth Search Bar & Quick Fly Pills */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 w-full max-w-xl px-4 pointer-events-none">
-        <div className="pointer-events-auto flex flex-col items-center gap-2">
-          
-          {/* Floating Search Pill */}
-          <form 
-            onSubmit={handleSearchSubmit}
-            className="w-full flex items-center rounded-full bg-white/95 backdrop-blur-md border-2 border-orange-200/90 hover:border-sky-500 px-4 py-2 shadow-2xl transition-all focus-within:border-sky-500 focus-within:ring-4 focus-within:ring-sky-100/50"
-          >
-            <Search className="w-4 h-4 text-sky-600 mr-2.5 shrink-0" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search any place or coordinates on Earth..."
-              className="w-full bg-transparent text-xs sm:text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="px-4 py-1.5 rounded-full bg-[#0284C7] hover:bg-[#0369a1] text-white font-bold text-xs uppercase tracking-wider shadow-sm transition-all shrink-0 ml-2"
-            >
-              Reach
-            </button>
-          </form>
-
-          {/* Quick Fly Pills */}
-          <div className="flex flex-wrap items-center justify-center gap-1.5 text-xs">
-            {quickFlyList.map((c) => {
-              const isCurrent = currentLocation.name.toLowerCase() === c.toLowerCase();
-              return (
-                <button
-                  key={c}
-                  onClick={() => handleQuickFly(c)}
-                  className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-all shadow-md backdrop-blur-md ${
-                    isCurrent
-                      ? 'bg-orange-500 text-white border border-orange-400 font-bold scale-105'
-                      : 'bg-white/90 text-stone-800 border border-stone-200 hover:bg-white hover:text-sky-600'
-                  }`}
-                >
-                  {c}
-                </button>
-              );
-            })}
+      {/* ================= 1. TOP MODULE NAVIGATION BAR ================= */}
+      <div className="z-30 shrink-0 bg-[#040816]/95 backdrop-blur-md border-b border-slate-800/90 px-4 py-2 flex flex-wrap items-center justify-between gap-3 shadow-xl">
+        
+        {/* Left: Brand / Title */}
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span className="text-sm font-bold text-white tracking-wide">
+              {currentLocation.name}, <span className="text-slate-400 font-normal">{currentLocation.country}</span>
+            </span>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30">
+              [{currentLocation.coordinates?.lat?.toFixed(2)}°N, {currentLocation.coordinates?.lng?.toFixed(2)}°E]
+            </span>
           </div>
-
         </div>
-      </div>
 
-      {/* 3. Floating Reopen Pill (When Panel is Closed) */}
-      {!panelOpen && (
-        <div className="absolute bottom-6 right-6 z-30 pointer-events-auto">
+        {/* Center: The Visual Module Switcher Tabs (Matching the 7 Modules) */}
+        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
+          {VISUAL_MODULES.map((m) => {
+            const IconC = m.icon;
+            const isActive = activeVisualModule === m.key;
+            return (
+              <button
+                key={m.key}
+                onClick={() => setActiveVisualModule(m.key)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isActive
+                    ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/25 scale-102"
+                    : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800"
+                }`}
+              >
+                <IconC className="w-3.5 h-3.5" />
+                <span>{m.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right: AI Geo-Agent Trigger & Fly-to Search */}
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => { setPanelOpen(true); setIsMinimized(false); }}
-            className="px-5 py-3 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-orange-300 text-stone-900 font-bold text-xs flex items-center gap-2.5 shadow-2xl hover:bg-white hover:scale-105 transition-all"
+            onClick={() => setGeoAIChatOpen(true)}
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span>Open {currentLocation.name} Story &amp; Forecast</span>
-            <ArrowRight className="w-4 h-4 text-primary" />
+            <Sparkles className="w-3.5 h-3.5 fill-black" />
+            <span>04 — AI Geo-Agent</span>
+          </button>
+
+          <button
+            onClick={() => setPanelOpen(!panelOpen)}
+            className={`p-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
+              panelOpen 
+                ? "bg-slate-800 text-white border-slate-700" 
+                : "bg-slate-900 text-slate-400 border-slate-800 hover:text-white"
+            }`}
+            title="Toggle Right Intelligence Drawer"
+          >
+            <Activity className="w-4 h-4" />
           </button>
         </div>
-      )}
 
-      {/* 4. Floating Comprehensive Story & Forecasting Knowledge Card */}
-      {panelOpen && (
-        <div 
-          className={`absolute right-4 sm:right-6 z-30 pointer-events-auto transition-all duration-300 flex flex-col ${
-            isMinimized 
-              ? 'bottom-6 w-80 sm:w-96 rounded-3xl bg-white/95 backdrop-blur-md border-2 border-orange-200 p-4 shadow-2xl' 
-              : 'top-20 bottom-6 w-full max-w-md sm:max-w-lg rounded-3xl bg-white/95 backdrop-blur-md border-2 border-orange-200/90 shadow-2xl overflow-hidden'
-          }`}
-        >
-          {/* Card Top Header Strip */}
-          <div className="relative shrink-0">
-            {!isMinimized ? (
-              <div className="relative h-40 w-full overflow-hidden">
-                <img 
-                  src={realCoverImage || currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80"} 
-                  alt={currentLocation.name} 
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/40 to-transparent p-4 flex flex-col justify-end text-white">
-                  <div className="flex items-center justify-between">
-                    <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-orange-500 text-white uppercase tracking-wider">
-                      {currentLocation.badge || 'FLAGSHIP DESTINATION'}
-                    </span>
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => setIsMinimized(true)}
-                        className="p-1 rounded-lg bg-black/40 hover:bg-black/60 text-white transition-colors"
-                        title="Minimize"
-                      >
-                        <ChevronDown className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setPanelOpen(false)}
-                        className="p-1 rounded-lg bg-black/40 hover:bg-black/60 text-white transition-colors"
-                        title="Close"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <h2 className="text-2xl font-serif font-bold text-white mt-1 leading-tight">
-                    {currentLocation.name}
-                  </h2>
-                  <p className="text-xs text-stone-200 font-mono">
-                    {currentLocation.region}, {currentLocation.country} • [{currentLocation.coordinates?.lat.toFixed(4)}°N, {currentLocation.coordinates?.lng.toFixed(4)}°E]
-                  </p>
+      </div>
+
+      {/* ================= 2. MAIN 75–80% VISUAL CANVAS ================= */}
+      <div className="relative flex-1 w-full overflow-hidden">
+        
+        {/* VIEW 1: 3D Earth / Cesium / WebGL (Earth Mode & Future Earth Mode) */}
+        {(activeVisualModule === "earth" || activeVisualModule === "future") && (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={false}
+              onLocationSelect={(loc) => selectLocation(loc.id)}
+            />
+
+            {/* Future Earth 2035 Horizon Overlay HUD */}
+            {activeVisualModule === "future" && (
+              <div className="absolute top-4 left-4 z-20 max-w-md p-4 rounded-3xl bg-black/85 backdrop-blur-xl border-2 border-purple-500/60 shadow-2xl text-xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono font-bold text-purple-400 uppercase text-[11px] flex items-center gap-1.5">
+                    <TrendingUp className="w-4 h-4 text-purple-400" />
+                    <span>05 — Future Earth 2035 Projection</span>
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-mono font-bold border border-purple-500/40">
+                    ML Spatio-Temporal Model
+                  </span>
                 </div>
-              </div>
-            ) : (
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <img 
-                    src={realCoverImage || currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"} 
-                    alt={currentLocation.name} 
-                    className="w-10 h-10 rounded-xl object-cover border border-stone-200"
-                  />
-                  <div>
-                    <h3 className="text-sm font-serif font-bold text-stone-900">{currentLocation.name}</h3>
-                    <p className="text-[10px] text-stone-500">{currentLocation.country}</p>
+                <p className="text-slate-300 text-xs leading-relaxed">
+                  Projected demographic expansion to <strong>4.90M citizens</strong> across {currentLocation.name}. Overlaid thermal contour highlights a +2.1°C urban heat island ring along primary transport arteries.
+                </p>
+                <div className="grid grid-cols-3 gap-1.5 pt-1 font-mono text-[10px]">
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <div className="text-slate-400">Urban Sprawl</div>
+                    <div className="text-sm font-bold text-rose-400 mt-0.5">+38.4%</div>
                   </div>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button
-                    onClick={() => setIsMinimized(false)}
-                    className="p-1 rounded-lg hover:bg-stone-100 text-stone-600"
-                    title="Expand"
-                  >
-                    <ChevronUp className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => setPanelOpen(false)}
-                    className="p-1 rounded-lg hover:bg-stone-100 text-stone-600"
-                    title="Close"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <div className="text-slate-400">Canopy Deficit</div>
+                    <div className="text-sm font-bold text-amber-400 mt-0.5">-18.2%</div>
+                  </div>
+                  <div className="p-2 rounded-xl bg-slate-900 border border-slate-800">
+                    <div className="text-slate-400">Water Stress</div>
+                    <div className="text-sm font-bold text-rose-400 mt-0.5">High</div>
+                  </div>
                 </div>
               </div>
             )}
           </div>
+        )}
 
-          {/* Card Body (Only if not minimized) */}
-          {!isMinimized && (
-            <div className="flex-1 flex flex-col overflow-hidden">
+        {/* VIEW 2: Satellite Time Machine (Scrubber & Dynamic Visuals) */}
+        {activeVisualModule === "timemachine" && (
+          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={false}
+              onLocationSelect={(loc) => selectLocation(loc.id)}
+            />
+            
+            {/* Floating Satellite Time Machine Scrubber Bar at Bottom */}
+            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
+              <SatelliteTimeMachine
+                currentLocation={currentLocation}
+                currentYear={currentYear}
+                onYearChange={setCurrentYear}
+                isPlaying={isPlayingTimelapse}
+                onTogglePlay={() => setIsPlayingTimelapse(!isPlayingTimelapse)}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* VIEW 3: AI Change Detection Split Wipe (Before vs After 2018–2026) */}
+        {activeVisualModule === "changedetection" && (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <AIChangeDetectionSplit
+              currentLocation={currentLocation}
+              onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
+            />
+          </div>
+        )}
+
+        {/* VIEW 4: What-If Earth Simulator (Interactive Parameter Sliders) */}
+        {activeVisualModule === "whatif" && (
+          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={false}
+              onLocationSelect={(loc) => selectLocation(loc.id)}
+            />
+            
+            {/* Floating Simulator Controls Bar */}
+            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
+              <WhatIfSimulator
+                currentLocation={currentLocation}
+                onApplyScenarioOverlay={(scenario) => {
+                  console.log("Scenario applied:", scenario);
+                }}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* VIEW 5: 3D City Digital Twin View */}
+        {activeVisualModule === "digitaltwin" && (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <DigitalTwin3DView
+              currentLocation={currentLocation}
+              onClose={() => setActiveVisualModule("earth")}
+            />
+          </div>
+        )}
+
+        {/* VIEW 6: AI GeoStory Cinematic Studio (8 Scenes) */}
+        {activeVisualModule === "story" && (
+          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={false}
+              onLocationSelect={(loc) => selectLocation(loc.id)}
+            />
+
+            {/* Floating 8-Scene Cinematic Player */}
+            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
+              <AIGeoStoryCinematic
+                currentLocation={currentLocation}
+                onSceneChange={(scene) => {
+                  console.log("Scene advanced:", scene.title);
+                }}
+                onClose={() => setActiveVisualModule("earth")}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Floating Quick Fly Pills & Search Bar (Centered at Top) */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
+          <div className="pointer-events-auto flex flex-col items-center gap-1.5">
+            <form 
+              onSubmit={handleSearchSubmit}
+              className="w-full flex items-center rounded-full bg-black/85 backdrop-blur-md border border-cyan-500/40 hover:border-cyan-400 px-3.5 py-1.5 shadow-2xl transition-all"
+            >
+              <Search className="w-3.5 h-3.5 text-cyan-400 mr-2 shrink-0" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search global destination or coordinates..."
+                className="w-full bg-transparent text-xs text-white placeholder:text-slate-500 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="px-3 py-1 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2"
+              >
+                {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Reach"}
+              </button>
+            </form>
+
+            <div className="flex flex-wrap items-center justify-center gap-1 text-[10px] font-mono">
+              {quickFlyList.slice(0, 6).map((c) => {
+                const isCurrent = currentLocation.name.toLowerCase() === c.toLowerCase();
+                return (
+                  <button
+                    key={c}
+                    onClick={() => handleQuickFly(c)}
+                    className={`px-2.5 py-0.5 rounded-full transition-all backdrop-blur-md cursor-pointer ${
+                      isCurrent
+                        ? 'bg-cyan-500 text-black font-bold border border-cyan-400'
+                        : 'bg-black/60 text-slate-300 border border-slate-800 hover:text-white'
+                    }`}
+                  >
+                    {c}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* ================= 3. COLLAPSIBLE 20–25% INTELLIGENCE PANEL ================= */}
+        {panelOpen && (
+          <div className="absolute top-3 right-4 bottom-4 z-20 w-80 sm:w-96 rounded-3xl bg-[#060D1E]/95 backdrop-blur-2xl border-2 border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden text-xs">
+            
+            {/* Panel Header Strip */}
+            <div className="p-4 border-b border-slate-800 bg-[#040816]/90 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <img 
+                  src={currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"}
+                  alt={currentLocation.name}
+                  className="w-8 h-8 rounded-xl object-cover border border-slate-700"
+                />
+                <div>
+                  <h3 className="font-bold text-white text-sm">
+                    {currentLocation.name}
+                  </h3>
+                  <p className="text-[10px] font-mono text-slate-400">
+                    {currentLocation.parent || currentLocation.country} • {currentLocation.population} Pop
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setPanelOpen(false)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Scrollable Content (Key Insights, Time-Series Trends, AI Explanation) */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4">
               
-              {/* Main 3 Tabs: Story | Forecast | Telemetry */}
-              <div className="flex items-center justify-around border-b border-stone-200 bg-stone-50/90 px-3 py-2 shrink-0">
-                <button
-                  onClick={() => setActiveTab("story")}
-                  className={`flex-1 py-1.5 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all ${
-                    activeTab === "story"
-                      ? "bg-white text-primary border border-stone-200 shadow-xs font-bold"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  <span>Story &amp; Audio</span>
-                </button>
+              {/* Key Insights (Matching Image 1: NDVI -12.8%, Urban +21.4%, etc.) */}
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono uppercase font-bold text-cyan-400 flex items-center justify-between">
+                  <span>Key Insights (2018–2026 Shift)</span>
+                  <span className="text-slate-500">Sentinel-2 Telemetry</span>
+                </div>
 
-                <button
-                  onClick={() => setActiveTab("forecast")}
-                  className={`flex-1 py-1.5 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all ${
-                    activeTab === "forecast"
-                      ? "bg-white text-violet-700 border border-stone-200 shadow-xs font-bold"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  <TrendingUp className="w-3.5 h-3.5 text-violet-600" />
-                  <span>Forecasting</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab("telemetry")}
-                  className={`flex-1 py-1.5 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-all ${
-                    activeTab === "telemetry"
-                      ? "bg-white text-sky-700 border border-stone-200 shadow-xs font-bold"
-                      : "text-stone-600 hover:text-stone-900"
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5 text-sky-600" />
-                  <span>Telemetry</span>
-                </button>
+                <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800 space-y-2 font-mono text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">NDVI (Canopy):</span>
+                    <span className="text-rose-400 font-bold flex items-center gap-1">
+                      <span>↓ 12.8%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Urban Area:</span>
+                    <span className="text-orange-400 font-bold flex items-center gap-1">
+                      <span>↑ 21.4%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Population:</span>
+                    <span className="text-purple-400 font-bold flex items-center gap-1">
+                      <span>↑ 14.2%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">AQI Index:</span>
+                    <span className="text-amber-400 font-bold flex items-center gap-1">
+                      <span>↑ 18.6%</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-slate-400">Monsoon Rainfall:</span>
+                    <span className="text-sky-400 font-bold flex items-center gap-1">
+                      <span>↓ 6.3%</span>
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              {/* Scrollable Content Pane */}
-              <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
-                
-                {/* ================= TAB 1: STORY ================= */}
-                {activeTab === "story" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
-                    
-                    {/* Audio Narration Trigger */}
-                    <div className="p-3 bg-orange-50/80 rounded-2xl border border-orange-200 flex items-center justify-between">
-                      <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center shadow-xs">
-                          <Volume2 className="w-4 h-4" />
-                        </div>
-                        <div>
-                          <div className="text-xs font-bold text-stone-900">Spoken Story Audio</div>
-                          <div className="text-[10px] text-stone-500">{currentStory.audioDuration} • Natural voice narration</div>
-                        </div>
+              {/* Time Series Mini Chart Strip */}
+              <div className="space-y-2">
+                <div className="text-[10px] font-mono uppercase font-bold text-slate-400 flex items-center justify-between">
+                  <span>Temporal Multi-Spectral Trend</span>
+                  <span className="text-emerald-400">R² = 0.94</span>
+                </div>
+
+                <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800">
+                  <div className="flex items-end justify-between h-14 gap-1.5 pt-2">
+                    {[
+                      { yr: '16', val: 78, color: 'bg-emerald-500' },
+                      { yr: '18', val: 74, color: 'bg-emerald-500' },
+                      { yr: '20', val: 71, color: 'bg-teal-500' },
+                      { yr: '22', val: 68, color: 'bg-amber-500' },
+                      { yr: '24', val: 64, color: 'bg-orange-500' },
+                      { yr: '26', val: 61, color: 'bg-rose-500' }
+                    ].map((b) => (
+                      <div key={b.yr} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
+                        <div 
+                          className={`w-full rounded-t-sm ${b.color} transition-all duration-500`}
+                          style={{ height: `${(b.val / 80) * 100}%` }}
+                        />
+                        <span className="text-[9px] font-mono text-slate-500">'{b.yr}</span>
                       </div>
-                      <button
-                        onClick={() => playNarration(currentStory.title, currentLocation.name, currentStory.narrative, 210, "temple_bells")}
-                        className="px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs transition-transform active:scale-95"
-                      >
-                        Play Audio
-                      </button>
-                    </div>
-
-                    {/* 9 Story Modalities Chips */}
-                    <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1.5 tracking-wider">
-                        Select Story Perspective (9 Modalities)
-                      </span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {storyModes.map((mode) => (
-                          <button
-                            key={mode.id}
-                            onClick={() => setActiveStoryMode(mode.id)}
-                            className={`px-2.5 py-1 rounded-xl text-[11px] font-medium border transition-all ${
-                              activeStoryMode === mode.id
-                                ? 'bg-primary text-white border-primary font-bold shadow-xs'
-                                : 'bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100'
-                            }`}
-                          >
-                            <span>{mode.icon} {mode.name}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Story Title & Narrative */}
-                    <div className="p-4 bg-white rounded-2xl border border-stone-200 shadow-2xs">
-                      <h4 className="text-base font-serif font-bold text-stone-900 mb-1">
-                        {currentStory.title}
-                      </h4>
-                      <p className="text-[11px] text-stone-400 italic mb-3">
-                        {currentStory.subtitle}
-                      </p>
-                      <p className="text-xs text-stone-700 leading-relaxed whitespace-pre-line font-serif">
-                        {realStoryText || currentStory.narrative}
-                      </p>
-                    </div>
-
-                    {/* Signature Sights Chips */}
-                    <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1.5 tracking-wider">
-                        Signature Heritage &amp; Sights
-                      </span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {currentLocation.highlights.map((h, i) => (
-                          <span key={i} className="px-2.5 py-1 rounded-xl text-[11px] bg-stone-50 text-stone-700 border border-stone-200">
-                            {h}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* 7-Stage Framework Pill Bar */}
-                    <div className="p-3 bg-stone-50 rounded-2xl border border-stone-200">
-                      <span className="text-[10px] font-mono uppercase font-bold text-stone-700 block mb-1.5">
-                        Analytical Horizon Lens
-                      </span>
-                      <div className="grid grid-cols-3 gap-1.5">
-                        {STORY_STAGES.map(st => (
-                          <button
-                            key={st.key}
-                            onClick={() => setActiveStoryStage(st.key)}
-                            className={`px-2 py-1.5 rounded-lg text-[10px] text-center transition-all border ${
-                              activeStoryStage === st.key
-                                ? 'bg-orange-100 border-primary text-primary font-bold shadow-xs'
-                                : 'bg-white border-stone-200 text-stone-600 hover:bg-stone-50'
-                            }`}
-                          >
-                            <span className="block text-xs mb-0.5">{st.icon}</span>
-                            <span className="block truncate font-medium">{st.label.split(':')[0]}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
+                    ))}
                   </div>
-                )}
-
-                {/* ================= TAB 2: FORECASTING ================= */}
-                {activeTab === "forecast" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
-                    
-                    {/* Horizon Locked: 2025–2030 */}
-                    <div className="flex items-center justify-between p-2.5 bg-orange-50/80 rounded-2xl border border-orange-200">
-                      <span className="text-xs font-mono font-semibold text-stone-700">Forecast Horizon:</span>
-                      <span className="px-3 py-1 rounded-xl bg-primary text-white text-xs font-mono font-bold shadow-xs">
-                        2025–2030 (5-Year Forecast)
-                      </span>
-                    </div>
-
-                    {/* 3 Scenario Cards */}
-                    <div className="space-y-2.5">
-                      
-                      {/* Optimistic */}
-                      <div className="p-3.5 rounded-2xl bg-emerald-50/60 border border-emerald-200">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-emerald-800">🌱 Optimistic Trajectory</span>
-                          <span className="text-[10px] font-mono text-emerald-600 font-bold">Policy &amp; Canopy Action</span>
-                        </div>
-                        <p className="text-[11px] text-stone-600 mb-2">{forecastData.scenarios.optimistic.summary}</p>
-                        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-                          <div className="bg-white p-1.5 rounded-xl border border-emerald-100">
-                            <span className="text-stone-400 block">Pop</span>
-                            <span className="font-bold text-stone-900">{forecastData.scenarios.optimistic.populationDisplay || forecastData.scenarios.optimistic.population?.total || "4.15M"}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-emerald-100">
-                            <span className="text-stone-400 block">AQI</span>
-                            <span className="font-bold text-emerald-700">{forecastData.scenarios.optimistic.aqiDisplay || `${forecastData.scenarios.optimistic.aqi?.overall || 54} AQI`}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-emerald-100">
-                            <span className="text-stone-400 block">Water</span>
-                            <span className="font-bold text-cyan-700">{forecastData.scenarios.optimistic.groundwaterDisplay || forecastData.scenarios.optimistic.groundwater?.waterTableDepth || "11.2m"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Baseline */}
-                      <div className="p-3.5 rounded-2xl bg-sky-50/60 border border-sky-200">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-sky-800">📈 Baseline Trajectory</span>
-                          <span className="text-[10px] font-mono text-sky-600 font-bold">Historical Momentum</span>
-                        </div>
-                        <p className="text-[11px] text-stone-600 mb-2">{forecastData.scenarios.baseline.summary}</p>
-                        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-                          <div className="bg-white p-1.5 rounded-xl border border-sky-100">
-                            <span className="text-stone-400 block">Pop</span>
-                            <span className="font-bold text-stone-900">{forecastData.scenarios.baseline.populationDisplay || forecastData.scenarios.baseline.population?.total || "4.35M"}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-sky-100">
-                            <span className="text-stone-400 block">AQI</span>
-                            <span className="font-bold text-amber-700">{forecastData.scenarios.baseline.aqiDisplay || `${forecastData.scenarios.baseline.aqi?.overall || 79} AQI`}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-sky-100">
-                            <span className="text-stone-400 block">Water</span>
-                            <span className="font-bold text-cyan-700">{forecastData.scenarios.baseline.groundwaterDisplay || forecastData.scenarios.baseline.groundwater?.waterTableDepth || "14.8m"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* High-Risk */}
-                      <div className="p-3.5 rounded-2xl bg-rose-50/60 border border-rose-200">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold text-rose-800">⚠️ High-Risk Strain</span>
-                          <span className="text-[10px] font-mono text-rose-600 font-bold">Climate Stress</span>
-                        </div>
-                        <p className="text-[11px] text-stone-600 mb-2">{forecastData.scenarios.highRisk.summary}</p>
-                        <div className="grid grid-cols-3 gap-2 text-center text-[10px] font-mono">
-                          <div className="bg-white p-1.5 rounded-xl border border-rose-100">
-                            <span className="text-stone-400 block">Pop</span>
-                            <span className="font-bold text-stone-900">{forecastData.scenarios.highRisk.populationDisplay || forecastData.scenarios.highRisk.population?.total || "4.55M"}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-rose-100">
-                            <span className="text-stone-400 block">AQI</span>
-                            <span className="font-bold text-rose-700">{forecastData.scenarios.highRisk.aqiDisplay || `${forecastData.scenarios.highRisk.aqi?.overall || 112} AQI`}</span>
-                          </div>
-                          <div className="bg-white p-1.5 rounded-xl border border-rose-100">
-                            <span className="text-stone-400 block">Water</span>
-                            <span className="font-bold text-cyan-700">{forecastData.scenarios.highRisk.groundwaterDisplay || forecastData.scenarios.highRisk.groundwater?.waterTableDepth || "19.5m"}</span>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
+                  <div className="text-center text-[10px] font-mono text-slate-400 mt-2">
+                    NDVI Canopy Decline: 0.78 (2016) → 0.61 (2026)
                   </div>
-                )}
-
-                {/* ================= TAB 3: TELEMETRY ================= */}
-                {activeTab === "telemetry" && (
-                  <div className="space-y-4 animate-in fade-in duration-200">
-                    
-                    {/* 4 Telemetry Cards */}
-                    <div className="grid grid-cols-2 gap-2.5">
-                      <div className="p-3 rounded-2xl bg-sky-50/60 border border-sky-200">
-                        <span className="text-[10px] font-mono uppercase text-sky-700 block mb-1 font-semibold">WorldPop Density</span>
-                        <span className="text-base font-mono font-bold text-stone-900">{currentLocation.population}</span>
-                      </div>
-                      <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-200">
-                        <span className="text-[10px] font-mono uppercase text-amber-700 block mb-1 font-semibold">Air Quality (AQI)</span>
-                        <span className="text-base font-mono font-bold text-amber-800">{currentLocation.aqi} Moderate</span>
-                      </div>
-                      <div className="p-3 rounded-2xl bg-orange-50/60 border border-orange-200">
-                        <span className="text-[10px] font-mono uppercase text-orange-700 block mb-1 font-semibold">Surface Temp</span>
-                        <span className="text-base font-mono font-bold text-primary">{currentLocation.temperature}°C</span>
-                      </div>
-                      <div className="p-3 rounded-2xl bg-cyan-50/60 border border-cyan-200">
-                        <span className="text-[10px] font-mono uppercase text-cyan-700 block mb-1 font-semibold">CGWB Water Depth</span>
-                        <span className="text-base font-mono font-bold text-cyan-800">12.4 mbgl (Safe)</span>
-                      </div>
-                    </div>
-
-                    {/* Sensor Breakdown */}
-                    <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200 space-y-2">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-stone-600">Particulate PM2.5:</span>
-                        <span className="font-mono font-bold text-stone-900">{aqi.pm25} µg/m³</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-stone-600">Particulate PM10:</span>
-                        <span className="font-mono font-bold text-stone-900">{aqi.pm10} µg/m³</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-stone-600">Atmospheric Humidity:</span>
-                        <span className="font-mono font-bold text-stone-900">{weather.humidity}%</span>
-                      </div>
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-stone-600">VIIRS Radiance (Flux):</span>
-                        <span className="font-mono font-bold text-purple-700">3.8 nW/cm²</span>
-                      </div>
-                    </div>
-
-                  </div>
-                )}
-
+                </div>
               </div>
 
-              {/* Bottom Quick Links Strip */}
-              <div className="p-3 bg-stone-50 border-t border-stone-200 flex items-center justify-between gap-2 shrink-0">
-                <button
-                  onClick={() => setCurrentPage('story')}
-                  className="flex-1 py-2 rounded-xl bg-white border border-stone-200 hover:bg-stone-100 text-stone-800 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                >
-                  <Sparkles className="w-3.5 h-3.5 text-primary" />
-                  <span>Full Story Studio</span>
-                </button>
-                <button
-                  onClick={() => setCurrentPage('predictions')}
-                  className="flex-1 py-2 rounded-xl bg-white border border-stone-200 hover:bg-stone-100 text-stone-800 text-xs font-semibold flex items-center justify-center gap-1.5 transition-colors"
-                >
-                  <TrendingUp className="w-3.5 h-3.5 text-violet-600" />
-                  <span>Forecast Lab</span>
-                </button>
+              {/* Tri-Temporal AI Narrative (Past, Current, Future 2030) */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400">
+                  <span>AI Synthesized Narrative</span>
+                  <span className="text-cyan-400">Groq LLaMA-3.1</span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-1">
+                  {[
+                    { key: "past", label: "Past" },
+                    { key: "present", label: "Current" },
+                    { key: "future", label: "2030" }
+                  ].map((s) => (
+                    <button
+                      key={s.key}
+                      onClick={() => setActiveStoryStage(s.key)}
+                      className={`py-1 rounded-xl text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                        activeStoryStage === s.key
+                          ? "bg-cyan-500 text-black shadow-xs"
+                          : "bg-slate-900 text-slate-400 hover:text-white"
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="p-3 rounded-2xl bg-black/60 border border-slate-800 text-slate-300 leading-relaxed text-xs">
+                  {realStoryText ? (
+                    <p>{realStoryText}</p>
+                  ) : (
+                    <p>
+                      {activeStoryStage === "past" && `${currentLocation.name}'s origins trace back over a millennium as an agrarian trading node nestled along the river basin.`}
+                      {activeStoryStage === "present" && `${currentLocation.name} currently exhibits active industrial casting corridors, with moderate air quality (AQI ${aqi.aqi}) and 42.4% impervious built-up density.`}
+                      {activeStoryStage === "future" && `By 2030, predictive models project +38% urban sprawl toward peripheral agricultural talukas, requiring green buffer bylaws.`}
+                    </p>
+                  )}
+                </div>
               </div>
 
             </div>
-          )}
 
+            {/* Panel Footer */}
+            <div className="p-3 border-t border-slate-800 bg-[#040816]/90 flex items-center justify-between">
+              <button
+                onClick={() => {
+                  playNarration(
+                    `Transformation Dossier for ${currentLocation.name}`,
+                    currentLocation.name,
+                    realStoryText || `${currentLocation.name} geospatial intelligence report.`
+                  );
+                }}
+                className="w-full py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+              >
+                <Volume2 className="w-3.5 h-3.5" />
+                <span>Play Voice Narration</span>
+              </button>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
+      {/* Spatial Evidence Modal (When user clicks Inspect Algorithmic Evidence) */}
+      {evidenceModalData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in select-none">
+          <div className="w-full max-w-lg rounded-3xl bg-[#060D1E] border-2 border-cyan-500/60 p-6 text-white shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-cyan-400" />
+                <h3 className="font-bold text-base text-white">
+                  Spatial Evidence Dossier
+                </h3>
+              </div>
+              <button 
+                onClick={() => setEvidenceModalData(null)}
+                className="p-1 rounded-lg text-slate-400 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 font-mono text-xs">
+              <div className="p-3 rounded-2xl bg-slate-900 border border-slate-800 space-y-1.5">
+                <div className="text-cyan-300 font-bold text-sm">{evidenceModalData.name}</div>
+                <div className="text-slate-400">Classification: <strong className="text-white">{evidenceModalData.label} ({evidenceModalData.delta})</strong></div>
+                <div className="text-slate-400">Confidence Metric: <strong className="text-emerald-400">{evidenceModalData.confidence}</strong></div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-black/60 border border-slate-800 space-y-1 text-slate-300 text-[11px]">
+                <div><strong>Sensor Source:</strong> Copernicus Sentinel-2 MSI (Multi-Spectral Instrument)</div>
+                <div><strong>Spectral Formulation:</strong> {evidenceModalData.bands}</div>
+                <div><strong>Ground Resolution:</strong> 10-meter pixel resolution</div>
+                <div><strong>Temporal Baseline:</strong> May 25, 2018 ➔ April 26, 2026</div>
+              </div>
+
+              <p className="font-sans text-xs text-slate-300 leading-relaxed">
+                {evidenceModalData.details}
+              </p>
+            </div>
+
+            <button
+              onClick={() => setEvidenceModalData(null)}
+              className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase tracking-wider"
+            >
+              Close Evidence View
+            </button>
+          </div>
         </div>
       )}
 
     </div>
   );
 };
+
+export default ExplorePage;

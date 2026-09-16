@@ -39,6 +39,10 @@ export const AppProvider = ({ children }) => {
   // Past → Present → Future Timeline (1900 - 2050)
   const [timeMachineYear, setTimeMachineYear] = useState(2025);
 
+  // Active Visual Core Module (7 Core Modules)
+  const [activeVisualModule, setActiveVisualModule] = useState("earth"); 
+  // 'earth' | 'timemachine' | 'changedetection' | 'future' | 'whatif' | 'digitaltwin' | 'story'
+
   // Compare Mode (Default: Kolhapur vs Pune)
   const [compareLocations, setCompareLocations] = useState(["kolhapur", "pune"]);
 
@@ -143,6 +147,8 @@ export const AppProvider = ({ children }) => {
       setActiveHeatmap,
       timeMachineYear,
       setTimeMachineYear,
+      activeVisualModule,
+      setActiveVisualModule,
       compareLocations,
       setCompareLocations,
       geoAIChatOpen,

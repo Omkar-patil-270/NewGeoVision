@@ -229,7 +229,7 @@ export const apiClient = {
   /**
    * Conversational GeoAI chat powered by Groq LLM grounded in real telemetry
    */
-  async askStoryChat({ query, locationName, predictions = null, storyStage = "General" }) {
+  async askStoryChat({ query, locationName, predictions = null, storyStage = "General", history = [] }) {
     try {
       const payload = {
         location_name: locationName,
@@ -237,6 +237,7 @@ export const apiClient = {
         user_message: query,
         predictions: predictions || {},
         story_stage: storyStage,
+        history: history || []
       };
       const res = await fetch(`${API_BASE_URL}/api/story/chat`, {
         method: "POST",

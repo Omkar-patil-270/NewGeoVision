@@ -162,7 +162,7 @@ export function generateLocalPlaceAnswer(question = "", location = {}, telemetry
  * Tries backend Groq chat with strict 2.5s timeout; falls back immediately to local deterministic knowledge.
  * Response is GUARANTEED in under 1-3 seconds!
  */
-export async function askPlaceQuestion({ query, location, telemetry = {} }) {
+export async function askPlaceQuestion({ query, location, telemetry = {}, history = [] }) {
   const locName = location?.name || "Selected Location";
 
   // Try fast backend call (max 2.5s)
@@ -171,7 +171,8 @@ export async function askPlaceQuestion({ query, location, telemetry = {} }) {
       query,
       locationName: locName,
       predictions: telemetry,
-      storyStage: "General"
+      storyStage: "General",
+      history
     });
 
     if (backendRes && (backendRes.reply || backendRes.answer)) {

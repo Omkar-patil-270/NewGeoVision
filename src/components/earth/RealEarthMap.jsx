@@ -7,11 +7,13 @@ import {
   Search, Maximize2, ZoomIn, ZoomOut, Check, ArrowRight, X
 } from 'lucide-react';
 import { locationService } from '../../services/locationService';
+import { getLocationBoundary, getBoundaryLatLngs } from '../../services/boundaryService';
 
 export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
+  const boundaryPolygonRef = useRef(null);
   const activeTileLayerRef = useRef(null);
   const labelLayerRef = useRef(null);
 
@@ -146,7 +148,7 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
     };
   }, []);
 
-  // 2. Smoothly Fly Camera When Current Location Changes
+  // 2. Smoothly Fly Camera When Current Location Changes & Draw Boundary
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (map && currentLocation?.coordinates) {
@@ -155,6 +157,32 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
         easeLinearity: 0.25
       });
       setSelectedPopupLoc(currentLocation);
+
+      // Render Territorial Boundary Polygon
+      if (boundaryPolygonRef.current) {
+        map.removeLayer(boundaryPolygonRef.current);
+        boundaryPolygonRef.current = null;
+      }
+
+      const latLngs = getBoundaryLatLngs(currentLocation);
+      const meta = getLocationBoundary(currentLocation);
+      if (latLngs && latLngs.length > 2) {
+        const poly = L.polygon(latLngs, {
+          color: '#00F0FF',
+          weight: 3.5,
+          dashArray: '6, 6',
+          fillColor: '#00F0FF',
+          fillOpacity: 0.12
+        }).addTo(map);
+
+        poly.bindTooltip(`🛡️ ${meta.name} (${meta.area})`, {
+          permanent: false,
+          direction: 'top',
+          className: 'bg-stone-900 text-cyan-300 font-mono text-xs px-2 py-1 rounded shadow-lg'
+        });
+
+        boundaryPolygonRef.current = poly;
+      }
     }
   }, [currentLocation]);
 

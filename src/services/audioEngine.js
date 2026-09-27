@@ -30,69 +30,31 @@ class AudioEngine {
 
   // Generate synthetic ambient soundscape based on atmosphere type
   startAmbientSoundscape(type = "temple_bells") {
-    try {
-      this.initAudioContext();
-      if (!this.audioCtx) return;
-      if (this.audioCtx.state === 'suspended') {
-        this.audioCtx.resume();
-      }
-
-      this.stopAmbientSoundscape();
-
-      this.ambientGain = this.audioCtx.createGain();
-      this.ambientGain.gain.setValueAtTime(0.04, this.audioCtx.currentTime); // Soft background
-      this.ambientGain.connect(this.audioCtx.destination);
-
-      if (type === "temple_bells" || type === "story") {
-        // Deep warm grounding drone (110 Hz - A2)
-        const osc1 = this.audioCtx.createOscillator();
-        osc1.type = "sine";
-        osc1.frequency.setValueAtTime(110, this.audioCtx.currentTime);
-        osc1.connect(this.ambientGain);
-        osc1.start();
-        this.ambientOscillators.push(osc1);
-
-        // Gentle harmonic shimmer (330 Hz - E4)
-        const osc2 = this.audioCtx.createOscillator();
-        osc2.type = "triangle";
-        osc2.frequency.setValueAtTime(330, this.audioCtx.currentTime);
-        osc2.connect(this.ambientGain);
-        osc2.start();
-        this.ambientOscillators.push(osc2);
-      } else if (type === "city_hum" || type === "futuristic") {
-        // Subtle rhythmic pink drone
-        const osc1 = this.audioCtx.createOscillator();
-        osc1.type = "sawtooth";
-        osc1.frequency.setValueAtTime(65, this.audioCtx.currentTime);
-        
-        // Low pass filter
-        const filter = this.audioCtx.createBiquadFilter();
-        filter.type = "lowpass";
-        filter.frequency.setValueAtTime(200, this.audioCtx.currentTime);
-        
-        osc1.connect(filter);
-        filter.connect(this.ambientGain);
-        osc1.start();
-        this.ambientOscillators.push(osc1);
-      } else {
-        // Nature / wind breeze
-        const osc = this.audioCtx.createOscillator();
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(140, this.audioCtx.currentTime);
-        osc.connect(this.ambientGain);
-        osc.start();
-        this.ambientOscillators.push(osc);
-      }
-    } catch (e) {
-      console.warn("Ambient soundscape could not be started:", e);
-    }
+    // Disabled synthetic oscillator beeps - clean speech narration only
+    this.stopAmbientSoundscape();
   }
 
   stopAmbientSoundscape() {
-    this.ambientOscillators.forEach(osc => {
-      try { osc.stop(); osc.disconnect(); } catch (e) {}
-    });
-    this.ambientOscillators = [];
+    if (this.ambientOscillators && Array.isArray(this.ambientOscillators)) {
+      this.ambientOscillators.forEach(osc => {
+        try { 
+          osc.stop(); 
+          osc.disconnect(); 
+        } catch (e) {}
+      });
+      this.ambientOscillators = [];
+    }
+    if (this.ambientGain) {
+      try { 
+        this.ambientGain.disconnect(); 
+      } catch (e) {}
+      this.ambientGain = null;
+    }
+    if (this.audioCtx && this.audioCtx.state === 'running') {
+      try {
+        this.audioCtx.suspend();
+      } catch (e) {}
+    }
   }
 
   // Play narration using browser speech synthesis
@@ -156,6 +118,7 @@ class AudioEngine {
 
   pause() {
     this.isPaused = true;
+    this.stopAmbientSoundscape();
     if ('speechSynthesis' in window) {
       window.speechSynthesis.pause();
     }

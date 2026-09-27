@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } f
 import * as Cesium from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import '../../cesiumConfig';
+import { getLocationBoundary, getBoundaryFlatDegrees } from '../../services/boundaryService';
 
 const LABELS_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png";
 const SATELLITE_FALLBACK_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
@@ -79,8 +80,12 @@ export const CesiumEarthViewer = forwardRef(({
   const viewerRef = useRef(null);
   const markerRef = useRef(null);
   const heatmapEntityRef = useRef(null);
+  const boundaryEntityRef = useRef(null);
+  const boundaryLineRef = useRef(null);
+  const boundaryLabelRef = useRef(null);
   const labelsLayerRef = useRef(null);
   const isReadyRef = useRef(false);
+  const [boundaryVisible, setBoundaryVisible] = useState(true);
   const [loading, setLoading] = useState(true);
   const [webglError, setWebglError] = useState(false);
 
@@ -234,6 +239,89 @@ export const CesiumEarthViewer = forwardRef(({
     });
 
     renderHeatmap(lat, lon, activeHeatmap);
+    renderBoundary(currentLocation || { id: 'loc', name: 'Selected Location', coordinates: { lat, lng: lon } }, boundaryVisible);
+  };
+
+  // Dynamic Territorial Boundary Layer (e.g. Kolhapur Municipal Corporation)
+  const renderBoundary = (loc, visible = true) => {
+    if (!viewerRef.current || !isReadyRef.current) return;
+    const viewer = viewerRef.current;
+
+    // Clear previous boundary entities
+    if (boundaryEntityRef.current) {
+      viewer.entities.remove(boundaryEntityRef.current);
+      boundaryEntityRef.current = null;
+    }
+    if (boundaryLineRef.current) {
+      viewer.entities.remove(boundaryLineRef.current);
+      boundaryLineRef.current = null;
+    }
+    if (boundaryLabelRef.current) {
+      viewer.entities.remove(boundaryLabelRef.current);
+      boundaryLabelRef.current = null;
+    }
+
+    if (!visible || !loc) return;
+
+    const flatCoords = getBoundaryFlatDegrees(loc);
+    const meta = getLocationBoundary(loc);
+    if (!flatCoords || flatCoords.length < 6) return;
+
+    try {
+      // 1. Semi-translucent Polygon Fill (subtle cyan #00F0FF)
+      boundaryEntityRef.current = viewer.entities.add({
+        polygon: {
+          hierarchy: Cesium.Cartesian3.fromDegreesArray(flatCoords),
+          material: Cesium.Color.fromCssColorString('#00F0FF').withAlpha(0.12),
+          height: 10
+        }
+      });
+
+      // 2. Continuous Glowing Boundary Outline
+      const closedLoop = [...flatCoords, flatCoords[0], flatCoords[1]];
+      boundaryLineRef.current = viewer.entities.add({
+        polyline: {
+          positions: Cesium.Cartesian3.fromDegreesArray(closedLoop),
+          width: 4,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: 0.35,
+            taperPower: 1.0,
+            color: Cesium.Color.fromCssColorString('#00F0FF')
+          }),
+          clampToGround: true
+        }
+      });
+
+      // 3. Northern Boundary Label Marker
+      let maxLat = -90;
+      let bestLng = flatCoords[0];
+      for (let i = 0; i < flatCoords.length; i += 2) {
+        const lng = flatCoords[i];
+        const lat = flatCoords[i + 1];
+        if (lat > maxLat) {
+          maxLat = lat;
+          bestLng = lng;
+        }
+      }
+
+      boundaryLabelRef.current = viewer.entities.add({
+        position: Cesium.Cartesian3.fromDegrees(bestLng, maxLat + 0.003),
+        label: {
+          text: `🛡️ ${meta?.name || `${loc.name} Boundary`} (${meta?.area || '145 km²'})`,
+          font: "bold 12px 'Plus Jakarta Sans', sans-serif",
+          fillColor: Cesium.Color.fromCssColorString('#00F0FF'),
+          outlineColor: Cesium.Color.BLACK,
+          outlineWidth: 3,
+          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+          showBackground: true,
+          backgroundColor: Cesium.Color.fromCssColorString('#060B18').withAlpha(0.9),
+          pixelOffset: new Cesium.Cartesian2(0, -18),
+          disableDepthTestDistance: Number.POSITIVE_INFINITY
+        }
+      });
+    } catch (e) {
+      console.warn("Boundary rendering notice:", e);
+    }
   };
 
   // Dynamic GIS Radar Heatmap Overlay
@@ -271,6 +359,13 @@ export const CesiumEarthViewer = forwardRef(({
       flyTo(currentLocation.coordinates.lat, currentLocation.coordinates.lng);
     }
   }, [currentLocation?.coordinates?.lat, currentLocation?.coordinates?.lng]);
+
+  // Update boundary when location or boundaryVisible changes
+  useEffect(() => {
+    if (currentLocation && isReadyRef.current) {
+      renderBoundary(currentLocation, boundaryVisible);
+    }
+  }, [currentLocation?.id, currentLocation?.name, boundaryVisible]);
 
   // Update heatmap when activeHeatmap changes
   useEffect(() => {
@@ -312,6 +407,22 @@ export const CesiumEarthViewer = forwardRef(({
         </div>
       )}
       <div ref={containerRef} className="w-full h-full absolute inset-0" />
+
+      {/* Floating Boundary Layer Toggle */}
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-2 pointer-events-auto">
+        <button
+          type="button"
+          onClick={() => setBoundaryVisible(prev => !prev)}
+          className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all shadow-lg flex items-center gap-1.5 cursor-pointer backdrop-blur-md border ${
+            boundaryVisible 
+              ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/50 shadow-cyan-500/20" 
+              : "bg-black/70 text-slate-400 border-slate-700 hover:text-white"
+          }`}
+          title="Toggle Territorial Administrative Boundary"
+        >
+          <span>🛡️ Boundary: {boundaryVisible ? "ON" : "OFF"}</span>
+        </button>
+      </div>
     </div>
   );
 });

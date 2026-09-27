@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
 import { locationService } from '../services/locationService';
 import { airQualityService } from '../services/airQualityService';
-import { apiClient } from '../services/apiClient';
+import { getDeepStoryForLocation } from '../services/deepStoryService';
 import { 
   Search, MapPin, Sparkles, Volume2, TrendingUp, 
   X, ChevronDown, ChevronUp, Droplets, Thermometer, 
   Users, Layers, CheckCircle2, Loader2, GitCompare, 
-  ShieldCheck, Activity, Satellite
+  ShieldCheck, Activity, Satellite, BookOpen, Maximize2,
+  Calendar, ArrowRight, Play, Check
 } from 'lucide-react';
 
 export const ExplorePage = () => {
@@ -23,30 +24,19 @@ export const ExplorePage = () => {
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
   const [evidenceModalData, setEvidenceModalData] = useState(null);
-  const [realStoryText, setRealStoryText] = useState(null);
-  const [activeStoryStage, setActiveStoryStage] = useState("present");
+  const [storyModalOpen, setStoryModalOpen] = useState(false); // Big Story Modal (Image 2 & 3 concept)
+  const [activeStoryStage, setActiveStoryStage] = useState("current"); // "past" | "current" | "future"
 
   const allLocations = locationService.getAllLocations();
-  const aqi = airQualityService.getAQIData(currentLocation.id);
+  const aqiData = airQualityService.getAQIData(currentLocation.id);
+  const aqiScore = aqiData?.score || currentLocation?.aqi || 74;
 
-  // Fetch real Groq LLaMA-3.1 narrative for the selected city
-  useEffect(() => {
-    let active = true;
-    if (currentLocation?.name) {
-      apiClient.getStorySection({
-        locationName: currentLocation.name,
-        section: activeStoryStage,
-        levelLabel: currentLocation.type || "District"
-      }).then(res => {
-        if (active && res && res.text) {
-          setRealStoryText(res.text);
-        } else if (active) {
-          setRealStoryText(null);
-        }
-      }).catch(() => {});
-    }
-    return () => { active = false; };
-  }, [currentLocation?.id, currentLocation?.name, activeStoryStage]);
+  // Rich, multi-paragraph deep location story
+  const deepStories = useMemo(() => {
+    return getDeepStoryForLocation(currentLocation);
+  }, [currentLocation]);
+
+  const activeStoryContent = deepStories[activeStoryStage] || deepStories.current;
 
   // Handle location search submit
   const handleSearchSubmit = async (e) => {
@@ -60,27 +50,6 @@ export const ExplorePage = () => {
         selectLocation(found[0].id);
         setSearchQuery("");
         return;
-      }
-      const onlineHits = await apiClient.searchLocations(q);
-      if (onlineHits && onlineHits.length > 0) {
-        const top = onlineHits[0];
-        const safeName = top.name || top.display_name?.split(',')[0] || q;
-        const lat = parseFloat(top.lat ?? top.latitude ?? 0);
-        const lon = parseFloat(top.lon ?? top.longitude ?? 0);
-        const registered = locationService.registerCustomLocation({
-          name: safeName,
-          country: top.country || "Global",
-          country_code: top.country_code || "",
-          region: top.state || top.admin1 || top.country || "",
-          badge: top.country_code ? top.country_code.toUpperCase() : "GLOBAL",
-          type: "city",
-          coordinates: { lat, lng: lon },
-          population: top.population ? `${(top.population / 1000000).toFixed(2)}M` : "Urban Area",
-          parent: top.display_name || `${safeName}, ${top.country || ''}`,
-          description: top.display_name || `${safeName} location`
-        });
-        selectLocation(registered.id);
-        setSearchQuery("");
       }
     } catch (err) {
       console.warn("Explore search error:", err);
@@ -131,8 +100,16 @@ export const ExplorePage = () => {
           </span>
         </div>
 
-        {/* Right: AI Geo-Agent Trigger & Drawer Toggle */}
+        {/* Right: Big Story Modal Button + AI Geo-Agent Trigger & Drawer Toggle */}
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setStoryModalOpen(true)}
+            className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-amber-500/20 hover:scale-105 transition-all cursor-pointer"
+          >
+            <BookOpen className="w-3.5 h-3.5 fill-black" />
+            <span>📖 Deep Story Dossier</span>
+          </button>
+
           <button
             onClick={() => setGeoAIChatOpen(true)}
             className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all cursor-pointer"
@@ -211,24 +188,27 @@ export const ExplorePage = () => {
           </div>
         </div>
 
-        {/* ================= 3. COLLAPSIBLE INTELLIGENCE PANEL ================= */}
+        {/* ================= 3. USER-FRIENDLY RIGHT INTELLIGENCE DRAWER ================= */}
         {panelOpen && (
           <div className="absolute top-3 right-4 bottom-4 z-20 w-80 sm:w-96 rounded-3xl bg-[#060D1E]/95 backdrop-blur-2xl border-2 border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden text-xs">
             
-            {/* Panel Header Strip */}
-            <div className="p-4 border-b border-slate-800 bg-[#040816]/90 flex items-center justify-between">
+            {/* Panel Header */}
+            <div className="p-4 border-b border-slate-800 bg-[#040814]/90 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <img 
                   src={currentLocation.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"}
                   alt={currentLocation.name}
-                  className="w-8 h-8 rounded-xl object-cover border border-slate-700"
+                  className="w-9 h-9 rounded-xl object-cover border border-slate-700 shadow"
                 />
                 <div>
-                  <h3 className="font-bold text-white text-sm">
-                    {currentLocation.name}
+                  <h3 className="font-bold text-white text-sm flex items-center gap-1.5">
+                    <span>{currentLocation.name}</span>
+                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-500/30">
+                      {currentLocation.country}
+                    </span>
                   </h3>
                   <p className="text-[10px] font-mono text-slate-400">
-                    {currentLocation.parent || currentLocation.country} • {currentLocation.population} Pop
+                    Population: {currentLocation.population} • Area: {currentLocation.area || '145 km²'}
                   </p>
                 </div>
               </div>
@@ -241,101 +221,74 @@ export const ExplorePage = () => {
               </button>
             </div>
 
-            {/* Scrollable Content (Key Insights, Time-Series Trends, AI Explanation) */}
+            {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               
-              {/* Key Insights (2018–2026 Shift) */}
+              {/* Beginner-Friendly Clear Metrics Cards (Simple for First-Time Users) */}
               <div className="space-y-2">
                 <div className="text-[10px] font-mono uppercase font-bold text-cyan-400 flex items-center justify-between">
-                  <span>Change Detection Telemetry (2018–2026)</span>
-                  <span className="text-slate-500">Sentinel-2 MSI</span>
+                  <span>What Changed (2018 ➔ 2026)</span>
+                  <span className="text-slate-500">Plain English Insights</span>
                 </div>
 
-                <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800 space-y-2 font-mono text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">NDVI Green Canopy:</span>
-                    <span className="text-rose-400 font-bold flex items-center gap-1">
-                      <span>↓ 12.8%</span>
-                    </span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-mono">
+                  {/* Metric 1: Tree Cover */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-rose-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">🌲 Tree Cover</span>
+                    <span className="text-rose-400 font-bold text-sm">↓ 12.8%</span>
+                    <span className="text-slate-500 text-[9px] block">Peripheral canopy loss</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Built-Up Impervious:</span>
-                    <span className="text-orange-400 font-bold flex items-center gap-1">
-                      <span>↑ 21.4%</span>
-                    </span>
+
+                  {/* Metric 2: City Buildings */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-amber-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">🏗️ City Growth</span>
+                    <span className="text-amber-400 font-bold text-sm">↑ 21.4%</span>
+                    <span className="text-slate-500 text-[9px] block">New roads & foundries</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Demographic Shift:</span>
-                    <span className="text-purple-400 font-bold flex items-center gap-1">
-                      <span>↑ 14.2%</span>
-                    </span>
+
+                  {/* Metric 3: Air Quality */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-sky-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">💨 Air Quality</span>
+                    <span className="text-sky-400 font-bold text-sm">AQI {aqiScore}</span>
+                    <span className="text-slate-500 text-[9px] block">{aqiData?.status || 'Moderate'}</span>
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Surface Water NDWI:</span>
-                    <span className="text-sky-400 font-bold flex items-center gap-1">
-                      <span>↓ 8.4%</span>
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">AQI Particulate:</span>
-                    <span className="text-amber-400 font-bold flex items-center gap-1">
-                      <span>↑ 18.6%</span>
-                    </span>
+
+                  {/* Metric 4: Water Bodies */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-purple-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">💧 Water Reserves</span>
+                    <span className="text-purple-400 font-bold text-sm">↓ 8.4%</span>
+                    <span className="text-slate-500 text-[9px] block">Lake & river seasonal shift</span>
                   </div>
                 </div>
               </div>
 
-              {/* Time Series Multi-Spectral Trend Strip */}
-              <div className="space-y-2">
-                <div className="text-[10px] font-mono uppercase font-bold text-slate-400 flex items-center justify-between">
-                  <span>Temporal Multi-Spectral Trend</span>
-                  <span className="text-emerald-400">R² = 0.94</span>
-                </div>
-
-                <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800">
-                  <div className="flex items-end justify-between h-14 gap-1.5 pt-2">
-                    {[
-                      { yr: '18', val: 74, color: 'bg-emerald-500' },
-                      { yr: '20', val: 71, color: 'bg-teal-500' },
-                      { yr: '22', val: 68, color: 'bg-amber-500' },
-                      { yr: '24', val: 64, color: 'bg-orange-500' },
-                      { yr: '26', val: 61, color: 'bg-rose-500' }
-                    ].map((b) => (
-                      <div key={b.yr} className="flex-1 flex flex-col items-center gap-1 h-full justify-end">
-                        <div 
-                          className={`w-full rounded-t-sm ${b.color} transition-all duration-500`}
-                          style={{ height: `${(b.val / 80) * 100}%` }}
-                        />
-                        <span className="text-[9px] font-mono text-slate-500">'{b.yr}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="text-center text-[10px] font-mono text-slate-400 mt-2">
-                    NDVI Canopy Index: 0.74 (2018) → 0.61 (2026)
-                  </div>
-                </div>
-              </div>
-
-              {/* Tri-Temporal AI Narrative (Past, Current, Future 2030) */}
-              <div className="space-y-2">
+              {/* Big Location Story Section (Past, Current, Future) */}
+              <div className="space-y-2.5 pt-1">
                 <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400">
-                  <span>AI Change Interpretation</span>
-                  <span className="text-cyan-400">Groq LLaMA-3.1</span>
+                  <span className="text-white font-bold">Story of the City</span>
+                  <button
+                    onClick={() => setStoryModalOpen(true)}
+                    className="text-amber-400 hover:text-amber-300 flex items-center gap-1 font-bold cursor-pointer"
+                  >
+                    <span>Expand Full</span>
+                    <Maximize2 className="w-3 h-3" />
+                  </button>
                 </div>
 
-                <div className="grid grid-cols-3 gap-1">
+                {/* 3 Era Tabs (Past, Current, Future) */}
+                <div className="grid grid-cols-3 gap-1 bg-[#02050e] p-1 rounded-2xl border border-slate-800">
                   {[
-                    { key: "past", label: "2018 Base" },
-                    { key: "present", label: "2026 Current" },
-                    { key: "future", label: "2030 Horizon" }
+                    { key: "past", label: "🏛️ Past" },
+                    { key: "current", label: "🏙️ Current" },
+                    { key: "future", label: "🔮 Future" }
                   ].map((s) => (
                     <button
                       key={s.key}
                       onClick={() => setActiveStoryStage(s.key)}
-                      className={`py-1.5 rounded-xl text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      className={`py-1.5 rounded-xl text-[11px] font-mono font-bold transition-all cursor-pointer ${
                         activeStoryStage === s.key
-                          ? "bg-cyan-500 text-black shadow-xs"
-                          : "bg-slate-900 text-slate-400 hover:text-white"
+                          ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-md font-black"
+                          : "text-slate-400 hover:text-white"
                       }`}
                     >
                       {s.label}
@@ -343,35 +296,50 @@ export const ExplorePage = () => {
                   ))}
                 </div>
 
-                <div className="p-3 rounded-2xl bg-black/60 border border-slate-800 text-slate-300 leading-relaxed text-xs">
-                  {realStoryText ? (
-                    <p>{realStoryText}</p>
-                  ) : (
-                    <p>
-                      {activeStoryStage === "past" && `${currentLocation.name}'s 2018 baseline satellite footprint showed dense vegetative buffers along riparian corridors and contained industrial pockets.`}
-                      {activeStoryStage === "present" && `${currentLocation.name} currently displays +21.4% expansion in built-up surfaces with moderate air quality (AQI ${aqi.aqi}) and peripheral canopy reduction.`}
-                      {activeStoryStage === "future" && `By 2030, XGBoost regression models project outward sprawl along transit vectors, underscoring the necessity of buffer protection.`}
-                    </p>
-                  )}
+                {/* Big Story Preview Box */}
+                <div className="p-3.5 rounded-2xl bg-black/75 border border-slate-800 space-y-2 text-slate-200 text-xs leading-relaxed">
+                  <div className="flex items-center justify-between font-mono text-[10px]">
+                    <span className="text-amber-300 font-bold">{activeStoryContent.era}</span>
+                    <span className="text-slate-500">Copernicus Telemetry</span>
+                  </div>
+
+                  <h4 className="font-bold text-white text-xs sm:text-sm">
+                    {activeStoryContent.title}
+                  </h4>
+
+                  <p className="line-clamp-4 text-slate-300 text-xs leading-relaxed">
+                    {activeStoryContent.paragraphs[0]}
+                  </p>
+
+                  <div className="pt-2 border-t border-slate-800 flex items-center justify-between">
+                    <button
+                      onClick={() => setStoryModalOpen(true)}
+                      className="w-full py-2 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <BookOpen className="w-3.5 h-3.5" />
+                      <span>Read Deep Multi-Paragraph Story</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
             </div>
 
             {/* Panel Footer */}
-            <div className="p-3 border-t border-slate-800 bg-[#040816]/90 flex items-center justify-between">
+            <div className="p-3 border-t border-slate-800 bg-[#040816]/90 flex items-center justify-between gap-2">
               <button
                 onClick={() => {
                   playNarration(
-                    `Change Detection Dossier for ${currentLocation.name}`,
+                    `Historical and Spatial Dossier for ${currentLocation.name}`,
                     currentLocation.name,
-                    realStoryText || `${currentLocation.name} change detection telemetry analysis.`
+                    activeStoryContent.paragraphs.join(" ")
                   );
                 }}
-                className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-lg shadow-cyan-500/20"
+                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-cyan-500/20"
               >
                 <Volume2 className="w-3.5 h-3.5" />
-                <span>Play Audio Narration</span>
+                <span>Play Voice Story</span>
               </button>
             </div>
 
@@ -379,6 +347,129 @@ export const ExplorePage = () => {
         )}
 
       </div>
+
+      {/* ================= 4. BIG DEEP STORY MODAL (INSPIRED BY IMAGE 2 & IMAGE 3) ================= */}
+      {storyModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-xl animate-in fade-in duration-200 select-none">
+          <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl bg-[#060D1E] border-2 border-amber-500/60 shadow-[0_0_60px_rgba(245,158,11,0.25)] flex flex-col overflow-hidden text-white font-sans">
+            
+            {/* Modal Hero Banner with Real Photo */}
+            <div className="relative h-44 sm:h-56 w-full shrink-0 overflow-hidden">
+              <img 
+                src={activeStoryContent.banner || currentLocation.bannerImage}
+                alt={currentLocation.name}
+                className="w-full h-full object-cover filter contrast-110 brightness-75"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#060D1E] via-[#060D1E]/40 to-transparent" />
+              
+              {/* Close Button */}
+              <button 
+                onClick={() => setStoryModalOpen(false)}
+                className="absolute top-4 right-4 p-2 rounded-2xl bg-black/70 hover:bg-black text-slate-300 hover:text-white border border-white/20 transition-all cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Title & Metadata Over Banner */}
+              <div className="absolute bottom-4 left-6 right-6 space-y-1.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="px-3 py-1 rounded-full bg-amber-500 text-black font-mono font-bold text-xs">
+                    {activeStoryContent.era}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-black/70 text-cyan-300 font-mono text-xs border border-cyan-500/30">
+                    {currentLocation.name}, {currentLocation.country}
+                  </span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-black/70 text-slate-300 font-mono text-xs border border-slate-700">
+                    Population: {currentLocation.population}
+                  </span>
+                </div>
+                <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight drop-shadow-md">
+                  {activeStoryContent.title}
+                </h2>
+              </div>
+            </div>
+
+            {/* Modal Tabs: Past, Current, Future */}
+            <div className="px-6 py-3 border-b border-slate-800 bg-[#040816]/95 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-2 p-1 rounded-2xl bg-black/60 border border-slate-800 text-xs font-mono">
+                {[
+                  { key: "past", label: "🏛️ Past Heritage (Origins)" },
+                  { key: "current", label: "🏙️ Current Reality (2018–2026)" },
+                  { key: "future", label: "🔮 Future Horizon (2035 ML)" }
+                ].map((t) => (
+                  <button
+                    key={t.key}
+                    onClick={() => setActiveStoryStage(t.key)}
+                    className={`px-4 py-2 rounded-xl font-bold transition-all cursor-pointer ${
+                      activeStoryStage === t.key
+                        ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg shadow-amber-500/20"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Quick Play Audio Button */}
+              <button
+                onClick={() => {
+                  playNarration(
+                    `${activeStoryContent.title} for ${currentLocation.name}`,
+                    currentLocation.name,
+                    activeStoryContent.paragraphs.join(" ")
+                  );
+                }}
+                className="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs flex items-center gap-2 shadow-lg shadow-cyan-500/25 transition-all cursor-pointer"
+              >
+                <Play className="w-3.5 h-3.5 fill-black" />
+                <span>Listen to Voice Narration</span>
+              </button>
+            </div>
+
+            {/* Modal Scrollable Body: Multi-Paragraph Story & Highlights */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              
+              {/* Highlights Strip */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {activeStoryContent.highlights.map((h, idx) => (
+                  <div 
+                    key={idx}
+                    className="p-3 rounded-2xl bg-[#030612] border border-amber-500/30 text-xs font-sans text-slate-200 flex items-start gap-2.5"
+                  >
+                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                    <span>{h}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Full Multi-Paragraph Narrative */}
+              <div className="space-y-4 font-sans text-sm sm:text-base text-slate-200 leading-relaxed">
+                {activeStoryContent.paragraphs.map((p, idx) => (
+                  <p key={idx} className="p-4 rounded-2xl bg-black/40 border border-slate-800/80 leading-loose">
+                    {p}
+                  </p>
+                ))}
+              </div>
+
+            </div>
+
+            {/* Modal Bottom Action Strip */}
+            <div className="p-4 border-t border-slate-800 bg-[#040816]/95 flex items-center justify-between gap-4">
+              <span className="text-xs font-mono text-slate-400 hidden sm:inline">
+                GeoVisionAI Planetary Synthesis Engine • Supervised XGBoost + Sentinel-2
+              </span>
+              <button
+                onClick={() => setStoryModalOpen(false)}
+                className="px-6 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono font-bold text-xs transition-colors cursor-pointer ml-auto"
+              >
+                Close Story View
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* Spatial Evidence Modal (When user clicks Inspect Algorithmic Evidence) */}
       {evidenceModalData && (

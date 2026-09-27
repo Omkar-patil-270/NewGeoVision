@@ -1,54 +1,33 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Earth3DViewer } from '../components/earth/Earth3DViewer';
-import { SatelliteTimeMachine } from '../components/visual/SatelliteTimeMachine';
 import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
-import { AIGeoStoryCinematic } from '../components/visual/AIGeoStoryCinematic';
 import { locationService } from '../services/locationService';
-import { storyService } from '../services/storyService';
-import { predictionService } from '../services/predictionService';
-import { weatherService } from '../services/weatherService';
 import { airQualityService } from '../services/airQualityService';
 import { apiClient } from '../services/apiClient';
 import { 
-  Search, MapPin, Globe, Sparkles, Volume2, TrendingUp, 
-  X, ChevronDown, ChevronUp, Compass, ArrowRight, Wind, 
-  Droplets, Thermometer, Users, BookOpen, Layers, CheckCircle2, 
-  Loader2, Clock, GitCompare, Sliders, Play, Building, ShieldCheck, 
-  Maximize2, Eye, Activity
+  Search, MapPin, Sparkles, Volume2, TrendingUp, 
+  X, ChevronDown, ChevronUp, Droplets, Thermometer, 
+  Users, Layers, CheckCircle2, Loader2, GitCompare, 
+  ShieldCheck, Activity, Satellite
 } from 'lucide-react';
 
 export const ExplorePage = () => {
   const { 
     currentLocation, 
     selectLocation, 
-    setCurrentPage, 
     playNarration,
-    activeVisualModule,
-    setActiveVisualModule,
     setGeoAIChatOpen
   } = useApp();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [panelOpen, setPanelOpen] = useState(true); // Right-hand 20-25% panel
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
-  const [currentYear, setCurrentYear] = useState(2026);
-  const [isPlayingTimelapse, setIsPlayingTimelapse] = useState(false);
   const [evidenceModalData, setEvidenceModalData] = useState(null);
   const [realStoryText, setRealStoryText] = useState(null);
   const [activeStoryStage, setActiveStoryStage] = useState("present");
 
   const allLocations = locationService.getAllLocations();
-  const weather = weatherService.getWeatherData(currentLocation.id);
   const aqi = airQualityService.getAQIData(currentLocation.id);
-
-  // Normalize active visual module to 4 core streamlined modules
-  useEffect(() => {
-    if (!["earth", "timemachine", "changedetection", "story"].includes(activeVisualModule)) {
-      setActiveVisualModule("earth");
-    }
-  }, [activeVisualModule, setActiveVisualModule]);
 
   // Fetch real Groq LLaMA-3.1 narrative for the selected city
   useEffect(() => {
@@ -117,23 +96,15 @@ export const ExplorePage = () => {
     }
   };
 
-  const quickFlyList = ["Kolhapur", "Mumbai", "Pune", "Tokyo", "Paris", "New York", "London", "Cairo"];
-
-  // 4 Core Streamlined Visual Modules (Simple, Fast, Intuitive)
-  const VISUAL_MODULES = [
-    { key: "earth", label: "01 — 🌍 3D Earth", icon: Globe },
-    { key: "timemachine", label: "02 — 🛰️ Time Machine", icon: Clock },
-    { key: "changedetection", label: "03 — 🔍 Change Detection", icon: GitCompare },
-    { key: "story", label: "04 — 🎬 AI GeoStory", icon: Play }
-  ];
+  const quickFlyList = ["Kolhapur", "Mumbai", "Pune", "Delhi", "Tokyo", "Paris", "London", "Cairo"];
 
   return (
     <div className="h-[calc(100vh-65px)] w-full relative overflow-hidden bg-[#030712] select-none text-white font-sans flex flex-col">
       
-      {/* ================= 1. TOP MODULE NAVIGATION BAR ================= */}
-      <div className="z-30 shrink-0 bg-[#040816]/95 backdrop-blur-md border-b border-slate-800/90 px-4 py-2 flex flex-wrap items-center justify-between gap-3 shadow-xl">
+      {/* ================= 1. TOP HEADER & CHANGE DETECTION STATUS BAR ================= */}
+      <div className="z-30 shrink-0 bg-[#040816]/95 backdrop-blur-md border-b border-slate-800/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-xl">
         
-        {/* Left: Brand / Title */}
+        {/* Left: Location & Coordinates */}
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
@@ -146,36 +117,28 @@ export const ExplorePage = () => {
           </div>
         </div>
 
-        {/* Center: The Visual Module Switcher Tabs (Matching the 7 Modules) */}
-        <div className="flex items-center gap-1 overflow-x-auto no-scrollbar py-1">
-          {VISUAL_MODULES.map((m) => {
-            const IconC = m.icon;
-            const isActive = activeVisualModule === m.key;
-            return (
-              <button
-                key={m.key}
-                onClick={() => setActiveVisualModule(m.key)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
-                  isActive
-                    ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/25 scale-102"
-                    : "bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800"
-                }`}
-              >
-                <IconC className="w-3.5 h-3.5" />
-                <span>{m.label}</span>
-              </button>
-            );
-          })}
+        {/* Center: Dedicated Change Detection Mission Badge */}
+        <div className="flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/10">
+            <GitCompare className="w-4 h-4 text-cyan-400" />
+            <span>AI CHANGE DETECTION ENGINE</span>
+            <span className="text-slate-500">|</span>
+            <span className="text-emerald-400 text-[11px] font-semibold">2018 ➔ 2026 Dual Telemetry</span>
+          </div>
+          <span className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-400">
+            <Satellite className="w-3.5 h-3.5 text-cyan-400" />
+            Copernicus Sentinel-2 MSI • 10m Ground Pixel
+          </span>
         </div>
 
-        {/* Right: AI Geo-Agent Trigger & Fly-to Search */}
+        {/* Right: AI Geo-Agent Trigger & Drawer Toggle */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => setGeoAIChatOpen(true)}
             className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 hover:scale-105 transition-all cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5 fill-black" />
-            <span>04 — AI Geo-Agent</span>
+            <span>AI Geo-Agent</span>
           </button>
 
           <button
@@ -193,73 +156,16 @@ export const ExplorePage = () => {
 
       </div>
 
-      {/* ================= 2. MAIN 75–80% VISUAL CANVAS ================= */}
+      {/* ================= 2. MAIN CHANGE DETECTION CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* VIEW 1: 3D Earth / Cesium / WebGL */}
-        {activeVisualModule === "earth" && (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <Earth3DViewer 
-              fullBleed={true}
-              showInternalPanel={false}
-              onLocationSelect={(loc) => selectLocation(loc.id)}
-            />
-          </div>
-        )}
-
-        {/* VIEW 2: Satellite Time Machine (Scrubber & Dynamic Visuals) */}
-        {activeVisualModule === "timemachine" && (
-          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
-            <Earth3DViewer 
-              fullBleed={true}
-              showInternalPanel={false}
-              onLocationSelect={(loc) => selectLocation(loc.id)}
-            />
-            
-            {/* Floating Satellite Time Machine Scrubber Bar at Bottom */}
-            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
-              <SatelliteTimeMachine
-                currentLocation={currentLocation}
-                currentYear={currentYear}
-                onYearChange={setCurrentYear}
-                isPlaying={isPlayingTimelapse}
-                onTogglePlay={() => setIsPlayingTimelapse(!isPlayingTimelapse)}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* VIEW 3: AI Change Detection Split Wipe (Before vs After 2018–2026) */}
-        {activeVisualModule === "changedetection" && (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <AIChangeDetectionSplit
-              currentLocation={currentLocation}
-              onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
-            />
-          </div>
-        )}
-
-        {/* VIEW 4: AI GeoStory Cinematic Studio */}
-        {activeVisualModule === "story" && (
-          <div className="absolute inset-0 w-full h-full z-0 flex flex-col justify-end">
-            <Earth3DViewer 
-              fullBleed={true}
-              showInternalPanel={false}
-              onLocationSelect={(loc) => selectLocation(loc.id)}
-            />
-
-            {/* Floating Cinematic Player */}
-            <div className="absolute bottom-4 left-4 right-4 sm:left-6 sm:right-6 max-w-4xl mx-auto z-20">
-              <AIGeoStoryCinematic
-                currentLocation={currentLocation}
-                onSceneChange={(scene) => {
-                  console.log("Scene advanced:", scene.title);
-                }}
-                onClose={() => setActiveVisualModule("earth")}
-              />
-            </div>
-          </div>
-        )}
+        {/* Full-Screen High-Precision Change Detection Split */}
+        <div className="absolute inset-0 w-full h-full z-0">
+          <AIChangeDetectionSplit
+            currentLocation={currentLocation}
+            onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
+          />
+        </div>
 
         {/* Floating Quick Fly Pills & Search Bar (Centered at Top) */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
@@ -278,9 +184,9 @@ export const ExplorePage = () => {
               />
               <button
                 type="submit"
-                className="px-3 py-1 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2"
+                className="px-3 py-1 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2 cursor-pointer"
               >
-                {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Reach"}
+                {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Analyze"}
               </button>
             </form>
 
@@ -293,7 +199,7 @@ export const ExplorePage = () => {
                     onClick={() => handleQuickFly(c)}
                     className={`px-2.5 py-0.5 rounded-full transition-all backdrop-blur-md cursor-pointer ${
                       isCurrent
-                        ? 'bg-cyan-500 text-black font-bold border border-cyan-400'
+                        ? 'bg-cyan-500 text-black font-bold border border-cyan-400 shadow-md shadow-cyan-500/25'
                         : 'bg-black/60 text-slate-300 border border-slate-800 hover:text-white'
                     }`}
                   >
@@ -305,7 +211,7 @@ export const ExplorePage = () => {
           </div>
         </div>
 
-        {/* ================= 3. COLLAPSIBLE 20–25% INTELLIGENCE PANEL ================= */}
+        {/* ================= 3. COLLAPSIBLE INTELLIGENCE PANEL ================= */}
         {panelOpen && (
           <div className="absolute top-3 right-4 bottom-4 z-20 w-80 sm:w-96 rounded-3xl bg-[#060D1E]/95 backdrop-blur-2xl border-2 border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden text-xs">
             
@@ -338,48 +244,48 @@ export const ExplorePage = () => {
             {/* Scrollable Content (Key Insights, Time-Series Trends, AI Explanation) */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               
-              {/* Key Insights (Matching Image 1: NDVI -12.8%, Urban +21.4%, etc.) */}
+              {/* Key Insights (2018–2026 Shift) */}
               <div className="space-y-2">
                 <div className="text-[10px] font-mono uppercase font-bold text-cyan-400 flex items-center justify-between">
-                  <span>Key Insights (2018–2026 Shift)</span>
-                  <span className="text-slate-500">Sentinel-2 Telemetry</span>
+                  <span>Change Detection Telemetry (2018–2026)</span>
+                  <span className="text-slate-500">Sentinel-2 MSI</span>
                 </div>
 
                 <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800 space-y-2 font-mono text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">NDVI (Canopy):</span>
+                    <span className="text-slate-400">NDVI Green Canopy:</span>
                     <span className="text-rose-400 font-bold flex items-center gap-1">
                       <span>↓ 12.8%</span>
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Urban Area:</span>
+                    <span className="text-slate-400">Built-Up Impervious:</span>
                     <span className="text-orange-400 font-bold flex items-center gap-1">
                       <span>↑ 21.4%</span>
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Population:</span>
+                    <span className="text-slate-400">Demographic Shift:</span>
                     <span className="text-purple-400 font-bold flex items-center gap-1">
                       <span>↑ 14.2%</span>
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">AQI Index:</span>
-                    <span className="text-amber-400 font-bold flex items-center gap-1">
-                      <span>↑ 18.6%</span>
+                    <span className="text-slate-400">Surface Water NDWI:</span>
+                    <span className="text-sky-400 font-bold flex items-center gap-1">
+                      <span>↓ 8.4%</span>
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Monsoon Rainfall:</span>
-                    <span className="text-sky-400 font-bold flex items-center gap-1">
-                      <span>↓ 6.3%</span>
+                    <span className="text-slate-400">AQI Particulate:</span>
+                    <span className="text-amber-400 font-bold flex items-center gap-1">
+                      <span>↑ 18.6%</span>
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Time Series Mini Chart Strip */}
+              {/* Time Series Multi-Spectral Trend Strip */}
               <div className="space-y-2">
                 <div className="text-[10px] font-mono uppercase font-bold text-slate-400 flex items-center justify-between">
                   <span>Temporal Multi-Spectral Trend</span>
@@ -389,7 +295,6 @@ export const ExplorePage = () => {
                 <div className="p-3 rounded-2xl bg-[#030612] border border-slate-800">
                   <div className="flex items-end justify-between h-14 gap-1.5 pt-2">
                     {[
-                      { yr: '16', val: 78, color: 'bg-emerald-500' },
                       { yr: '18', val: 74, color: 'bg-emerald-500' },
                       { yr: '20', val: 71, color: 'bg-teal-500' },
                       { yr: '22', val: 68, color: 'bg-amber-500' },
@@ -406,7 +311,7 @@ export const ExplorePage = () => {
                     ))}
                   </div>
                   <div className="text-center text-[10px] font-mono text-slate-400 mt-2">
-                    NDVI Canopy Decline: 0.78 (2016) → 0.61 (2026)
+                    NDVI Canopy Index: 0.74 (2018) → 0.61 (2026)
                   </div>
                 </div>
               </div>
@@ -414,20 +319,20 @@ export const ExplorePage = () => {
               {/* Tri-Temporal AI Narrative (Past, Current, Future 2030) */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400">
-                  <span>AI Synthesized Narrative</span>
+                  <span>AI Change Interpretation</span>
                   <span className="text-cyan-400">Groq LLaMA-3.1</span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-1">
                   {[
-                    { key: "past", label: "Past" },
-                    { key: "present", label: "Current" },
-                    { key: "future", label: "2030" }
+                    { key: "past", label: "2018 Base" },
+                    { key: "present", label: "2026 Current" },
+                    { key: "future", label: "2030 Horizon" }
                   ].map((s) => (
                     <button
                       key={s.key}
                       onClick={() => setActiveStoryStage(s.key)}
-                      className={`py-1 rounded-xl text-[10px] font-mono font-bold transition-all cursor-pointer ${
+                      className={`py-1.5 rounded-xl text-[10px] font-mono font-bold transition-all cursor-pointer ${
                         activeStoryStage === s.key
                           ? "bg-cyan-500 text-black shadow-xs"
                           : "bg-slate-900 text-slate-400 hover:text-white"
@@ -443,9 +348,9 @@ export const ExplorePage = () => {
                     <p>{realStoryText}</p>
                   ) : (
                     <p>
-                      {activeStoryStage === "past" && `${currentLocation.name}'s origins trace back over a millennium as an agrarian trading node nestled along the river basin.`}
-                      {activeStoryStage === "present" && `${currentLocation.name} currently exhibits active industrial casting corridors, with moderate air quality (AQI ${aqi.aqi}) and 42.4% impervious built-up density.`}
-                      {activeStoryStage === "future" && `By 2030, predictive models project +38% urban sprawl toward peripheral agricultural talukas, requiring green buffer bylaws.`}
+                      {activeStoryStage === "past" && `${currentLocation.name}'s 2018 baseline satellite footprint showed dense vegetative buffers along riparian corridors and contained industrial pockets.`}
+                      {activeStoryStage === "present" && `${currentLocation.name} currently displays +21.4% expansion in built-up surfaces with moderate air quality (AQI ${aqi.aqi}) and peripheral canopy reduction.`}
+                      {activeStoryStage === "future" && `By 2030, XGBoost regression models project outward sprawl along transit vectors, underscoring the necessity of buffer protection.`}
                     </p>
                   )}
                 </div>
@@ -458,15 +363,15 @@ export const ExplorePage = () => {
               <button
                 onClick={() => {
                   playNarration(
-                    `Transformation Dossier for ${currentLocation.name}`,
+                    `Change Detection Dossier for ${currentLocation.name}`,
                     currentLocation.name,
-                    realStoryText || `${currentLocation.name} geospatial intelligence report.`
+                    realStoryText || `${currentLocation.name} change detection telemetry analysis.`
                   );
                 }}
-                className="w-full py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer"
+                className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-lg shadow-cyan-500/20"
               >
                 <Volume2 className="w-3.5 h-3.5" />
-                <span>Play Voice Narration</span>
+                <span>Play Audio Narration</span>
               </button>
             </div>
 
@@ -515,7 +420,7 @@ export const ExplorePage = () => {
 
             <button
               onClick={() => setEvidenceModalData(null)}
-              className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase tracking-wider"
+              className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-mono font-bold text-xs uppercase tracking-wider cursor-pointer"
             >
               Close Evidence View
             </button>

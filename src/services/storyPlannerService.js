@@ -135,7 +135,7 @@ export function createDeterministicStoryPlan({
   if (!loc) loc = "Kolhapur";
 
   // Resolve rich location metadata & verified images
-  const foundLoc = locationService.searchLocations(loc)[0] || locationService.getLocation(loc);
+  const foundLoc = locationService.searchLocations(loc)[0] || locationService.getLocationById(loc);
   const locData = foundLoc || {
     id: "custom",
     name: loc,

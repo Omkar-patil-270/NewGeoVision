@@ -1024,6 +1024,10 @@ export const locationService = {
     return GLOBAL_LOCATIONS.find(loc => loc.id === id) || GLOBAL_LOCATIONS[0];
   },
 
+  getLocation: (id) => {
+    return locationService.getLocationById(id);
+  },
+
   searchLocations: (query, typeFilter = null) => {
     const all = locationService.getAllLocations();
     if (!query || !query.trim()) {

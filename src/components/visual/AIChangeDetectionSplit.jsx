@@ -165,7 +165,7 @@ export const AIChangeDetectionSplit = ({
 
   // Derive location-specific imagery and metadata
   const locationObj = useMemo(() => {
-    return locationService.getLocation(currentLocation?.id) || currentLocation;
+    return locationService.getLocationById(currentLocation?.id) || currentLocation;
   }, [currentLocation]);
 
   // Satellite and photographic assets

@@ -21,13 +21,51 @@ export const getSuggestedQuestions = (locationName = "Kolhapur") => [
  * Generates an instant, highly accurate, data-grounded answer for any place question.
  */
 export function generateLocalPlaceAnswer(question = "", location = {}, telemetry = {}) {
-  const q = question.toLowerCase();
+  const rawQ = (question || "").trim();
+  const q = rawQ.toLowerCase();
   const name = location.name || "this location";
   const country = location.country || "India";
   const pop = location.population || telemetry.population?.current || "3.85 Million";
   const aqi = telemetry.aqi?.current || location.aqi || 84;
   const gwDepth = telemetry.groundwater?.current_depth_mbgl || 7.2;
   const gwCat = telemetry.groundwater?.category || "Safe";
+
+  // 0. Natural Greetings & Casual Conversation (e.g. "hi", "whats up", "how are you")
+  if (/^(hi|hello|hey|whats up|what's up|sup|yo|good morning|good evening|good afternoon|greetings)\b/i.test(q) || q === "hi" || q === "hello" || q === "hey" || q === "whats up" || q === "what's up") {
+    return {
+      topic: "Casual Chat",
+      icon: "👋",
+      badge: "AI Companion",
+      answer: `Hey! What's up? I'm GeoBot, your AI companion. I can answer any questions you have, chat about our planet, explore cities, or analyze satellite changes. How's your day going? What can I help you with?`
+    };
+  }
+
+  if (/how are you|how r u|how are u|how's it going|hows it going/i.test(q)) {
+    return {
+      topic: "Friendly Chat",
+      icon: "😊",
+      badge: "AI Companion",
+      answer: `I'm doing great, thank you for asking! I'm here and ready to help you explore any city, check environmental data, or answer whatever questions you have. How are you doing?`
+    };
+  }
+
+  if (/who are you|what are you|what can you do|your name|introduce yourself/i.test(q)) {
+    return {
+      topic: "About GeoBot",
+      icon: "🤖",
+      badge: "AI Companion",
+      answer: `I am GeoBot, your interactive AI assistant on GeoVision! You can chat with me about anything—ask casual questions, explore any city or country on Earth, check satellite change detection (2018–2026), or predict future 2035 environmental situations. Feel free to ask me whatever is on your mind!`
+    };
+  }
+
+  if (/^(thanks|thank you|awesome|cool|great|nice|ok|okay|got it|cool thanks)\b/i.test(q)) {
+    return {
+      topic: "You're Welcome!",
+      icon: "✨",
+      badge: "AI Companion",
+      answer: `You're very welcome! If there's anything else you'd like to ask or explore, just let me know.`
+    };
+  }
 
   // 1. Water / Groundwater / Lakes / Hydrology
   if (/water|groundwater|lake|river|aquifer|well|hydrolog|cgwb|depth|recharge/.test(q)) {

@@ -7,8 +7,8 @@ import { getDeepStoryForLocation } from '../services/deepStoryService';
 import { 
   Search, MapPin, Sparkles, Volume2, TrendingUp, 
   X, ChevronDown, ChevronUp, Droplets, Thermometer, 
-  Users, Layers, CheckCircle2, Loader2, GitCompare, 
-  ShieldCheck, Activity, Satellite, BookOpen, Maximize2,
+  Users, Layers, CheckCircle2, Loader2, 
+  ShieldCheck, Activity, BookOpen, Maximize2,
   Calendar, ArrowRight, Play, Check
 } from 'lucide-react';
 
@@ -86,19 +86,7 @@ export const ExplorePage = () => {
           </div>
         </div>
 
-        {/* Center: Dedicated Change Detection Mission Badge */}
-        <div className="flex items-center gap-2">
-          <div className="px-3.5 py-1.5 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 text-cyan-300 font-mono text-xs font-bold flex items-center gap-2 shadow-lg shadow-cyan-500/10">
-            <GitCompare className="w-4 h-4 text-cyan-400" />
-            <span>AI CHANGE DETECTION ENGINE</span>
-            <span className="text-slate-500">|</span>
-            <span className="text-emerald-400 text-[11px] font-semibold">2018 ➔ 2026 Dual Telemetry</span>
-          </div>
-          <span className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-900 border border-slate-800 text-[11px] font-mono text-slate-400">
-            <Satellite className="w-3.5 h-3.5 text-cyan-400" />
-            Copernicus Sentinel-2 MSI • 10m Ground Pixel
-          </span>
-        </div>
+
 
         {/* Right: Big Story Modal Button + AI Geo-Agent Trigger & Drawer Toggle */}
         <div className="flex items-center gap-2">

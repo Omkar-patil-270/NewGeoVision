@@ -4,13 +4,12 @@ import { EarthHero3D } from '../components/home/EarthHero3D';
 import { SoundToggle } from '../components/common/SoundToggle';
 import { GlobalSearchExperience } from '../components/home/GlobalSearchExperience';
 import { 
-  Compass, Sparkles, ArrowRight, Target
+  Compass, Sparkles, ArrowRight
 } from 'lucide-react';
 
 export const HomePage = () => {
   const { 
-    setCurrentPage,
-    setObjectivesModalOpen
+    setCurrentPage
   } = useApp();
 
   return (
@@ -101,15 +100,6 @@ export const HomePage = () => {
           >
             <Sparkles className="w-4 h-4 text-cyan-400" />
             <span>DISCOVER A STORY</span>
-          </button>
-
-          <button
-            onClick={() => setObjectivesModalOpen(true)}
-            className="px-6 py-3 rounded-2xl bg-cyan-950/60 hover:bg-cyan-900/80 text-cyan-300 font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-cyan-500/40 shadow-lg shadow-cyan-500/10 backdrop-blur-md transition-all hover:scale-[1.03] cursor-pointer"
-            title="View RIT Capstone Objectives & Advanced Tech Roadmap"
-          >
-            <Target className="w-4 h-4 text-cyan-400" />
-            <span>PROJECT OBJECTIVES</span>
           </button>
         </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
+import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
 import { locationService } from '../services/locationService';
 import { airQualityService } from '../services/airQualityService';
@@ -9,7 +10,7 @@ import {
   X, ChevronDown, ChevronUp, Droplets, Thermometer, 
   Users, Layers, CheckCircle2, Loader2, 
   ShieldCheck, Activity, BookOpen, Maximize2,
-  Calendar, ArrowRight, Play, Check
+  Calendar, ArrowRight, Play, Check, Globe, GitCompare
 } from 'lucide-react';
 
 export const ExplorePage = () => {
@@ -20,6 +21,7 @@ export const ExplorePage = () => {
     setGeoAIChatOpen
   } = useApp();
 
+  const [activeViewMode, setActiveViewMode] = useState("globe"); // "globe" (default 3D Earth) or "change"
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
@@ -88,6 +90,33 @@ export const ExplorePage = () => {
 
 
 
+        {/* Center: View Switcher (3D Earth Globe vs Change Detection) */}
+        <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#030614] border border-slate-800 text-xs font-mono font-bold shadow-md">
+          <button
+            onClick={() => setActiveViewMode("globe")}
+            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeViewMode === "globe"
+                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>🌍 3D Earth Globe</span>
+          </button>
+
+          <button
+            onClick={() => setActiveViewMode("change")}
+            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeViewMode === "change"
+                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <GitCompare className="w-3.5 h-3.5" />
+            <span>🔍 Change Detection</span>
+          </button>
+        </div>
+
         {/* Right: Big Story Modal Button + AI Geo-Agent Trigger & Drawer Toggle */}
         <div className="flex items-center gap-2">
           <button
@@ -121,16 +150,26 @@ export const ExplorePage = () => {
 
       </div>
 
-      {/* ================= 2. MAIN CHANGE DETECTION CANVAS ================= */}
+      {/* ================= 2. MAIN 3D EARTH GLOBE / VISUAL CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* Full-Screen High-Precision Change Detection Split */}
-        <div className="absolute inset-0 w-full h-full z-0">
-          <AIChangeDetectionSplit
-            currentLocation={currentLocation}
-            onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
-          />
-        </div>
+        {/* Full-Screen Interactive 3D Earth Globe or Change Detection Split */}
+        {activeViewMode === "globe" ? (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={false}
+              onLocationSelect={(loc) => selectLocation(loc.id)}
+            />
+          </div>
+        ) : (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <AIChangeDetectionSplit
+              currentLocation={currentLocation}
+              onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
+            />
+          </div>
+        )}
 
         {/* Floating Quick Fly Pills & Search Bar (Centered at Top) */}
         <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">

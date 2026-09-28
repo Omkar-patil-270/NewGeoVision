@@ -512,13 +512,13 @@ export const Earth3DViewer = ({
       <div className="absolute top-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 pointer-events-none">
         
         {/* Switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-white/95 backdrop-blur-md border border-stone-200 shadow-xl pointer-events-auto">
+        <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#040816]/95 backdrop-blur-md border border-slate-800 shadow-xl pointer-events-auto">
           <button
             onClick={() => setViewMode("cesium")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
               viewMode === "cesium"
-                ? "bg-primary text-white font-bold shadow-xs"
-                : "text-stone-600 hover:text-stone-900"
+                ? "bg-cyan-500 text-black font-bold shadow-xs"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             <span>🌍 Cesium 3D Earth</span>
@@ -527,8 +527,8 @@ export const Earth3DViewer = ({
             onClick={() => setViewMode("3d")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
               viewMode === "3d"
-                ? "bg-primary text-white font-bold shadow-xs"
-                : "text-stone-600 hover:text-stone-900"
+                ? "bg-cyan-500 text-black font-bold shadow-xs"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
@@ -538,8 +538,8 @@ export const Earth3DViewer = ({
             onClick={() => setViewMode("satellite")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
               viewMode === "satellite"
-                ? "bg-primary text-white font-bold shadow-xs"
-                : "text-stone-600 hover:text-stone-900"
+                ? "bg-cyan-500 text-black font-bold shadow-xs"
+                : "text-slate-400 hover:text-white"
             }`}
           >
             <span>🛰️ 2D Satellite</span>
@@ -547,8 +547,8 @@ export const Earth3DViewer = ({
         </div>
 
         {/* Live Status Pill */}
-        <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/95 backdrop-blur-md border border-orange-200 text-stone-800 text-xs font-medium shadow-md pointer-events-auto">
-          <span className="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+        <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#040816]/95 backdrop-blur-md border border-cyan-500/40 text-cyan-300 text-xs font-mono shadow-md pointer-events-auto">
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
           <span><strong>Cesium Ion 3D Globe:</strong> Real satellite telemetry &amp; live heatmaps</span>
         </div>
 
@@ -556,7 +556,7 @@ export const Earth3DViewer = ({
 
       {/* Floating Reached Target Pill */}
       {reachedAlert && (
-        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 px-4 py-2 rounded-full bg-stone-900/90 text-white text-xs font-mono border border-orange-400 shadow-2xl backdrop-blur-md flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-30 px-4 py-2 rounded-full bg-slate-900/90 text-white text-xs font-mono border border-cyan-400 shadow-2xl backdrop-blur-md flex items-center gap-2 animate-in fade-in zoom-in-95 duration-200">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
           <span>Reached: <strong>{reachedAlert.name}</strong> [{reachedAlert.lat}°N, {reachedAlert.lng}°E]</span>
         </div>
@@ -568,29 +568,29 @@ export const Earth3DViewer = ({
           <button
             onClick={handleZoomIn}
             title="Zoom In (or scroll wheel)"
-            className="w-8 h-8 rounded-xl bg-white/90 hover:bg-white text-stone-700 border border-stone-200 flex items-center justify-center shadow-md transition-transform hover:scale-105"
+            className="w-8 h-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
           >
             <ZoomIn className="w-4 h-4" />
           </button>
           <button
             onClick={handleZoomOut}
             title="Zoom Out (or scroll wheel)"
-            className="w-8 h-8 rounded-xl bg-white/90 hover:bg-white text-stone-700 border border-stone-200 flex items-center justify-center shadow-md transition-transform hover:scale-105"
+            className="w-8 h-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
           >
             <ZoomOut className="w-4 h-4" />
           </button>
           <button
             onClick={handleResetView}
             title="Reset North Orientation"
-            className="w-8 h-8 rounded-xl bg-white/90 hover:bg-white text-stone-700 border border-stone-200 flex items-center justify-center shadow-md transition-transform hover:scale-105"
+            className="w-8 h-8 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer"
           >
             <RotateCcw className="w-3.5 h-3.5" />
           </button>
           <button
             onClick={() => setIsAutoSpinning(!isAutoSpinning)}
             title={isAutoSpinning ? "Pause Auto-Spin" : "Resume Auto-Spin"}
-            className={`w-8 h-8 rounded-xl border flex items-center justify-center shadow-md transition-transform hover:scale-105 ${
-              isAutoSpinning ? "bg-orange-500 text-white border-orange-400" : "bg-white/90 text-stone-700 border-stone-200"
+            className={`w-8 h-8 rounded-xl border flex items-center justify-center shadow-md transition-transform hover:scale-105 cursor-pointer ${
+              isAutoSpinning ? "bg-cyan-500 text-black border-cyan-400 font-bold" : "bg-slate-900/90 text-slate-300 border-slate-800"
             }`}
           >
             {isAutoSpinning ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}

@@ -171,12 +171,12 @@ export const AIChangeDetectionSplit = ({
   // Satellite and photographic assets
   const satelliteBaselineImage = useMemo(() => {
     // High-resolution real satellite texture
-    return "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2400&q=85";
+    return "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=2400&q=85";
   }, []);
 
   const satellitePresentImage = useMemo(() => {
     // Multi-spectral contrast enhanced present satellite view
-    return "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2400&q=85";
+    return "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=2400&q=85";
   }, []);
 
   // Compute hotspots for the current location (or dynamic fallback for any global coordinate)

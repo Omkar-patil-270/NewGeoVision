@@ -211,8 +211,55 @@ export const GeoAIAssistant = () => {
   const [pipelineStatus, setPipelineStatus] = useState(null);
   const [isListening, setIsListening] = useState(false);
   const [speakingMsgId, setSpeakingMsgId] = useState(null);
+  const [showSampleQuestions, setShowSampleQuestions] = useState(false);
   const messagesEndRef = useRef(null);
   const recognitionRef = useRef(null);
+
+  // 7 Commonly asked sample questions dynamically tailored to the active location
+  const sampleQuestions = [
+    {
+      id: "vegetation",
+      icon: "🌿",
+      shortText: `How has green cover changed in ${currentLocation.name}?`,
+      query: `How has green cover and vegetation changed in ${currentLocation.name}?`
+    },
+    {
+      id: "urban",
+      icon: "🏙️",
+      shortText: `What is the urban growth rate in ${currentLocation.name}?`,
+      query: `What is the urban growth rate and built-up sprawl in ${currentLocation.name}?`
+    },
+    {
+      id: "groundwater",
+      icon: "💧",
+      shortText: `What is the groundwater table status?`,
+      query: `What is the current groundwater depth and water table in ${currentLocation.name}?`
+    },
+    {
+      id: "air_quality",
+      icon: "💨",
+      shortText: `What are the AQI & PM2.5 pollution levels?`,
+      query: `What are the AQI and PM2.5 air pollution levels in ${currentLocation.name}?`
+    },
+    {
+      id: "heat_island",
+      icon: "🌡️",
+      shortText: `Is there an urban heat island effect?`,
+      query: `Is there an urban heat island temperature anomaly in ${currentLocation.name}?`
+    },
+    {
+      id: "prediction_2035",
+      icon: "🔮",
+      shortText: `Predict 2035 situation with ML forecast`,
+      query: `Predict the environmental situation in ${currentLocation.name} in 2035 with ML forecast`
+    },
+    {
+      id: "history",
+      icon: "🏛️",
+      shortText: `What is the history & heritage of ${currentLocation.name}?`,
+      query: `Tell me the historical heritage and story of ${currentLocation.name}`
+    }
+  ];
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -485,6 +532,37 @@ export const GeoAIAssistant = () => {
               </div>
             ))}
 
+            {/* When opening chat, show 7 Commonly Asked Questions */}
+            {messages.length === 1 && (
+              <div className="mt-2 p-3 rounded-2xl bg-cyan-950/20 border border-cyan-500/25 space-y-2 animate-in fade-in duration-300">
+                <div className="flex items-center justify-between pb-1.5 border-b border-cyan-500/20">
+                  <span className="text-[11px] font-bold text-cyan-300 flex items-center gap-1.5 font-mono">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    Commonly Asked Questions:
+                  </span>
+                  <span className="text-[10px] text-slate-500 font-mono">7 Samples • Click to ask</span>
+                </div>
+
+                <div className="grid grid-cols-1 gap-1.5 pt-0.5">
+                  {sampleQuestions.map((q) => (
+                    <button
+                      key={q.id}
+                      type="button"
+                      onClick={() => handleSend(q.query)}
+                      disabled={isProcessing}
+                      className="text-left px-3 py-2 rounded-xl bg-[#091122]/90 hover:bg-cyan-950/60 border border-slate-800/80 hover:border-cyan-500/50 text-slate-300 hover:text-white transition-all text-xs flex items-center justify-between group cursor-pointer shadow-sm active:scale-[0.99]"
+                    >
+                      <div className="flex items-center gap-2.5 overflow-hidden">
+                        <span className="text-sm shrink-0">{q.icon}</span>
+                        <span className="truncate">{q.shortText}</span>
+                      </div>
+                      <ArrowRight className="w-3.5 h-3.5 text-slate-600 group-hover:text-cyan-400 shrink-0 group-hover:translate-x-0.5 transition-all" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Live Processing Pipeline Feedback */}
             {isProcessing && (
               <div className="p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/40 text-cyan-300 text-xs font-mono animate-pulse flex items-center gap-2">
@@ -495,6 +573,45 @@ export const GeoAIAssistant = () => {
 
             <div ref={messagesEndRef} />
           </div>
+
+          {/* Quick Toggle for 7 Sample Questions (Available anytime during conversation) */}
+          {messages.length > 1 && (
+            <div className="px-3 pt-2 pb-1 bg-[#040814] border-t border-slate-800/80 flex items-center justify-between text-[11px]">
+              <button
+                type="button"
+                onClick={() => setShowSampleQuestions(!showSampleQuestions)}
+                className="text-[11px] font-mono text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 hover:underline cursor-pointer"
+              >
+                <Sparkles className="w-3 h-3 text-cyan-400" />
+                <span>{showSampleQuestions ? "Hide 7 Sample Questions" : "💡 7 Commonly Asked Questions"}</span>
+              </button>
+              <span className="text-[10px] text-slate-500 font-mono">or type below</span>
+            </div>
+          )}
+
+          {/* Expandable 7 Sample Questions Tray */}
+          {messages.length > 1 && showSampleQuestions && (
+            <div className="px-3 py-2 bg-[#040814] border-t border-slate-800/60 space-y-1.5 max-h-48 overflow-y-auto">
+              {sampleQuestions.map((q) => (
+                <button
+                  key={q.id}
+                  type="button"
+                  onClick={() => {
+                    setShowSampleQuestions(false);
+                    handleSend(q.query);
+                  }}
+                  disabled={isProcessing}
+                  className="w-full text-left px-2.5 py-1.5 rounded-lg bg-slate-900/90 hover:bg-cyan-950/60 border border-slate-800 hover:border-cyan-500/50 text-slate-300 hover:text-white transition-all text-[11px] flex items-center justify-between group cursor-pointer"
+                >
+                  <div className="flex items-center gap-2 overflow-hidden">
+                    <span className="text-xs shrink-0">{q.icon}</span>
+                    <span className="truncate">{q.shortText}</span>
+                  </div>
+                  <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-cyan-400 shrink-0 group-hover:translate-x-0.5 transition-all" />
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Clean Input Area without Any Forced Suggestion Chips */}
           <div className="p-3 bg-[#040814] border-t border-slate-800">

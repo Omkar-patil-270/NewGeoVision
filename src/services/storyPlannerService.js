@@ -216,8 +216,10 @@ export function createDeterministicStoryPlan({
     caption: `${locData.name} Built-Up Corridor & Transit Axis`
   };
 
-  // Base satellite imagery textures
-  const satelliteTexture = "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2000&q=85";
+  // Base satellite imagery textures (Orbital Earth & High-Res Aerial)
+  const orbitalSatelliteTexture = "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=85";
+  const satelliteTexture = "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=2400&q=85";
+  const satellitePresentTexture = "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=2400&q=85";
 
   // 6. Build Scenes strictly conforming to the requested schema
   const scenes = [];
@@ -237,7 +239,7 @@ export function createDeterministicStoryPlan({
     population: locData.population || "Urban Region",
     imageUrl: bannerImg,
     imageCaption: `${locData.name} Municipal Core & Aerial Perspective`,
-    satelliteUrl: satelliteTexture,
+    satelliteUrl: orbitalSatelliteTexture,
     narration: `We begin high above planet Earth, centering our orbital lens upon ${locData.name}, establishing territorial coordinates [${locData.coordinates?.lat?.toFixed(2)}°N, ${locData.coordinates?.lng?.toFixed(2)}°E] and baseline land classifications before initiating multi-temporal telemetry analysis.`
   });
 
@@ -268,7 +270,7 @@ export function createDeterministicStoryPlan({
     locationName: locData.name,
     imageUrl: bannerImg,
     imageUrlLeft: satelliteTexture,
-    imageUrlRight: satelliteTexture,
+    imageUrlRight: satellitePresentTexture,
     imageCaption: `${sYear} Baseline vs ${eYear} Multi-Spectral Transformation`,
     narration: `Scrubbing across the ${eYear - sYear}-year continuum reveals dynamic morphological shifts across ${locData.name}, identifying rapid anthropogenic alterations in ground cover.`
   });

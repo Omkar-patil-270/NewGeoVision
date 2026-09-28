@@ -20,7 +20,7 @@ import {
   getSuggestedQuestions 
 } from '../../services/placeQAService';
 
-export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntelligence = null }) => {
+export const FilterWiseStoryStudio = ({ initialLocation = null }) => {
   const { currentLocation, selectLocation, playNarration, stopAudio } = useApp();
   const allLocations = locationService.getAllLocations();
 
@@ -248,16 +248,6 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
               story plan with verified high-resolution satellite imagery, real landmark photography, and multi-spectral telemetry.
             </p>
           </div>
-
-          {onOpenDeepIntelligence && (
-            <button
-              onClick={onOpenDeepIntelligence}
-              className="self-start md:self-auto px-4 py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 text-zinc-300 hover:text-white text-xs font-semibold transition-all flex items-center gap-2 shadow-lg cursor-pointer"
-            >
-              <span>📖 Open Deep Chapter Reports</span>
-              <ArrowRight className="w-4 h-4 text-zinc-400" />
-            </button>
-          )}
         </div>
 
         {/* Cinematic Pipeline Progress Stepper */}
@@ -568,7 +558,7 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                   {currentScene.type === "location_intro" && (
                     <div className="relative w-full h-full">
                       <img 
-                        src={currentScene.satelliteUrl || "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2000&q=85"} 
+                        src={currentScene.satelliteUrl || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=2400&q=85"} 
                         alt="Orbital Satellite Context" 
                         className="w-full h-full object-cover filter contrast-110 brightness-90 animate-in fade-in duration-700"
                       />
@@ -663,7 +653,7 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                           style={{ width: "100%", minWidth: "800px" }}
                         >
                           <img 
-                            src={currentScene.imageUrlLeft || "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2000&q=85"} 
+                            src={currentScene.imageUrlLeft || "https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=2400&q=85"} 
                             alt="Baseline Satellite" 
                             className="w-full h-full object-cover filter contrast-105 brightness-95"
                           />
@@ -680,11 +670,11 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                         style={{ width: `${100 - splitSliderPos}%` }}
                       >
                         <div 
-                          className="absolute inset-0 w-full h-full"
+                          className="absolute inset-0 w-full h-full" 
                           style={{ width: "100%", minWidth: "800px", right: 0, left: "auto" }}
                         >
                           <img 
-                            src={currentScene.imageUrlRight || "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=2000&q=85"} 
+                            src={currentScene.imageUrlRight || "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=2400&q=85"} 
                             alt="Present Change Satellite" 
                             className="w-full h-full object-cover filter contrast-125 saturate-125"
                           />
@@ -1049,7 +1039,7 @@ export const FilterWiseStoryStudio = ({ initialLocation = null, onOpenDeepIntell
                   {/* Asset 1: Satellite View */}
                   <div className="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center gap-3">
                     <img 
-                      src={currentScene.satelliteUrl || "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=400&q=80"} 
+                      src={currentScene.satelliteUrl || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80"} 
                       alt="Satellite Tile" 
                       className="w-12 h-12 rounded-lg object-cover border border-slate-700 shrink-0"
                     />

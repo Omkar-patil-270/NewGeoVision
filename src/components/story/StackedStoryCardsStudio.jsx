@@ -1,18 +1,19 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
+import { globalGeoAIService } from '../../services/globalGeoAIService';
+import { getStoryCardsForCity } from '../../data/storyLocationData';
 import { 
   Volume2, VolumeX, ChevronRight, ChevronLeft, MapPin, 
   Sparkles, Camera, Utensils, Building2, Users, Trees, 
   Compass, Landmark, ArrowRight, Heart, Share2, Check,
   Play, Pause, Eye, Award, Calendar, ThumbsUp, Filter,
-  Layers, Clock, Compass as CompassIcon, SlidersHorizontal
+  Layers, Clock, Compass as CompassIcon, SlidersHorizontal,
+  Search, Navigation, Loader2, Globe, TrendingUp
 } from 'lucide-react';
 
-import { getStoryCardsForCity } from '../../data/storyLocationData';
-
 export const StackedStoryCardsStudio = () => {
-  const { currentLocation, selectLocation, playNarration, stopAudio } = useApp();
+  const { currentLocation, selectLocation, setCurrentPage, playNarration, stopAudio } = useApp();
   const allLocations = locationService.getAllLocations();
 
   const [selectedLocId, setSelectedLocId] = useState(currentLocation?.id || "kolhapur");
@@ -21,6 +22,12 @@ export const StackedStoryCardsStudio = () => {
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   const [activeFoodIndex, setActiveFoodIndex] = useState(0);
 
+  // Global Search & GPS State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchingOnline, setIsSearchingOnline] = useState(false);
+  const [isDetectingGPS, setIsDetectingGPS] = useState(false);
+  const [customGlobalCards, setCustomGlobalCards] = useState(null);
+
   // Filter-Based Story Generation States
   const [selectedCategoryFilter, setSelectedCategoryFilter] = useState("all");
   const [selectedPersonaFilter, setSelectedPersonaFilter] = useState("all"); // "all" | "traveler" | "foodie" | "history" | "nature"
@@ -28,16 +35,18 @@ export const StackedStoryCardsStudio = () => {
 
   const loc = allLocations.find(l => l.id === selectedLocId) || currentLocation || allLocations[0];
 
-  // Sync with AppContext if currentLocation changes
+  // Sync with AppContext if currentLocation changes externally
   useEffect(() => {
     if (currentLocation?.id && currentLocation.id !== selectedLocId) {
       setSelectedLocId(currentLocation.id);
+      setCustomGlobalCards(null);
     }
   }, [currentLocation?.id]);
 
   const handleSelectLocation = (id) => {
     setSelectedLocId(id);
     selectLocation(id);
+    setCustomGlobalCards(null);
     setActiveCardIndex(0);
     setActiveGalleryIndex(0);
     setActiveFoodIndex(0);
@@ -45,10 +54,79 @@ export const StackedStoryCardsStudio = () => {
     setIsSpeaking(false);
   };
 
-  // Dynamically compute base story cards for the selected location (Kolhapur, Mumbai, Tokyo, Paris, etc.)
+  // Google-grade GPS Real-Time User Location Detection
+  const handleDetectGPS = async () => {
+    setIsDetectingGPS(true);
+    if (typeof stopAudio === 'function') stopAudio();
+    setIsSpeaking(false);
+
+    try {
+      const geo = await globalGeoAIService.detectUserLocation();
+      const intel = await globalGeoAIService.fetchCityIntel(geo.city);
+      const dynamicCards = globalGeoAIService.generateDynamicStoryDeck(intel, { country: geo.country });
+
+      const newLoc = locationService.registerCustomLocation({
+        name: geo.city,
+        country: geo.country,
+        region: geo.state,
+        coordinates: { lat: geo.lat, lng: geo.lng },
+        bannerImage: intel.image,
+        description: intel.extract
+      });
+
+      setSelectedLocId(newLoc.id);
+      selectLocation(newLoc.id);
+      setCustomGlobalCards(dynamicCards);
+      setActiveCardIndex(0);
+    } catch (err) {
+      alert("GPS Location detection notice: " + (err.message || "Please allow location access in your browser."));
+    } finally {
+      setIsDetectingGPS(false);
+    }
+  };
+
+  // Google-grade Global Search for ANY City on Earth
+  const handleGlobalSearch = async (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) return;
+    const q = searchQuery.trim();
+    setIsSearchingOnline(true);
+    if (typeof stopAudio === 'function') stopAudio();
+    setIsSpeaking(false);
+
+    try {
+      // 1. Fetch live encyclopedic intelligence & real photo from Wikipedia API
+      const intel = await globalGeoAIService.fetchCityIntel(q);
+      const dynamicCards = globalGeoAIService.generateDynamicStoryDeck(intel);
+
+      // 2. Register location in live registry
+      const newLoc = locationService.registerCustomLocation({
+        name: intel.name,
+        country: "Global Destination",
+        bannerImage: intel.image,
+        description: intel.extract,
+        coordinates: intel.coordinates || { lat: 20.0, lng: 77.0 }
+      });
+
+      setSelectedLocId(newLoc.id);
+      selectLocation(newLoc.id);
+      setCustomGlobalCards(dynamicCards);
+      setActiveCardIndex(0);
+      setSearchQuery("");
+    } catch (err) {
+      console.warn("Global search error:", err);
+    } finally {
+      setIsSearchingOnline(false);
+    }
+  };
+
+  // Base 7 Curated Story Cards (Dynamic for ANY city on Earth)
   const baseStoryCards = useMemo(() => {
+    if (customGlobalCards && customGlobalCards.length > 0) {
+      return customGlobalCards;
+    }
     return getStoryCardsForCity(selectedLocId, loc);
-  }, [selectedLocId, loc]);
+  }, [selectedLocId, loc, customGlobalCards]);
 
   // Dynamically Filtered Story Cards based on Category Filter
   const filteredCards = useMemo(() => {
@@ -78,7 +156,7 @@ export const StackedStoryCardsStudio = () => {
     return currentCard.narratives.default;
   }, [currentCard, selectedPersonaFilter]);
 
-  // Audio Playback via Speech Synthesis
+  // Audio Playback via Web Speech API
   const handleToggleVoice = () => {
     if (isSpeaking) {
       if ('speechSynthesis' in window) window.speechSynthesis.cancel();
@@ -102,7 +180,6 @@ export const StackedStoryCardsStudio = () => {
     }
   };
 
-  // Stop audio on card switch
   const handleNextCard = () => {
     if (isSpeaking && 'speechSynthesis' in window) window.speechSynthesis.cancel();
     setIsSpeaking(false);
@@ -130,7 +207,7 @@ export const StackedStoryCardsStudio = () => {
   return (
     <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between p-3 sm:p-6 select-none overflow-x-hidden font-sans">
       
-      {/* ================= 1. STUDIO HEADER & FILTER BAR ================= */}
+      {/* ================= 1. STUDIO HEADER WITH GOOGLE-GRADE GLOBAL SEARCH & GPS ================= */}
       <div className="w-full max-w-6xl mx-auto space-y-3 shrink-0">
         
         {/* Top Header Row */}
@@ -141,18 +218,85 @@ export const StackedStoryCardsStudio = () => {
               <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
                 <span>Stories of {loc.name}</span>
                 <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                  Real Photography & Living Heritage
+                  Global Planetary Intelligence
                 </span>
               </h1>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Explore 3D fanned cards stacked one behind another. Verified real photos with voice narration.
+              3D fanned cards stacked in depth. Search any city globally or detect your real-time GPS location.
             </p>
           </div>
 
-          {/* Quick City Switcher: Regional & Global */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#070e1c] border border-slate-800 text-xs font-mono flex-wrap">
-            <span className="text-[10px] text-slate-500 uppercase px-1 font-bold">City:</span>
+          {/* Quick Actions: GPS Auto-Detect + View Forecast Button */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDetectGPS}
+              disabled={isDetectingGPS}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+              title="Use GPS to detect your current location"
+            >
+              {isDetectingGPS ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Locating GPS...</span>
+                </>
+              ) : (
+                <>
+                  <Navigation className="w-3.5 h-3.5 fill-black" />
+                  <span>📍 Detect My Location</span>
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={() => setCurrentPage('predictions')}
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
+              title="View environmental forecast for this location"
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Forecast</span>
+            </button>
+          </div>
+        </div>
+
+        {/* ================= GLOBAL SEARCH BAR FOR ANY LOCATION ON EARTH ================= */}
+        <div className="flex flex-wrap items-center justify-between gap-2.5">
+          
+          {/* Universal City Search Input */}
+          <form 
+            onSubmit={handleGlobalSearch}
+            className="flex-1 min-w-[280px] max-w-xl flex items-center rounded-2xl bg-[#060D1F] border border-cyan-500/40 hover:border-cyan-400 px-3.5 py-1.5 shadow-lg transition-all"
+          >
+            <Search className="w-4 h-4 text-cyan-400 mr-2 shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search ANY city on Earth (e.g. Sangli, Rome, Dubai, Sydney, Jaipur)..."
+              className="w-full bg-transparent text-xs text-white placeholder:text-slate-500 focus:outline-none font-mono"
+            />
+            <button
+              type="submit"
+              disabled={isSearchingOnline}
+              className="px-3 py-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2 cursor-pointer transition-all flex items-center gap-1"
+            >
+              {isSearchingOnline ? (
+                <>
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                  <span>Searching...</span>
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-3 h-3 fill-black" />
+                  <span>Explore City</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Quick Preset City Chips (Regional & Global) */}
+          <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#070e1c] border border-slate-800 text-xs font-mono flex-wrap">
+            <span className="text-[10px] text-slate-500 uppercase px-1.5 font-bold">Presets:</span>
             {[
               { id: "kolhapur", label: "Kolhapur ⭐" },
               { id: "mumbai", label: "Mumbai" },
@@ -179,6 +323,7 @@ export const StackedStoryCardsStudio = () => {
               );
             })}
           </div>
+
         </div>
 
         {/* ================= 2. FILTER-BASED STORY GENERATION CONTROLS ================= */}
@@ -196,7 +341,7 @@ export const StackedStoryCardsStudio = () => {
               { id: "traveler", label: "🎒 Tourist Guide" },
               { id: "foodie", label: "🍲 Food Lover" },
               { id: "history", label: "📜 Royal History" },
-              { id: "nature", label: "🌿 Nature & Ghats" }
+              { id: "nature", label: "🌿 Nature & Ecology" }
             ].map((p) => (
               <button
                 key={p.id}
@@ -221,8 +366,8 @@ export const StackedStoryCardsStudio = () => {
 
             {[
               { id: "all", label: "All Eras" },
-              { id: "ancient", label: "⏳ Ancient Karveer" },
-              { id: "royal", label: "👑 Royal Maratha" },
+              { id: "ancient", label: "⏳ Ancient Roots" },
+              { id: "royal", label: "👑 Golden Era" },
               { id: "modern", label: "🏙️ Modern 2026" }
             ].map((e) => (
               <button
@@ -246,7 +391,7 @@ export const StackedStoryCardsStudio = () => {
 
       </div>
 
-      {/* ================= 3. FANNED 3D STACKED CARDS CAROUSEL (MODELED ON KEPLER BANNER) ================= */}
+      {/* ================= 3. FANNED 3D STACKED CARDS CAROUSEL ================= */}
       <div className="relative w-full max-w-6xl mx-auto my-auto py-4 flex flex-col items-center justify-center">
         
         {/* Navigation Arrow Controls */}
@@ -285,10 +430,8 @@ export const StackedStoryCardsStudio = () => {
             const isCenter = idx === activeCardIndex;
             const diff = idx - activeCardIndex;
 
-            // Render active center card and up to 2 cards on left and right for depth
             if (Math.abs(diff) > 2) return null;
 
-            // Exact 3D fanned transform calculations
             let translateX = 0;
             let translateZ = 0;
             let rotateY = 0;
@@ -458,7 +601,7 @@ export const StackedStoryCardsStudio = () => {
                           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
                           <div className="absolute bottom-2.5 left-3 right-3 text-white text-[10px] font-mono">
                             <span className="bg-black/60 px-2 py-0.5 rounded-full border border-slate-700">
-                              📷 Verified Local Photograph
+                              📷 Verified Location Photo
                             </span>
                           </div>
                         </div>

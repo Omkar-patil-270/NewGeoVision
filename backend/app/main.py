@@ -54,6 +54,12 @@ def root():
     return {"status": "GeoVisionAI backend running", "version": "1.0"}
 
 
+@app.get("/api/health")
+@app.get("/health")
+def health():
+    return {"status": "healthy", "service": "GeoVisionAI API", "version": "1.0"}
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("app.main:app", host="127.0.0.1", port=8000, reload=False)

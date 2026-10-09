@@ -242,6 +242,32 @@ export const GLOBAL_LOCATIONS = [
     gallery: [
       { category: "Architecture", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/960px-Marina_Bay_Sands_%28I%29.jpg", caption: "Marina Bay Sands Waterfront" }
     ]
+  },
+  {
+    id: "barcelona",
+    name: "Barcelona",
+    country: "Spain",
+    region: "Catalonia",
+    badge: "Catalan Capital",
+    coordinates: { lat: 41.3874, lng: 2.1686 },
+    elevation: "12 m",
+    timezone: "CET (UTC+1)",
+    population: "1.66 Million",
+    area: "101 km²",
+    aqi: 44,
+    temperature: 24,
+    weatherCondition: "Mediterranean Breeze",
+    bannerImage: "/images/locations/barcelona_sagrada.jpg",
+    description: "The vibrant Mediterranean capital of Catalonia, celebrated for Antoni Gaudí's modernist masterpieces including the Sagrada Família, the sunlit Gothic Quarter, rich tapas gastronomy, and lively coastal culture.",
+    highlights: ["Sagrada Família", "Park Güell", "La Rambla & Gothic Quarter", "Casa Batlló", "Barceloneta Beach", "Paella & Tapas"],
+    gallery: [
+      { category: "Landmarks", url: "/images/locations/barcelona_sagrada.jpg", caption: "Basílica de la Sagrada Família" },
+      { category: "Architecture", url: "/images/locations/barcelona_parkguell.jpg", caption: "Park Güell by Antoni Gaudí" },
+      { category: "Food", url: "/images/locations/barcelona_paella.jpg", caption: "Traditional Catalan Seafood Paella & Tapas" },
+      { category: "Civic", url: "/images/locations/barcelona_cityhall.jpg", caption: "Ajuntament de Barcelona (City Hall)" },
+      { category: "Culture", url: "/images/locations/barcelona_castellers.jpg", caption: "Castellers Catalan Human Towers" },
+      { category: "Panorama", url: "/images/locations/barcelona_skyline.jpg", caption: "Barcelona Skyline & Mediterranean Sea" }
+    ]
   }
 ];
 

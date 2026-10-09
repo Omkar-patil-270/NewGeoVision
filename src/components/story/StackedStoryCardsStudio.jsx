@@ -24,6 +24,8 @@ export const StackedStoryCardsStudio = () => {
   const [isSearchingAI, setIsSearchingAI] = useState(false);
   const [isLocatingGPS, setIsLocatingGPS] = useState(false);
   const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [liveEnrichedDeck, setLiveEnrichedDeck] = useState(null);
+  const [isEnrichingDeck, setIsEnrichingDeck] = useState(false);
   const searchRef = useRef(null);
 
   const loc = allLocations.find(l => l.id === selectedLocId) || currentLocation || allLocations[0];
@@ -45,14 +47,14 @@ export const StackedStoryCardsStudio = () => {
       'japan', 'france', 'united-kingdom', 'united-states', 'uae'
     ];
     const globalMetroIds = [
-      'tokyo', 'paris', 'london', 'newyork', 'dubai', 'delhi', 'kyoto', 'sydney'
+      'barcelona', 'tokyo', 'paris', 'london', 'new-york', 'dubai', 'singapore', 'delhi', 'kyoto', 'sydney'
     ];
 
     return {
       talukas: allLocations.filter(l => talukaIds.includes(l.id) || l.type === 'Taluka'),
       districts: allLocations.filter(l => districtIds.includes(l.id) || l.type === 'District'),
       states: allLocations.filter(l => stateCountryIds.includes(l.id) || l.type === 'State' || l.type === 'Country'),
-      global: allLocations.filter(l => globalMetroIds.includes(l.id) || l.country !== 'India')
+      global: allLocations.filter(l => globalMetroIds.includes(l.id) || l.country !== 'India' || l.id === 'barcelona')
     };
   }, [allLocations]);
 
@@ -107,6 +109,12 @@ export const StackedStoryCardsStudio = () => {
     try {
       const intel = await globalGeoAIService.fetchCityIntel(target);
       if (intel) {
+        const gallery = (intel.galleryImages || []).map((img, i) => ({
+          url: img,
+          category: i === 0 ? "Landmarks" : i === 1 ? "Architecture" : i === 2 ? "Food" : i === 3 ? "Civic" : i === 4 ? "Culture" : "Nature",
+          caption: `${intel.name} Sight ${i + 1}`
+        }));
+
         const registered = locationService.registerCustomLocation({
           name: intel.name,
           country: "Global",
@@ -114,13 +122,12 @@ export const StackedStoryCardsStudio = () => {
           bannerImage: intel.image,
           description: intel.extract,
           highlights: [intel.name, "Verified Real Photos", "Historical Timeline", "Civic Life"],
-          gallery: (intel.galleryImages || []).map((img, i) => ({
-            url: img,
-            caption: `${intel.name} Sight ${i + 1}`
-          }))
+          gallery
         });
 
         if (registered?.id) {
+          const deck = globalGeoAIService.generateDynamicStoryDeck(intel, { country: "Global" });
+          setLiveEnrichedDeck(deck);
           handleSelectLocation(registered.id);
         }
       }
@@ -148,10 +155,39 @@ export const StackedStoryCardsStudio = () => {
     }
   };
 
-  // Base 7 Curated Story Cards
+  // Auto-enrich any arbitrary location that doesn't have curated cards
+  useEffect(() => {
+    let active = true;
+    const curatedKeys = ['kolhapur', 'satara', 'mumbai', 'pune', 'delhi', 'tokyo', 'paris', 'barcelona'];
+    const isCurated = curatedKeys.some(k => selectedLocId.toLowerCase().includes(k));
+
+    if (!isCurated && loc?.name) {
+      setIsEnrichingDeck(true);
+      globalGeoAIService.fetchCityIntel(loc.name).then(intel => {
+        if (active && intel && (intel.galleryImages?.length > 0 || intel.image)) {
+          const deck = globalGeoAIService.generateDynamicStoryDeck(intel, { country: loc.country });
+          setLiveEnrichedDeck(deck);
+        }
+      }).catch(err => {
+        console.warn("Auto-enrichment error:", err);
+      }).finally(() => {
+        if (active) setIsEnrichingDeck(false);
+      });
+    } else {
+      setLiveEnrichedDeck(null);
+      setIsEnrichingDeck(false);
+    }
+
+    return () => { active = false; };
+  }, [selectedLocId, loc?.name, loc?.country]);
+
+  // Base 7 Curated Story Cards or Live Enriched Deck
   const storyCards = useMemo(() => {
+    if (liveEnrichedDeck && liveEnrichedDeck.length > 0) {
+      return liveEnrichedDeck;
+    }
     return getStoryCardsForCity(selectedLocId, loc);
-  }, [selectedLocId, loc]);
+  }, [selectedLocId, loc, liveEnrichedDeck]);
 
   // Active Story Card
   const currentCard = storyCards[activeCardIndex] || storyCards[0];

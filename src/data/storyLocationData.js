@@ -1046,24 +1046,247 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
     ];
   }
 
-  // 5. COMPREHENSIVE INTELLIGENT REAL-PHOTO ENGINE FOR ANY TALUKA, DISTRICT, STATE, OR GLOBAL LOCATION
-  const cityName = locationMeta.name || cityId;
-  const country = locationMeta.country || "India";
-  const region = locationMeta.region || "Maharashtra";
-  const parent = locationMeta.parent || "";
-  const pop = locationMeta.population || "1.2 Million";
-  const banner = locationMeta.bannerImage || "/images/kolhapur/panchganga_ghat.jpg";
-  const desc = locationMeta.description || `${cityName} is a recognized geographic and cultural center in ${region}, ${country}.`;
-  const high = locationMeta.highlights || ["Historic Heritage Landmarks", "Scenic Riverfront & Valleys", "Cultural Traditions"];
+  // 5. BARCELONA (Catalan Capital & Mediterranean Modernist Jewel)
+  if (cid.includes("barcelona")) {
+    return [
+      {
+        id: "history",
+        category: "History & Heritage",
+        categoryKey: "history",
+        categoryIcon: Landmark,
+        pillLabel: "History",
+        badge: "Roman Barcino to Modernisme",
+        title: "From Roman Colony to Modernist Masterpiece",
+        subtitle: "Over 2,000 years of Catalan identity, maritime trade, and architectural revolution.",
+        era: "royal",
+        image: "/images/locations/barcelona_sagrada.jpg",
+        imageCaption: "Basílica de la Sagrada Família by Antoni Gaudí (Real Photo)",
+        narratives: {
+          default: `Founded as the Roman colony of Barcino under Emperor Augustus in the 1st century BCE, Barcelona grew into a maritime trading empire across the Mediterranean during the Middle Ages.\n\nIn the late 19th century, the Catalan Renaissance (Renaixença) and Modernisme architectural movement transformed the city, led by visionary architect Antoni Gaudí whose unfinished masterpiece, the Sagrada Família, has been under continuous construction since 1882.`,
+          traveler: `Wander through the narrow stone alleyways of the Gothic Quarter to see 2,000-year-old Roman wall remnants and the 14th-century Cathedral of the Holy Cross.`,
+          foodie: `Centuries of Mediterranean seafaring created Barcelona's culinary markets, notably Mercat de la Boqueria, operating since 1217 on La Rambla.`,
+          history: `The 1888 Barcelona Universal Exposition and the 1992 Summer Olympic Games transformed Barcelona from an industrial port into Europe's leading design capital.`,
+          nature: `Nestled between the Mediterranean Sea and the Collserola mountain ridge, Barcelona's geography provided natural maritime defense and mild coastal breezes.`
+        },
+        highlights: [
+          "Founded as Roman Barcino over 2,000 years ago",
+          "UNESCO World Heritage Modernisme architecture by Antoni Gaudí",
+          "Iconic Gothic Quarter with medieval maritime palaces"
+        ]
+      },
+      {
+        id: "tourist",
+        category: "Famous Tourist Places",
+        categoryKey: "tourist",
+        categoryIcon: Camera,
+        pillLabel: "Tourist Places",
+        badge: "Gaudí Masterpieces",
+        title: "Sagrada Família, Park Güell & Gothic Quarter",
+        subtitle: "Discover the world's most whimsical architecture and vibrant pedestrian boulevards.",
+        era: "ancient",
+        gallery: [
+          {
+            title: "Basílica de la Sagrada Família",
+            desc: "Antoni Gaudí's soaring UNESCO basilica with tree-like stone columns and stained glass.",
+            image: "/images/locations/barcelona_sagrada.jpg",
+            caption: "Sagrada Família Nativity Facade"
+          },
+          {
+            title: "Park Güell Whimsical Terrace",
+            desc: "Fairytale public park perched on Carmel Hill with mosaic serpentine benches.",
+            image: "/images/locations/barcelona_parkguell.jpg",
+            caption: "Park Güell Mosaic Salamander Terrace"
+          },
+          {
+            title: "Barcelona Mediterranean Skyline",
+            desc: "Panoramic viewpoint from Montjuïc overlooking the Gothic towers and Mediterranean Sea.",
+            image: "/images/locations/barcelona_skyline.jpg",
+            caption: "Barcelona Coastal Panorama"
+          }
+        ],
+        narratives: {
+          default: `Barcelona offers an architectural wonderland. Step inside the Sagrada Família in the afternoon to witness kaleidoscopic rainbows streaming through abstract stained glass.\n\nStroll up Carmel Hill into Park Güell to sit on the undulating trencadís mosaic benches overlooking the city, before heading down the tree-shaded pedestrian promenade of La Rambla.`,
+          traveler: `Reserve Sagrada Família tower access tickets weeks in advance to ascend the Nativity spire for breathtaking bird's-eye views!`,
+          foodie: `Stop at traditional taperías in the El Born neighborhood for crusty pan con tomate and crispy patatas bravas after sightseeing.`,
+          history: `Gaudí's organic architectural philosophy was inspired by natural tree branches, animal skeletons, and geometric hyperbola shapes.`,
+          nature: `Park Güell incorporates sustainable water-harvesting cisterns disguised as Greek classical columns beneath the hypostyle hall.`
+        },
+        highlights: [
+          "Sagrada Família: World's most unique basilica",
+          "Park Güell: Whimsical mosaic park overlooking the sea",
+          "La Rambla & Gothic Quarter: Vibrant historic promenades"
+        ]
+      },
+      {
+        id: "food",
+        category: "Famous Food & Delicacies",
+        categoryKey: "food",
+        categoryIcon: Utensils,
+        pillLabel: "Famous Food",
+        badge: "Catalan Gastronomy",
+        title: "Seafood Paella, Tapas, Jamón & Crema Catalana",
+        subtitle: "The world-renowned Mediterranean culinary paradise of fresh markets and tapas bars.",
+        era: "modern",
+        foodGallery: [
+          {
+            name: "Traditional Seafood Paella",
+            tag: "Mediterranean Pan",
+            desc: "Bomba rice slow-simmered in saffron seafood broth with Mediterranean prawns, mussels, and squid.",
+            image: "/images/locations/barcelona_paella.jpg",
+            caption: "Authentic Catalan Seafood Paella (Real Photo)"
+          }
+        ],
+        narratives: {
+          default: `Dining in Barcelona is a joyful, social affair! The culinary crown belongs to Paella de Marisco, prepared with rich fish fumet, saffron, and Mediterranean shellfish in broad carbon-steel pans.\n\nFrom lively tapas crawls serving sizzling garlic prawns (gambas al ajillo) and cured Jamón Ibérico to refreshing tomato-rubbed bread (pan con tomate) and caramelized Crema Catalana, Catalan cuisine is among the finest on Earth.`,
+          traveler: `Must-visit spots: Quimet & Quimet in Poble-Sec for artisanal montaditos, and 7 Portes near the port for classical paella since 1836!`,
+          foodie: `The secret of great paella is the 'socarrat'—the delicious, intensely flavorful caramelized crust that forms at the bottom of the pan.`,
+          history: `Catalan recipe collections date back to the 14th-century 'Llibre de Sent Soví', making it one of the oldest recorded cuisines in Europe.`,
+          nature: `Fresh daily catches from the Catalan coast and organic olive oil from Lleida groves form the heart of every recipe.`
+        },
+        highlights: [
+          "Seafood Paella & Socarrat: The ultimate saffron rice pan",
+          "Tapas Culture: Garlic prawns, patatas bravas & Jamón Ibérico",
+          "Mercat de la Boqueria: Iconic 800-year-old fresh food bazaar"
+        ]
+      },
+      {
+        id: "governance",
+        category: "City Administration & Mayor",
+        categoryKey: "governance",
+        categoryIcon: Building2,
+        pillLabel: "City & Mayor",
+        badge: "Ajuntament de Barcelona",
+        title: "Ajuntament de Barcelona & Superblock Urbanism",
+        subtitle: "Pioneering green Superblocks (Superilles) and digital citizen democracy.",
+        era: "modern",
+        image: "/images/locations/barcelona_cityhall.jpg",
+        imageCaption: "Ajuntament de Barcelona at Plaça de Sant Jaume (Real Photo)",
+        narratives: {
+          default: `The City Council (Ajuntament de Barcelona), headquartered in the historic 14th-century palace on Plaça de Sant Jaume, is led by the Mayor of Barcelona (Jaume Collboni).\n\nBarcelona has captured global planning attention with its revolutionary 'Superblocks' (Superilles)—turning 3x3 street grids into pedestrian-only green plazas that cut vehicular noise, clean the air, and return public spaces to children and residents.`,
+          traveler: `Explore the Sant Antoni Superblock to see how formerly traffic-clogged asphalt streets have been transformed into blooming community parks!`,
+          foodie: `The municipal market network manages 39 neighborhood food halls to ensure every citizen lives within a 10-minute walk of fresh farm food.`,
+          history: `Barcelona's city government traces back to the medieval 'Consell de Cent' (Council of One Hundred) established by King James I in 1249.`,
+          nature: `Superblocks have reduced local nitrogen dioxide pollution by over 25% while creating thousands of square meters of green shade canopy.`
+        },
+        highlights: [
+          "Revolutionary Superblock (Superilles) car-free urban model",
+          "Historic 14th-century Ajuntament at Plaça de Sant Jaume",
+          "Global benchmark for smart city technology & digital governance"
+        ]
+      },
+      {
+        id: "culture",
+        category: "Population & Culture",
+        categoryKey: "culture",
+        categoryIcon: Users,
+        pillLabel: "Population",
+        badge: "1.66 Million People",
+        title: "Castellers Human Towers, Catalan Pride & La Mercè",
+        subtitle: "Where deep Mediterranean warmth, community solidarity, and artistic passion thrive.",
+        era: "royal",
+        image: "/images/locations/barcelona_castellers.jpg",
+        imageCaption: "Castellers building a 9-tier human tower in Catalonia (Real Photo)",
+        narratives: {
+          default: `Barcelona's soul is deeply Catalan—proud, egalitarian, and fiercely creative. The crowning cultural tradition is the 'Castellers'—human towers rising up to 10 stories high, recognized by UNESCO as Masterpieces of Oral and Intangible Heritage.\n\nEvery September, the city erupts in the annual La Mercè festival featuring fire-runs (correfocs), giant puppets, live concerts, and nighttime beach light displays.`,
+          traveler: `Join locals dancing the communal 'Sardana' folk circle dance in front of the Barcelona Cathedral on Sunday mornings!`,
+          foodie: `Sharing vermouth (fer el vermut) with olives and potato chips on sunlit terraces is the sacred weekend social ritual.`,
+          history: `Catalan artists like Pablo Picasso, Joan Miró, and Salvador Dalí were nurtured in Barcelona's vibrant bohemian cafes like Els Quatre Gats.`,
+          nature: `The Mediterranean beach culture blends seamlessly with city life, with citizens jogging along the boardwalk year-round.`
+        },
+        highlights: [
+          "Castellers: UNESCO-recognized 10-tier human towers",
+          "Festes de la Mercè: Vibrant annual city festival & Correfocs",
+          "Bohemian artistic home of Picasso and Joan Miró"
+        ]
+      },
+      {
+        id: "nature",
+        category: "Greenery & Nature",
+        categoryKey: "nature",
+        categoryIcon: Trees,
+        pillLabel: "Greenery",
+        badge: "Sea & Mountains",
+        title: "Montjuïc Hill, Collserola & Barceloneta Coast",
+        subtitle: "Natural coastal balcony backed by Europe's largest metropolitan natural park.",
+        era: "ancient",
+        image: "/images/locations/barcelona_skyline.jpg",
+        imageCaption: "Montjuïc Hill and Barcelona Mediterranean Coast (Real Photo)",
+        narratives: {
+          default: `Barcelona is framed by extraordinary natural topography. To the south rises Montjuïc, a 173-meter hill crowned with botanical cactus gardens, the historic fortress, and panoramic port views.\n\nTo the north lies the Serra de Collserola—a 8,000-hectare natural park 22 times larger than Central Park—providing forested hiking trails, wild boars, and crisp pine breezes that filter into the city.`,
+          traveler: `Take the port cable car (Teleférico) across the harbor from Barceloneta beach up to Montjuïc hill for panoramic vistas!`,
+          foodie: `Mediterranean seafood like red prawns and razor clams are brought to port markets daily by sustainable coastal fleets.`,
+          history: `Montjuïc was used as a strategic defensive fortress since the 17th century, guarding the maritime sea gates of Catalonia.`,
+          nature: `Barceloneta's 4.5 km of golden urban beaches were restored during the 1992 Olympics and are maintained with artificial coastal reefs.`
+        },
+        highlights: [
+          "Serra de Collserola: 8,000-hectare pristine natural mountain park",
+          "Montjuïc Hill: Botanical gardens, Olympic stadiums & sea fortress",
+          "4.5 km of Mediterranean sandy beaches directly adjacent to downtown"
+        ]
+      },
+      {
+        id: "visit",
+        category: "Why You Should Visit",
+        categoryKey: "visit",
+        categoryIcon: Compass,
+        pillLabel: "Why Visit",
+        badge: "Visitor Guide",
+        title: "Gothic Alleys, Gaudí Miracles & Sunset over the Sea",
+        subtitle: "The ultimate Mediterranean destination combining world art, cuisine, and coastal sunshine.",
+        era: "modern",
+        image: "/images/locations/barcelona_skyline.jpg",
+        imageCaption: "Golden sunset over Barcelona and the Mediterranean (Real Photo)",
+        narratives: {
+          default: `Barcelona is an intoxicating sensory paradise that captures every traveler's heart. Watch the morning sun illuminate the Nativity towers of the Sagrada Família, savor fresh tapas in El Born, and finish the evening with sunset sangria on the beach.\n\nThe best months to visit are May–June and September–October when warm sunny days and cool coastal evenings provide ideal sightseeing weather without midsummer crowds.`,
+          traveler: `Get a multi-day T-Casual transit card for easy metro and bus travel, and explore on foot neighborhood by neighborhood!`,
+          foodie: `Book an evening tapas and wine tour through the Gothic Quarter and Gràcia to discover family taverns hidden down cobblestone alleys.`,
+          history: `Visit the Picasso Museum in Montcada Street to see the artist's foundational youthful works and 'Las Meninas' series.`,
+          nature: `Watch the sunset from the Bunkers del Carmel viewpoint for an unhindered 360-degree panorama of the entire city and sea.`
+        },
+        highlights: [
+          "Unrivaled blend of UNESCO Modernisme art and beach lifestyle",
+          "Vibrant, safe pedestrian promenades and historic plazas",
+          "Best travel seasons: Late Spring (May-June) & Autumn (September-October)"
+        ]
+      }
+    ];
+  }
 
-  const isMaharashtra = region.toLowerCase().includes("maharashtra") || parent.toLowerCase().includes("maharashtra") || country.toLowerCase().includes("india");
+  // 6. COMPREHENSIVE DYNAMIC REAL-PHOTO ENGINE FOR ANY SEARCHED TALUKA, DISTRICT, OR GLOBAL LOCATION
+  const cityName = locationMeta.name || cityId;
+  const country = locationMeta.country || "Global";
+  const region = locationMeta.region || "";
+  const parent = locationMeta.parent || "";
+  const pop = locationMeta.population || "Urban Center";
+  const gal = (locationMeta.gallery && locationMeta.gallery.length > 0) ? locationMeta.gallery : [];
+  
+  const isIndia = country.toLowerCase().includes("india") || region.toLowerCase().includes("maharashtra") || parent.toLowerCase().includes("india");
+  const isMaharashtra = isIndia && (region.toLowerCase().includes("maharashtra") || parent.toLowerCase().includes("maharashtra"));
   const isSahyadriGhats = isMaharashtra || cid.includes("ghat") || cid.includes("wadi") || cid.includes("gad") || cid.includes("nagar") || cid.includes("taluka");
 
-  // Category-specific authentic photography mapping
-  const foodImg = isMaharashtra ? "/images/kolhapur/kolhapuri_misal.jpg" : banner;
-  const cultureImg = isMaharashtra ? "/images/kolhapur/kusti_akhada.jpg" : banner;
-  const natureImg = isSahyadriGhats ? "/images/talukas/radhanagari.jpg" : banner;
-  const govImg = isMaharashtra ? (banner.includes("/images/") ? banner : "/images/locations/solapur.jpg") : banner;
+  // Verified real photo assignment ensuring non-Indian locations NEVER get Kolhapur photos
+  const defaultGlobalPhoto = gal[0]?.url || locationMeta.bannerImage || "/images/locations/barcelona_skyline.jpg";
+  const banner = (locationMeta.bannerImage && !locationMeta.bannerImage.includes("panchganga")) 
+    ? locationMeta.bannerImage 
+    : (isIndia ? "/images/kolhapur/panchganga_ghat.jpg" : defaultGlobalPhoto);
+    
+  const desc = locationMeta.description || `${cityName} is a recognized geographical and cultural center in ${region ? region + ', ' : ''}${country}.`;
+  const high = locationMeta.highlights || ["Historic Heritage Landmarks", "Scenic Vistas & Architecture", "Cultural Traditions"];
+
+  // Intelligent category-specific photography mapping
+  const foodImg = isMaharashtra 
+    ? "/images/kolhapur/kolhapuri_misal.jpg" 
+    : (gal.find(g => g.category === "Food")?.url || gal[2]?.url || (isIndia ? "/images/locations/vada_pav.jpg" : "/images/locations/barcelona_paella.jpg"));
+    
+  const cultureImg = isMaharashtra 
+    ? "/images/kolhapur/kusti_akhada.jpg" 
+    : (gal.find(g => g.category === "Culture")?.url || gal[3]?.url || (isIndia ? "/images/locations/delhi_indiagate.jpg" : "/images/locations/barcelona_castellers.jpg"));
+    
+  const natureImg = isSahyadriGhats 
+    ? "/images/talukas/radhanagari.jpg" 
+    : (gal.find(g => g.category === "Nature" || g.category === "Panorama")?.url || gal[4]?.url || (isIndia ? "/images/satara/kaas_plateau.jpg" : defaultGlobalPhoto));
+    
+  const govImg = gal.find(g => g.category === "Civic")?.url || gal[1]?.url || banner;
 
   return [
     {

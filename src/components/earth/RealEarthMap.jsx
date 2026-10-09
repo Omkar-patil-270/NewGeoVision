@@ -169,10 +169,10 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
         const latLngs = bMeta.polygon.map(([lng, lat]) => [lat, lng]);
         const poly = L.polygon(latLngs, {
           color: '#00F0FF',
-          weight: 3.5,
-          dashArray: '6, 6',
+          weight: 2.2,
+          dashArray: '4, 4',
           fillColor: '#00F0FF',
-          fillOpacity: 0.12
+          fillOpacity: 0.06
         }).addTo(map);
 
         poly.bindTooltip(`🛡️ ${bMeta.name} (${bMeta.area || 'Real Territory'})`, {

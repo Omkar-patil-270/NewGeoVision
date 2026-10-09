@@ -276,7 +276,7 @@ export const CesiumEarthViewer = forwardRef(({
         boundaryEntityRef.current = viewer.entities.add({
           polygon: {
             hierarchy: Cesium.Cartesian3.fromDegreesArray(flatCoords),
-            material: Cesium.Color.fromCssColorString('#00F0FF').withAlpha(0.12),
+            material: Cesium.Color.fromCssColorString('#00F0FF').withAlpha(0.06),
             height: 10
           }
         });
@@ -286,10 +286,10 @@ export const CesiumEarthViewer = forwardRef(({
         boundaryLineRef.current = viewer.entities.add({
           polyline: {
             positions: Cesium.Cartesian3.fromDegreesArray(closedLoop),
-            width: 4,
+            width: 2.5,
             material: new Cesium.PolylineGlowMaterialProperty({
-              glowPower: 0.35,
-              taperPower: 1.0,
+              glowPower: 0.25,
+              taperPower: 0.8,
               color: Cesium.Color.fromCssColorString('#00F0FF')
             }),
             clampToGround: true

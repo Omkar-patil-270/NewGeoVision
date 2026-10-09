@@ -5,7 +5,7 @@ import {
 } from '../data/forecasts';
 import { predictionService } from '../services/predictionService';
 import { PopulationForecastingModule } from '../components/predictions/PopulationForecastingModule';
-import { ForecastHeatmapGlobe } from '../components/earth/ForecastHeatmapGlobe';
+import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { 
   TrendingUp, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
   HelpCircle, Info, ArrowUpRight, ArrowDownRight, Layers,
@@ -36,7 +36,7 @@ ChartJS.register(
 );
 
 export const ForecastPage = () => {
-  const { currentLocation, selectLocation, allLocations } = useApp();
+  const { currentLocation, selectLocation, allLocations, activeHeatmap, setActiveHeatmap } = useApp();
   const [selectedMetric, setSelectedMetric] = useState('population');
   const [activeModelName, setActiveModelName] = useState('SARIMA + XGBoost Hybrid');
   const [liveData, setLiveData] = useState(null);
@@ -44,6 +44,13 @@ export const ForecastPage = () => {
   const [showPlanMatrix, setShowPlanMatrix] = useState(true);
 
   const loc = currentLocation;
+
+  // Set default forecasting heatmap when entering ForecastPage
+  useEffect(() => {
+    if (!activeHeatmap || activeHeatmap === 'none') {
+      setActiveHeatmap('aqi');
+    }
+  }, []);
 
   // Fetch real predictions from backend
   useEffect(() => {
@@ -372,12 +379,83 @@ export const ForecastPage = () => {
           </div>
         )}
 
-        {/* ================= SPATIO-TEMPORAL FORECASTING HEATMAP 3D GLOBE ================= */}
-        <div className="mb-10">
-          <ForecastHeatmapGlobe
-            currentLocation={loc}
-            onLocationSelect={(selectedLoc) => selectLocation(selectedLoc.id)}
-          />
+        {/* ================= EXACT SAME 3D EARTH SATELLITE GLOBE WITH FORECASTING HEATMAP ================= */}
+        <div className="mb-10 rounded-3xl border border-slate-800 bg-[#091124] overflow-hidden shadow-2xl">
+          <div className="p-4 sm:p-5 border-b border-slate-800 bg-[#070e1c] flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+                  <Layers className="w-4 h-4" />
+                </span>
+                <h3 className="text-base sm:text-lg font-black text-white tracking-tight flex items-center gap-2">
+                  <span>3D Earth Spatio-Temporal Forecasting Globe</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 font-bold uppercase">
+                    Cesium Satellite + Heatmap Layer
+                  </span>
+                </h3>
+              </div>
+              <p className="text-xs text-slate-400">
+                Planetary satellite telemetry with predictive heatmaps showing density classified into Low, Medium, and High stress tiers for <strong className="text-cyan-400">{loc.name}</strong>.
+              </p>
+            </div>
+
+            {/* Forecasting Heatmap Lens Selector */}
+            <div className="flex items-center gap-1.5 bg-[#040816] p-1 rounded-2xl border border-slate-800 shrink-0">
+              {[
+                { id: 'aqi', label: '🌫️ AQI Heatmap' },
+                { id: 'temperature', label: '🌡️ Temperature Heatmap' },
+                { id: 'groundwater', label: '💧 Aquifer Heatmap' },
+                { id: 'population', label: '👥 Demographic Heatmap' },
+                { id: 'migration', label: '⚡ Migration Radiance' }
+              ].map((h) => {
+                const isAct = activeHeatmap === h.id;
+                return (
+                  <button
+                    key={h.id}
+                    onClick={() => setActiveHeatmap(h.id)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+                      isAct
+                        ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/20'
+                        : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    }`}
+                  >
+                    {h.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Density Classification Legend Banner */}
+          <div className="px-5 py-2.5 bg-[#050a17] border-b border-slate-800/80 flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+            <div className="flex items-center gap-3">
+              <span className="text-slate-400 font-bold uppercase text-[10px]">Density Classification:</span>
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <strong>Low Density</strong> (Safe / Nominal)
+              </span>
+              <span className="flex items-center gap-1.5 text-amber-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+                <strong>Medium Density</strong> (Moderate Stress)
+              </span>
+              <span className="flex items-center gap-1.5 text-rose-400">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-400 animate-pulse"></span>
+                <strong>High Density</strong> (Critical Anomaly)
+              </span>
+            </div>
+            <span className="text-slate-500 text-[11px]">
+              Active Heatmap Lens: <strong className="text-cyan-300 uppercase">{activeHeatmap}</strong>
+            </span>
+          </div>
+
+          {/* Same Earth 3D Viewer Globe Instance */}
+          <div className="w-full h-[560px] relative select-none">
+            <Earth3DViewer 
+              fullBleed={true}
+              showInternalPanel={true}
+              onLocationSelect={(selectedLoc) => selectLocation(selectedLoc.id)}
+            />
+          </div>
         </div>
 
         {/* 3. Model Benchmark Comparison Suite */}

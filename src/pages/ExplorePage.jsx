@@ -5,6 +5,7 @@ import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { locationService } from '../services/locationService';
 import { airQualityService } from '../services/airQualityService';
 import { getDeepStoryForLocation } from '../services/deepStoryService';
+import { globalGeoAIService } from '../services/globalGeoAIService';
 import { 
   Search, MapPin, Sparkles, Volume2, TrendingUp, 
   X, ChevronDown, ChevronUp, Droplets, Thermometer, 
@@ -39,7 +40,7 @@ export const ExplorePage = () => {
 
   const activeStoryContent = deepStories[activeStoryStage] || deepStories.current;
 
-  // Handle location search submit
+  // Handle location search submit for any XYZ destination globally
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -51,6 +52,47 @@ export const ExplorePage = () => {
         selectLocation(found[0].id);
         setSearchQuery("");
         return;
+      }
+
+      // Query OpenStreetMap Nominatim for exact geographic coordinates
+      const geoRes = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=1`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (geoRes.ok) {
+        const geoData = await geoRes.json();
+        if (geoData && geoData.length > 0) {
+          const item = geoData[0];
+          const lat = parseFloat(item.lat);
+          const lng = parseFloat(item.lon);
+
+          // Fetch Wikipedia / GeoAI intel for authentic highlights & description
+          const intel = await globalGeoAIService.fetchCityIntel(q);
+          const displayName = item.display_name || q;
+          const parts = displayName.split(',');
+          const cityName = parts[0]?.trim() || intel?.name || q;
+          const countryName = parts[parts.length - 1]?.trim() || "Global";
+          const regionName = parts[1]?.trim() || "Administrative Region";
+
+          const newLoc = locationService.registerCustomLocation({
+            name: cityName,
+            country: countryName,
+            region: regionName,
+            coordinates: { lat, lng },
+            bannerImage: intel?.image || "/images/kolhapur/panchganga_ghat.jpg",
+            description: intel?.extract || displayName,
+            highlights: [cityName, "Real Satellite Telemetry", "Historical Timeline", "Territorial Frontier"],
+            population: "1.2M",
+            aqi: 68,
+            temperature: 26,
+            elevation: "450m"
+          });
+
+          if (newLoc?.id) {
+            selectLocation(newLoc.id);
+            setSearchQuery("");
+            return;
+          }
+        }
       }
     } catch (err) {
       console.warn("Explore search error:", err);

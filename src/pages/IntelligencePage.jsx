@@ -37,21 +37,6 @@ export const IntelligencePage = () => {
             </p>
           </div>
 
-          {/* City Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-stone-500">Destination:</span>
-            <select
-              value={currentLocation.id}
-              onChange={(e) => selectLocation(e.target.value)}
-              className="bg-white border border-stone-200 rounded-xl px-3 py-2 text-xs text-stone-900 focus:border-primary focus:outline-none shadow-sm"
-            >
-              {allLocations.map((loc) => (
-                <option key={loc.id} value={loc.id}>
-                  {loc.name}, {loc.country}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* Top 4 Metric Chips with Mixed Border Colors */}

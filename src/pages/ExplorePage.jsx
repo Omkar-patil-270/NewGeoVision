@@ -91,19 +91,8 @@ export const ExplorePage = () => {
 
 
 
-        {/* Center: View Switcher (Kepler 3D Studio vs 3D Earth Globe vs Change Detection) */}
+        {/* Center: View Switcher (3D Earth Globe vs Kepler Data Map) */}
         <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#030614] border border-slate-800 text-xs font-mono font-bold shadow-md">
-          <button
-            onClick={() => setActiveViewMode("kepler")}
-            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeViewMode === "kepler"
-                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            <span>⬡ Kepler 3D Studio</span>
-          </button>
-
           <button
             onClick={() => setActiveViewMode("globe")}
             className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
@@ -117,17 +106,18 @@ export const ExplorePage = () => {
           </button>
 
           <button
-            onClick={() => setActiveViewMode("change")}
+            onClick={() => setActiveViewMode("kepler")}
             className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeViewMode === "change"
+              activeViewMode === "kepler"
                 ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            <GitCompare className="w-3.5 h-3.5" />
-            <span>🔍 Change Detection</span>
+            <Layers className="w-3.5 h-3.5" />
+            <span>🗺️ Kepler City Map</span>
           </button>
         </div>
+
 
         {/* Right: Big Story Modal Button + AI Geo-Agent Trigger & Drawer Toggle */}
         <div className="flex items-center gap-2">
@@ -167,12 +157,8 @@ export const ExplorePage = () => {
       {/* ================= 2. MAIN 3D EARTH GLOBE / VISUAL CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* Full-Screen Interactive Kepler Studio, 3D Earth Globe, or Change Detection Split */}
-        {activeViewMode === "kepler" ? (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <KeplerStudio initialLocation={currentLocation} />
-          </div>
-        ) : activeViewMode === "globe" ? (
+        {/* Full-Screen Interactive 3D Earth Globe or Kepler City Map */}
+        {activeViewMode === "globe" ? (
           <div className="absolute inset-0 w-full h-full z-0">
             <Earth3DViewer 
               fullBleed={true}
@@ -182,12 +168,10 @@ export const ExplorePage = () => {
           </div>
         ) : (
           <div className="absolute inset-0 w-full h-full z-0">
-            <AIChangeDetectionSplit
-              currentLocation={currentLocation}
-              onOpenEvidence={(hotspot) => setEvidenceModalData(hotspot)}
-            />
+            <KeplerStudio initialLocation={currentLocation} />
           </div>
         )}
+
 
         {/* Floating Quick Fly Pills & Search Bar (Only shown on non-Kepler modes) */}
         {activeViewMode !== "kepler" && (
@@ -271,44 +255,43 @@ export const ExplorePage = () => {
             {/* Scrollable Content */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               
-              {/* Beginner-Friendly Clear Metrics Cards (Simple for First-Time Users) */}
+              {/* City Overview & Essential Highlights (Clear, Friendly, Academic) */}
               <div className="space-y-2">
                 <div className="text-[10px] font-mono uppercase font-bold text-cyan-400 flex items-center justify-between">
-                  <span>What Changed (2018 ➔ 2026)</span>
-                  <span className="text-slate-500">Plain English Insights</span>
+                  <span>City Highlights & Key Facts</span>
+                  <span className="text-slate-500">Essential Guide</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs font-mono">
-                  {/* Metric 1: Tree Cover */}
-                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-rose-500/30 space-y-0.5">
-                    <span className="text-slate-400 text-[10px] block">🌲 Tree Cover</span>
-                    <span className="text-rose-400 font-bold text-sm">↓ 12.8%</span>
-                    <span className="text-slate-500 text-[9px] block">Peripheral canopy loss</span>
+                  {/* Highlight 1: Heritage */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-cyan-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">🏛️ Heritage</span>
+                    <span className="text-cyan-400 font-bold text-xs truncate block">1,300+ Yrs</span>
+                    <span className="text-slate-500 text-[9px] block">Karveer Throne</span>
                   </div>
 
-                  {/* Metric 2: City Buildings */}
-                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-amber-500/30 space-y-0.5">
-                    <span className="text-slate-400 text-[10px] block">🏗️ City Growth</span>
-                    <span className="text-amber-400 font-bold text-sm">↑ 21.4%</span>
-                    <span className="text-slate-500 text-[9px] block">New roads & foundries</span>
+                  {/* Highlight 2: Population */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-emerald-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">👥 Residents</span>
+                    <span className="text-emerald-400 font-bold text-xs truncate block">{currentLocation.population || '3.85 Million'}</span>
+                    <span className="text-slate-500 text-[9px] block">District Count</span>
                   </div>
 
-                  {/* Metric 3: Air Quality */}
+                  {/* Highlight 3: Air & Climate */}
                   <div className="p-2.5 rounded-2xl bg-[#030612] border border-sky-500/30 space-y-0.5">
-                    <span className="text-slate-400 text-[10px] block">💨 Air Quality</span>
-                    <span className="text-sky-400 font-bold text-sm">AQI {aqiScore}</span>
-                    <span className="text-slate-500 text-[9px] block">{aqiData?.status || 'Moderate'}</span>
+                    <span className="text-slate-400 text-[10px] block">🌤️ Atmosphere</span>
+                    <span className="text-sky-400 font-bold text-xs truncate block">AQI {aqiScore}</span>
+                    <span className="text-slate-500 text-[9px] block">Fresh Deccan Breeze</span>
                   </div>
 
-                  {/* Metric 4: Water Bodies */}
-                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-purple-500/30 space-y-0.5">
-                    <span className="text-slate-400 text-[10px] block">💧 Water Reserves</span>
-                    <span className="text-purple-400 font-bold text-sm">↓ 8.4%</span>
-                    <span className="text-slate-500 text-[9px] block">Lake & river seasonal shift</span>
+                  {/* Highlight 4: Famous For */}
+                  <div className="p-2.5 rounded-2xl bg-[#030612] border border-amber-500/30 space-y-0.5">
+                    <span className="text-slate-400 text-[10px] block">⭐ Famous For</span>
+                    <span className="text-amber-400 font-bold text-xs truncate block">Temple & Food</span>
+                    <span className="text-slate-500 text-[9px] block">Kusti & Chappals</span>
                   </div>
                 </div>
               </div>
-
               {/* Big Location Story Section (Past, Current, Future) */}
               <div className="space-y-2.5 pt-1">
                 <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400">

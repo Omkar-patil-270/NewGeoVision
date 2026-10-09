@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
-import { KeplerStudio } from '../components/kepler/KeplerStudio';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
-import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
+
 import { locationService } from '../services/locationService';
 import { airQualityService } from '../services/airQualityService';
 import { getDeepStoryForLocation } from '../services/deepStoryService';
@@ -22,7 +21,6 @@ export const ExplorePage = () => {
     setGeoAIChatOpen
   } = useApp();
 
-  const [activeViewMode, setActiveViewMode] = useState("globe"); // "globe" (default realistic Earth) | "kepler" | "change"
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
@@ -91,32 +89,12 @@ export const ExplorePage = () => {
 
 
 
-        {/* Center: View Switcher (3D Earth Globe vs Kepler Data Map) */}
-        <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#030614] border border-slate-800 text-xs font-mono font-bold shadow-md">
-          <button
-            onClick={() => setActiveViewMode("globe")}
-            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeViewMode === "globe"
-                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>🌍 3D Earth Globe</span>
-          </button>
-
-          <button
-            onClick={() => setActiveViewMode("kepler")}
-            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeViewMode === "kepler"
-                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
-                : "text-slate-400 hover:text-white"
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            <span>🗺️ Kepler City Map</span>
-          </button>
+        {/* Center: Clean Status */}
+        <div className="flex items-center gap-2 px-3 py-1 rounded-2xl bg-[#030614] border border-slate-800 text-xs font-mono font-bold text-cyan-300">
+          <Globe className="w-3.5 h-3.5 text-cyan-400" />
+          <span>🌍 Planetary 3D Satellite Earth</span>
         </div>
+
 
 
         {/* Right: Big Story Modal Button + AI Geo-Agent Trigger & Drawer Toggle */}
@@ -137,7 +115,6 @@ export const ExplorePage = () => {
             <span>AI Geo-Agent</span>
           </button>
 
-          {activeViewMode !== "kepler" && (
             <button
               onClick={() => setPanelOpen(!panelOpen)}
               className={`p-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
@@ -149,33 +126,26 @@ export const ExplorePage = () => {
             >
               <Activity className="w-4 h-4" />
             </button>
-          )}
-        </div>
+          </div>
+
 
       </div>
 
       {/* ================= 2. MAIN 3D EARTH GLOBE / VISUAL CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* Full-Screen Interactive 3D Earth Globe or Kepler City Map */}
-        {activeViewMode === "globe" ? (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <Earth3DViewer 
-              fullBleed={true}
-              showInternalPanel={false}
-              onLocationSelect={(loc) => selectLocation(loc.id)}
-            />
-          </div>
-        ) : (
-          <div className="absolute inset-0 w-full h-full z-0">
-            <KeplerStudio initialLocation={currentLocation} />
-          </div>
-        )}
+        {/* Full-Screen Interactive 3D Earth Globe */}
+        <div className="absolute inset-0 w-full h-full z-0">
+          <Earth3DViewer 
+            fullBleed={true}
+            showInternalPanel={false}
+            onLocationSelect={(loc) => selectLocation(loc.id)}
+          />
+        </div>
 
+        {/* Floating Quick Fly Pills & Search Bar */}
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
 
-        {/* Floating Quick Fly Pills & Search Bar (Only shown on non-Kepler modes) */}
-        {activeViewMode !== "kepler" && (
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
             <div className="pointer-events-auto flex flex-col items-center gap-1.5">
               <form 
                 onSubmit={handleSearchSubmit}
@@ -217,11 +187,11 @@ export const ExplorePage = () => {
               </div>
             </div>
           </div>
-        )}
 
         {/* ================= 3. USER-FRIENDLY RIGHT INTELLIGENCE DRAWER ================= */}
-        {activeViewMode !== "kepler" && panelOpen && (
+        {panelOpen && (
           <div className="absolute top-3 right-4 bottom-4 z-20 w-80 sm:w-96 rounded-3xl bg-[#060D1E]/95 backdrop-blur-2xl border-2 border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden text-xs">
+
             
             {/* Panel Header */}
             <div className="p-4 border-b border-slate-800 bg-[#040814]/90 flex items-center justify-between">

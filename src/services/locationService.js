@@ -630,9 +630,10 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 58,
     temperature: 26,
     weatherCondition: "Pleasant / Breeze",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/satara/kaas_plateau.jpg",
     description: "The historical capital of the Maratha Empire, crowned by Ajinkyatara Fort and the UNESCO World Natural Heritage site of Kas Plateau (Valley of Flowers).",
-    highlights: ["Kas Plateau (Valley of Flowers)", "Ajinkyatara Fort", "Koyna Hydro Dam", "Thoseghar Waterfalls"]
+    highlights: ["Kas Plateau (Valley of Flowers)", "Ajinkyatara Fort", "Satara Kandi Pedha", "Thoseghar Waterfalls"]
+
   },
   {
     id: "sangli",

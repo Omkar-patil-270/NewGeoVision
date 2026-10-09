@@ -233,6 +233,206 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
     ];
   }
 
+  // 1.5 SATARA (Historic Maratha Capital & UNESCO Kaas Plateau)
+  if (cid.includes("satara")) {
+    return [
+      {
+        id: "history",
+        category: "History & Royalty",
+        categoryKey: "history",
+        categoryIcon: Landmark,
+        pillLabel: "History",
+        badge: "Maratha Capital",
+        title: "Seat of the Chhatrapatis & Royal Ajinkyatara",
+        subtitle: "The crowning capital of the Maratha Empire under Chhatrapati Shahu Maharaj I.",
+        era: "royal",
+        image: "/images/satara/ajinkyatara_fort.jpg",
+        imageCaption: "Historic Ajinkyatara Fort crowning Satara City (Real Photo)",
+        narratives: {
+          default: `Satara was founded as the sovereign capital of the Maratha Empire by Chhatrapati Shahu Maharaj I in 1708. Overlooked by the impenetrable Ajinkyatara Fort (meaning 'The Unconquerable Star'), Satara was the focal point of Maratha diplomacy, administrative decrees, and royal courts.\n\nThe city houses the historic Jal Mandir palace and Bhavani Museum, which preserves royal weapons, including legendary Maratha swords, miniature paintings, and treaties.`,
+          traveler: `Hike up to Ajinkyatara Fort early in the morning for a 360-degree panoramic view of Satara city nestled among the Sahyadri mountains.`,
+          foodie: `Satara's culinary heritage is crowned by the famous 'Kandi Pedha'—a rich, slow-caramelized milk fudge perfected over 150 years.`,
+          history: `Satara remained the Maratha royal capital until 1848, producing revolutionary freedom fighters during the 1942 Quit India movement's 'Prati Sarkar' rebellion.`,
+          nature: `Satara is flanked by the Krishna and Venna river valleys, providing natural defense and fertile agricultural plains.`
+        },
+        highlights: [
+          "Historical capital of the Maratha Empire since 1708",
+          "Ajinkyatara Fort: The 3,300 ft 'Unconquerable Star'",
+          "Birthplace of the legendary 1942 Prati Sarkar resistance"
+        ]
+      },
+      {
+        id: "tourist",
+        category: "Famous Tourist Places",
+        categoryKey: "tourist",
+        categoryIcon: Camera,
+        pillLabel: "Tourist Places",
+        badge: "UNESCO Heritage",
+        title: "Kaas Plateau, Ajinkyatara & Sajjangad Citadel",
+        subtitle: "Discover ancient mountain citadels, sacred shrines, and the Valley of Flowers.",
+        era: "ancient",
+        gallery: [
+          {
+            title: "Kaas Pathar (Valley of Flowers)",
+            desc: "UNESCO World Natural Heritage volcanic plateau blooming with 850+ wildflower species.",
+            image: "/images/satara/kaas_plateau.jpg",
+            caption: "Real Photo: Kaas Plateau Wildflower Bloom"
+          },
+          {
+            title: "Ajinkyatara Hill Fort",
+            desc: "Historic 16th-century fortress perched 3,300 feet above Satara valley.",
+            image: "/images/satara/ajinkyatara_fort.jpg",
+            caption: "Real Photo: Ajinkyatara Fort Bastions"
+          }
+        ],
+        narratives: {
+          default: `Satara is packed with world-famous natural and historic attractions. The UNESCO World Natural Heritage site of Kaas Plateau (Kaas Pathar) transforms into a vibrant carpet of pink, purple, and blue wildflowers every post-monsoon season.\n\nVisit Sajjangad—the sacred hilltop samadhi of saint Samarth Ramdas—and marvel at the thunderous Thoseghar Waterfalls cascading 1,000 feet into deep gorges.`,
+          traveler: `Book your Kaas Pathar visitor pass online during August–October to see the peak flower bloom, and visit Sajjangad before sunset for serene mountain views!`,
+          foodie: `Pick up fresh hot Kandi Pedha directly from the historic bazaar shops near Rajwada.`,
+          history: `Ajinkyatara Fort was captured by Chhatrapati Shivaji Maharaj in 1673 and later heroically defended by Queen Tarabai against Mughal forces.`,
+          nature: `Kaas Plateau is a unique lateritic volcanic tableland home to rare carnivorous plants and endemic orchids.`
+        },
+        highlights: [
+          "Kaas Plateau: UNESCO World Natural Heritage Valley of Flowers",
+          "Sajjangad: Sacred hill citadel of Samarth Ramdas",
+          "Thoseghar Waterfalls: 1,000-foot Sahyadri waterfall cascade"
+        ]
+      },
+      {
+        id: "food",
+        category: "Famous Food & Delicacies",
+        categoryKey: "food",
+        categoryIcon: Utensils,
+        pillLabel: "Famous Food",
+        badge: "GI Specialty",
+        title: "Satara Kandi Pedha & Rustic Pithla Bhakri",
+        subtitle: "The 150-year-old milk fudge and fiery rural Deccan cuisine.",
+        era: "modern",
+        foodGallery: [
+          {
+            name: "Satara Kandi Pedha",
+            tag: "World-Famous Sweet",
+            desc: "Slow-caramelized buffalo milk mawa infused with green cardamom and pure desi ghee.",
+            image: "/images/satara/ajinkyatara_fort.jpg",
+            caption: "Real Satara Kandi Pedha Heritage"
+          }
+        ],
+        narratives: {
+          default: `Satara's culinary pride is its legendary Kandi Pedha, invented in the late 19th century. Made by slowly simmering pure whole milk in large iron pans until it caramelizes to a deep golden amber, it has a rich, melt-in-the-mouth texture unlike any other sweet in India.\n\nFor meals, enjoy hearty rural Maharashtrian comfort: piping hot Pithla (spiced gram flour curry), rustic Bajra Bhakri, roasted garlic thecha, and fresh onion salad.`,
+          traveler: `Must-visit sweet shops: Stop at Rajwada bazaar to sample authentic Modi Pedha and Godiwale Pedha fresh from the copper vats!`,
+          foodie: `The secret of Satara Kandi Pedha is four hours of continuous low-flame stirring that caramelizes the natural milk sugars without artificial color.`,
+          history: `During the royal Maratha era, Kandi Pedha was sent as royal gifts to allied kingdoms across the Deccan.`,
+          nature: `Rich dairy pastures along the Krishna river valley supply fresh unadulterated buffalo milk to Satara's master confectioners.`
+        },
+        highlights: [
+          "Satara Kandi Pedha: 150-year-old slow-caramelized milk fudge",
+          "Pithla Bhakri: Traditional Deccan gram flour curry with flatbread",
+          "Spicy Garlic-Chili Thecha made on traditional stone mortar"
+        ]
+      },
+      {
+        id: "governance",
+        category: "City Administration & Mayor",
+        categoryKey: "governance",
+        categoryIcon: Building2,
+        pillLabel: "City & Mayor",
+        badge: "Civic Council",
+        title: "Satara Municipal Council & Heritage City Development",
+        subtitle: "One of Maharashtra's oldest municipal councils, established in 1853.",
+        era: "modern",
+        image: "/images/satara/ajinkyatara_fort.jpg",
+        imageCaption: "Satara Civic Administration & Historic Town (Real Photo)",
+        narratives: {
+          default: `Civic management in Satara is governed by the Satara Municipal Council, established in 1853—making it one of the oldest civic bodies in western India.\n\nUnder civic leadership, the council manages water supply from the Kas and Koyna reservoirs, preserves heritage Maratha rajwadas, and enforces strict eco-sensitive tourism guidelines to protect the delicate biosphere of Kaas Plateau.`,
+          traveler: `The municipal council operates dedicated tourist shuttles to Kaas Plateau during peak bloom season to prevent traffic congestion.`,
+          foodie: `Civic health departments inspect dairy markets to maintain the pure milk standards that preserve Satara's Pedha heritage.`,
+          history: `The council was established under the British Bombay Presidency and was among the first in India to introduce public piped water supply.`,
+          nature: `Civic environmental initiatives focus on preserving the watershed of the Krishna and Venna rivers.`
+        },
+        highlights: [
+          "One of Maharashtra's oldest municipal bodies (Est. 1853)",
+          "Eco-sensitive tourism regulation for Kaas Plateau",
+          "Piped drinking water from historic Kas Lake reservoir"
+        ]
+      },
+      {
+        id: "culture",
+        category: "Population & Culture",
+        categoryKey: "culture",
+        categoryIcon: Users,
+        pillLabel: "Population",
+        badge: "3.0 Million Citizens",
+        title: "The Land of Brave Soldiers & Patriotism",
+        subtitle: "A proud heritage of military valor, discipline, and community warmth.",
+        era: "royal",
+        image: "/images/satara/ajinkyatara_fort.jpg",
+        imageCaption: "Cultural Pride and Monumental Heritage of Satara",
+        narratives: {
+          default: `Satara is famously celebrated across India as 'Sainikanche Shahar' (City of Soldiers). Almost every family in rural Satara has sent brave sons and daughters to serve in the Indian Armed Forces, the Maratha Light Infantry, and national defense.\n\nThis culture of discipline, physical courage, and unyielding patriotism is reflected in local wrestling talims, community gymnasium akhadas, and deeply reverent celebration of Shiv Jayanti.`,
+          traveler: `Visit the Sainik School Satara—the very first Sainik School established in India in 1961 by Defense Minister V.K. Krishna Menon!`,
+          foodie: `Soldiers returning home to Satara are traditionally greeted with fresh Pedhas and home-cooked mutton sukka feasts.`,
+          history: `The Apte, Thorat, and Shinde warrior lineages of Satara led Maratha cavalry charges from Delhi to Thanjavur.`,
+          nature: `Highland mountain air and rugged Sahyadri hill trails provide natural endurance training for Satara's youth.`
+        },
+        highlights: [
+          "Land of Brave Soldiers: Premier contributor to Indian Armed Forces",
+          "First Sainik School in India (Established 1961)",
+          "Historic Shiv Jayanti celebrations & patriotic community spirit"
+        ]
+      },
+      {
+        id: "nature",
+        category: "Greenery & Nature",
+        categoryKey: "nature",
+        categoryIcon: Trees,
+        pillLabel: "Greenery",
+        badge: "Western Ghats Hotspot",
+        title: "Kas Plateau Biodiversity & Thoseghar Waterfalls",
+        subtitle: "A UNESCO World Natural Heritage botanical hotspot and roaring falls.",
+        era: "ancient",
+        image: "/images/satara/kaas_plateau.jpg",
+        imageCaption: "Real Photo: Kaas Plateau (Valley of Flowers), Satara",
+        narratives: {
+          default: `Satara sits in the heart of the Western Ghats (Sahyadris), one of the world's eight 'hottest hotspots' of biological diversity. The Kaas Plateau alone hosts over 850 flowering plant species, including insect-eating pitcher plants and endangered ground orchids.\n\nDeep in the misty monsoon, Thoseghar Waterfalls plunge 1,000 feet into lush green ravines, while the pristine waters of Kas Lake reflect thick cloud forests.`,
+          traveler: `Visit Kaas Lake for peaceful boating surrounded by misty hill peaks and emerald greenery!`,
+          foodie: `Local forest honey and organic turmeric are harvested by tribal communities in the surrounding valleys.`,
+          history: `Kas Lake was constructed in 1879 by British engineers and Satara municipal authorities as an gravity-fed drinking water source.`,
+          nature: `UNESCO inscribed Kaas Plateau on the World Natural Heritage list in 2012 due to its exceptional biodiversity.`
+        },
+        highlights: [
+          "Kaas Plateau: 850+ endemic botanical species",
+          "Thoseghar Waterfalls: 1,000-foot misty cascade",
+          "UNESCO World Natural Heritage Site"
+        ]
+      },
+      {
+        id: "visit",
+        category: "Why You Should Visit",
+        categoryKey: "visit",
+        categoryIcon: Compass,
+        pillLabel: "Why Visit",
+        badge: "Travel Guide",
+        title: "Kas Bloom, Royal Palaces & Scenic Sahyadri Drives",
+        subtitle: "Everything you need to plan an unforgettable trip to Satara.",
+        era: "modern",
+        image: "/images/satara/kaas_plateau.jpg",
+        imageCaption: "Kaas Plateau Landscape at Sunrise (Real Photo)",
+        narratives: {
+          default: `Satara is an extraordinary getaway easily accessible directly from National Highway 48 (NH-48), just 110 km south of Pune and 120 km north of Kolhapur.\n\nPlan your journey between August and October to witness the magical wildflower carpet of Kaas Pathar, climb Ajinkyatara Fort for sunset, and take home boxes of authentic Satara Kandi Pedha.`,
+          traveler: `How to reach: 2-hour smooth highway drive from Pune via NH-48. Daily express trains stop at Satara railway station.`,
+          foodie: `Spend an afternoon trying spicy mutton thali at a local dhaba followed by hot milk pedhas!`,
+          history: `Visit the Bhavani Museum to see royal Maratha armory, antique paintings, and historical manuscripts.`,
+          nature: `Extend your drive up to Chalkewadi windmill plateau for dramatic wind turbines silhouetted against the clouds.`
+        },
+        highlights: [
+          "Witness the magical Kaas Pathar bloom (Aug–Oct)",
+          "Historic Ajinkyatara citadel & Bhavani Museum",
+          "Convenient access via 6-lane NH-48 Highway from Pune/Kolhapur"
+        ]
+      }
+    ];
+  }
+
   // 2. MUMBAI (Financial Capital of India)
   if (cid.includes("mumbai")) {
     return [

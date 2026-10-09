@@ -1,12 +1,13 @@
 import React from 'react';
-import { KeplerStudio } from '../components/kepler/KeplerStudio';
+import { StackedStoryCardsStudio } from '../components/story/StackedStoryCardsStudio';
 
 export const StoryPage = () => {
   return (
     <div className="w-full h-full bg-[#070b12] text-slate-100 overflow-hidden">
-      <KeplerStudio />
+      <StackedStoryCardsStudio />
     </div>
   );
 };
 
 export default StoryPage;
+

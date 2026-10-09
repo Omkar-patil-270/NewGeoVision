@@ -22,7 +22,7 @@ export const ExplorePage = () => {
     setGeoAIChatOpen
   } = useApp();
 
-  const [activeViewMode, setActiveViewMode] = useState("kepler"); // "kepler" (default) | "globe" | "change"
+  const [activeViewMode, setActiveViewMode] = useState("globe"); // "globe" (default realistic Earth) | "kepler" | "change"
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);

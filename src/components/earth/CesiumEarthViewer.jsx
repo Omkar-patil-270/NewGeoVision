@@ -197,8 +197,8 @@ export const CesiumEarthViewer = forwardRef(({
     };
   }, []);
 
-  // Smooth Fly-To function
-  const flyTo = (lat, lon, height = 12000) => {
+  // Smooth Fly-To function with zoomed-out altitude for heatmaps
+  const flyTo = (lat, lon, height = null) => {
     if (!viewerRef.current || !isReadyRef.current) return;
     const viewer = viewerRef.current;
 
@@ -227,11 +227,14 @@ export const CesiumEarthViewer = forwardRef(({
       }
     });
 
+    const isHeatmapActive = activeHeatmap && activeHeatmap !== "none";
+    const targetHeight = height || (isHeatmapActive ? 280000 : 85000);
+
     viewer.camera.flyTo({
-      destination: Cesium.Cartesian3.fromDegrees(lon, lat, height),
+      destination: Cesium.Cartesian3.fromDegrees(lon, lat, targetHeight),
       orientation: {
         heading: 0,
-        pitch: Cesium.Math.toRadians(-75),
+        pitch: Cesium.Math.toRadians(isHeatmapActive ? -85 : -75),
         roll: 0
       },
       duration: 2.5,
@@ -391,6 +394,9 @@ export const CesiumEarthViewer = forwardRef(({
   useEffect(() => {
     if (currentLocation?.coordinates && isReadyRef.current) {
       renderHeatmap(currentLocation.coordinates.lat, currentLocation.coordinates.lng, activeHeatmap);
+      if (activeHeatmap && activeHeatmap !== "none") {
+        flyTo(currentLocation.coordinates.lat, currentLocation.coordinates.lng, 280000);
+      }
     }
   }, [activeHeatmap]);
 

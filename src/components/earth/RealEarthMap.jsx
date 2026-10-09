@@ -152,7 +152,7 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (map && currentLocation?.coordinates) {
-      map.flyTo([currentLocation.coordinates.lat, currentLocation.coordinates.lng], 12, {
+      map.flyTo([currentLocation.coordinates.lat, currentLocation.coordinates.lng], 9, {
         duration: 1.8,
         easeLinearity: 0.25
       });

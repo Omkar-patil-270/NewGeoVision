@@ -22,12 +22,12 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(28, 25, 23, 0.95)',
-        borderColor: '#0284c7',
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        borderColor: '#06b6d4',
         borderWidth: 1,
         textStyle: { color: '#ffffff', fontSize: 12, fontFamily: 'monospace' },
         formatter: (params) => {
-          let html = `<div style="font-weight:bold;margin-bottom:4px;border-bottom:1px solid #444;padding-bottom:2px;">Year: ${params[0].axisValue}</div>`;
+          let html = `<div style="font-weight:bold;margin-bottom:4px;border-bottom:1px solid #334155;padding-bottom:2px;color:#38bdf8;">Year: ${params[0].axisValue}</div>`;
           params.forEach((item) => {
             if (item.value !== null && item.value !== undefined) {
               html += `<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:3px;">
@@ -41,7 +41,7 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       },
       legend: {
         data: ['Training', 'Testing (held-out)', 'Moving Average (3-Yr)', 'Forecast (ARIMA)'],
-        textStyle: { color: '#57534e', fontSize: 11, fontWeight: 600 },
+        textStyle: { color: '#cbd5e1', fontSize: 11, fontWeight: 600 },
         top: 6
       },
       grid: {
@@ -54,19 +54,19 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       xAxis: {
         type: 'category',
         data: data.chartData.allYears,
-        axisLine: { lineStyle: { color: '#d6d3d1' } },
-        axisLabel: { color: '#78716c', fontSize: 11, fontFamily: 'monospace' }
+        axisLine: { lineStyle: { color: '#334155' } },
+        axisLabel: { color: '#94a3b8', fontSize: 11, fontFamily: 'monospace' }
       },
       yAxis: {
         type: 'value',
         scale: true,
         axisLabel: {
           formatter: `{value} ${data.unit}`,
-          color: '#78716c',
+          color: '#94a3b8',
           fontSize: 11,
           fontFamily: 'monospace'
         },
-        splitLine: { lineStyle: { color: '#f5f5f4', type: 'dashed' } }
+        splitLine: { lineStyle: { color: '#1e293b', type: 'dashed' } }
       },
       series: [
         {
@@ -99,8 +99,8 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
           name: 'Forecast (ARIMA)',
           type: 'line',
           data: data.chartData.forecastSeries,
-          lineStyle: { color: '#0284c7', width: 3, type: 'dashed' },
-          itemStyle: { color: '#0284c7' },
+          lineStyle: { color: '#06b6d4', width: 3, type: 'dashed' },
+          itemStyle: { color: '#06b6d4' },
           symbol: 'diamond',
           symbolSize: 7
         }
@@ -113,20 +113,19 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
     const testYears = data.validation.map((v) => v.testYear.toString());
     const actualVals = data.validation.map((v) => parseFloat((v.rawActual / data.divisor).toFixed(2)));
     const predVals = data.validation.map((v) => parseFloat((v.rawPredicted / data.divisor).toFixed(2)));
-    const errVals = data.validation.map((v) => v.rawAbsError);
 
     return {
       backgroundColor: 'transparent',
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(28, 25, 23, 0.95)',
-        borderColor: '#ea580c',
+        backgroundColor: 'rgba(15, 23, 42, 0.95)',
+        borderColor: '#f97316',
         borderWidth: 1,
         textStyle: { color: '#ffffff', fontSize: 12, fontFamily: 'monospace' }
       },
       legend: {
         data: ['Actual', 'Predicted', 'Absolute Error'],
-        textStyle: { color: '#57534e', fontSize: 11, fontWeight: 600 },
+        textStyle: { color: '#cbd5e1', fontSize: 11, fontWeight: 600 },
         top: 6
       },
       grid: {
@@ -139,24 +138,24 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       xAxis: {
         type: 'category',
         data: testYears,
-        axisLine: { lineStyle: { color: '#d6d3d1' } },
-        axisLabel: { color: '#78716c', fontSize: 11, fontFamily: 'monospace' }
+        axisLine: { lineStyle: { color: '#334155' } },
+        axisLabel: { color: '#94a3b8', fontSize: 11, fontFamily: 'monospace' }
       },
       yAxis: [
         {
           type: 'value',
           name: `Population (${data.unit})`,
-          nameTextStyle: { color: '#78716c', fontSize: 10 },
+          nameTextStyle: { color: '#94a3b8', fontSize: 10 },
           scale: true,
-          axisLabel: { formatter: `{value} ${data.unit}`, color: '#78716c', fontSize: 10, fontFamily: 'monospace' },
-          splitLine: { lineStyle: { color: '#f5f5f4', type: 'dashed' } }
+          axisLabel: { formatter: `{value} ${data.unit}`, color: '#94a3b8', fontSize: 10, fontFamily: 'monospace' },
+          splitLine: { lineStyle: { color: '#1e293b', type: 'dashed' } }
         },
         {
           type: 'value',
           name: 'Abs Error (Persons)',
-          nameTextStyle: { color: '#ea580c', fontSize: 10 },
+          nameTextStyle: { color: '#f97316', fontSize: 10 },
           scale: true,
-          axisLabel: { color: '#ea580c', fontSize: 10, fontFamily: 'monospace' },
+          axisLabel: { color: '#f97316', fontSize: 10, fontFamily: 'monospace' },
           splitLine: { show: false }
         }
       ],
@@ -174,8 +173,8 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
           name: 'Predicted',
           type: 'line',
           data: predVals,
-          lineStyle: { color: '#0284c7', width: 2.8, type: 'dashed' },
-          itemStyle: { color: '#0284c7' },
+          lineStyle: { color: '#06b6d4', width: 2.8, type: 'dashed' },
+          itemStyle: { color: '#06b6d4' },
           symbol: 'diamond',
           symbolSize: 8
         },
@@ -183,12 +182,12 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
           name: 'Absolute Error',
           type: 'bar',
           yAxisIndex: 1,
-          data: errVals,
-          itemStyle: {
-            color: 'rgba(234, 88, 12, 0.75)',
+          data: data.validation.map((v) => v.rawAbsError),
+          itemStyle: { 
+            color: '#f97316',
             borderRadius: [4, 4, 0, 0]
           },
-          barWidth: 28
+          barWidth: 26
         }
       ]
     };
@@ -215,62 +214,61 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
     document.body.removeChild(link);
   };
 
-  // Print / PDF Dossier Action
   const handlePrintDossier = () => {
     window.print();
   };
 
   return (
-    <div className="space-y-6 w-full text-stone-900 animate-in fade-in duration-300">
+    <div className="space-y-6 w-full text-slate-100 animate-in fade-in duration-300">
       
       {/* 1. SECTION 1: Historical Population & 3-Year Moving Average Table */}
-      <div className="bg-white rounded-3xl p-6 border border-[#E7E2DA] shadow-xs">
-        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div className="bg-[#091124] rounded-3xl p-6 border border-slate-800 shadow-xl space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-700">
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
               <Users className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-base font-serif font-bold text-stone-900">
+              <h3 className="text-base font-bold text-white">
                 Historical Population &amp; 3-Year Moving Average
               </h3>
-              <p className="text-xs text-stone-500 font-mono">
+              <p className="text-xs text-slate-400 font-mono">
                 Location: {currentLocation?.name || 'Kolhapur'} (2015 – 2024 Baseline)
               </p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-stone-100 text-stone-700 border border-stone-200">
+            <span className="px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#060b16] text-cyan-300 border border-cyan-500/30">
               Units: {data.unit === 'L' ? 'Lakhs (100,000)' : 'Crores (10,000,000)'}
             </span>
           </div>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-stone-200/80">
+        <div className="overflow-x-auto rounded-2xl border border-slate-800">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-stone-50/90 border-b border-stone-200 text-stone-500 uppercase tracking-wider text-[11px]">
+            <thead className="bg-[#060b16] border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="py-3 px-4 font-bold">YEAR</th>
                 <th className="py-3 px-4 font-bold">POPULATION</th>
-                <th className="py-3 px-4 font-bold text-amber-700">3-YR MOVING AVG</th>
+                <th className="py-3 px-4 font-bold text-amber-400">3-YR MOVING AVG</th>
                 <th className="py-3 px-4 font-bold text-right">TYPE</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 bg-white">
+            <tbody className="divide-y divide-slate-800/80 bg-[#070e1c]">
               {data.historical.map((row) => (
-                <tr key={row.year} className="hover:bg-stone-50/70 transition-colors">
-                  <td className="py-2.5 px-4 font-bold text-stone-900">{row.year}</td>
-                  <td className="py-2.5 px-4 font-semibold text-stone-800">{row.popWithUnit}</td>
-                  <td className="py-2.5 px-4 font-bold text-amber-600">
+                <tr key={row.year} className="hover:bg-cyan-500/5 transition-colors">
+                  <td className="py-2.5 px-4 font-bold text-white">{row.year}</td>
+                  <td className="py-2.5 px-4 font-semibold text-slate-200">{row.popWithUnit}</td>
+                  <td className="py-2.5 px-4 font-bold text-amber-400">
                     {row.movingAvgWithUnit}
                   </td>
                   <td className="py-2.5 px-4 text-right">
                     <span
                       className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${
                         row.type === 'Official'
-                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                          : 'bg-sky-50 text-sky-800 border-sky-200'
+                          ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                          : 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
                       }`}
                     >
                       {row.type}
@@ -284,16 +282,15 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       </div>
 
       {/* 2. SECTION 2: Interactive Forecast Line Chart (2015 – 2029) */}
-      <div className="bg-white rounded-3xl p-6 border border-[#E7E2DA] shadow-xs">
-        <div className="flex items-center justify-between mb-2">
-          <div>
-            <h3 className="text-base font-serif font-bold text-stone-900">
-              Forecast Chart (2015 – 2029)
-            </h3>
-            <p className="text-xs text-stone-500">
-              Historical baseline (Training &amp; Testing) alongside 3-Year Moving Average and ARIMA Forward Projections.
-            </p>
-          </div>
+      <div className="bg-[#091124] rounded-3xl p-6 border border-slate-800 shadow-xl space-y-3">
+        <div>
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-cyan-400" />
+            <span>Demographic Horizon Projections (2015 – 2029)</span>
+          </h3>
+          <p className="text-xs text-slate-400">
+            Historical baseline (Training &amp; Testing) alongside 3-Year Moving Average and ARIMA Forward Projections.
+          </p>
         </div>
 
         <div className="w-full pt-2">
@@ -306,17 +303,17 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       </div>
 
       {/* 3. SECTION 3: ARIMA Hero Stat Card */}
-      <div className="bg-gradient-to-br from-stone-900 via-[#0a192f] to-[#042036] rounded-3xl p-8 border border-sky-900/40 text-center shadow-xl space-y-3 text-white">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-bold tracking-wider uppercase">
+      <div className="bg-gradient-to-br from-[#0a1428] via-[#091124] to-[#041a2e] rounded-3xl p-8 border border-cyan-500/40 text-center shadow-2xl space-y-3 text-white">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/80 border border-cyan-400/40 text-cyan-300 text-xs font-mono font-bold tracking-wider uppercase">
           <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
           <span>ARIMA — PREDICTED POPULATION {data.heroCard.targetYear}</span>
         </div>
 
-        <div className="text-5xl sm:text-6xl font-extrabold font-mono text-cyan-300 drop-shadow-[0_0_25px_rgba(6,182,212,0.35)]">
+        <div className="text-5xl sm:text-6xl font-extrabold font-mono text-cyan-300 drop-shadow-[0_0_25px_rgba(6,182,212,0.45)]">
           {data.heroCard.predictedWithUnit}
         </div>
 
-        <p className="text-xs text-stone-300 font-sans max-w-md mx-auto">
+        <p className="text-xs text-slate-300 font-sans max-w-md mx-auto">
           Based on chronological expanding-window validated ARIMA(1, 1, 0) demographic growth model.
         </p>
 
@@ -333,71 +330,72 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
       </div>
 
       {/* 4. SECTION 4: Chronological Expanding-Window Validation Table */}
-      <div className="bg-white rounded-3xl p-6 border border-[#E7E2DA] shadow-xs">
-        <div className="mb-4">
-          <h3 className="text-base font-serif font-bold text-stone-900 flex items-center gap-2">
+      <div className="bg-[#091124] rounded-3xl p-6 border border-slate-800 shadow-xl space-y-4">
+        <div>
+          <h3 className="text-base font-bold text-white flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
             <span>Chronological Expanding-Window Validation</span>
           </h3>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Strict out-of-sample evaluation: model trains strictly on preceding years and evaluates on the next held-out year.
           </p>
         </div>
 
-        <div className="overflow-x-auto rounded-2xl border border-stone-200">
+        <div className="overflow-x-auto rounded-2xl border border-slate-800">
           <table className="w-full text-left text-xs font-mono">
-            <thead className="bg-stone-50/90 border-b border-stone-200 text-stone-500 uppercase tracking-wider text-[11px]">
+            <thead className="bg-[#060b16] border-b border-slate-800 text-slate-400 uppercase tracking-wider text-[11px]">
               <tr>
                 <th className="py-3 px-3.5">TRAINING PERIOD</th>
                 <th className="py-3 px-3.5">TEST YEAR</th>
                 <th className="py-3 px-3.5">ACTUAL</th>
                 <th className="py-3 px-3.5">PREDICTED</th>
-                <th className="py-3 px-3.5 text-orange-600">ABS ERROR</th>
+                <th className="py-3 px-3.5 text-orange-400">ABS ERROR</th>
                 <th className="py-3 px-3.5">MAE</th>
                 <th className="py-3 px-3.5">RMSE</th>
-                <th className="py-3 px-3.5 text-cyan-700">MAPE</th>
+                <th className="py-3 px-3.5 text-cyan-400">MAPE</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100 bg-white">
+            <tbody className="divide-y divide-slate-800/80 bg-[#070e1c]">
               {data.validation.map((row) => (
-                <tr key={row.testYear} className="hover:bg-stone-50/70 transition-colors">
-                  <td className="py-2.5 px-3.5 text-stone-600">{row.trainingPeriod}</td>
-                  <td className="py-2.5 px-3.5 font-bold text-stone-900">{row.testYear}</td>
-                  <td className="py-2.5 px-3.5 font-semibold text-emerald-700">{row.actual}</td>
-                  <td className="py-2.5 px-3.5 font-semibold text-sky-700">{row.predicted}</td>
-                  <td className="py-2.5 px-3.5 font-bold text-orange-600">{row.absError}</td>
-                  <td className="py-2.5 px-3.5 text-stone-600">{row.mae}</td>
-                  <td className="py-2.5 px-3.5 text-stone-600">{row.rmse}</td>
-                  <td className="py-2.5 px-3.5 font-bold text-cyan-700">{row.mape}</td>
+                <tr key={row.testYear} className="hover:bg-cyan-500/5 transition-colors">
+                  <td className="py-2.5 px-3.5 text-slate-400">{row.trainingPeriod}</td>
+                  <td className="py-2.5 px-3.5 font-bold text-white">{row.testYear}</td>
+                  <td className="py-2.5 px-3.5 font-semibold text-emerald-400">{row.actual}</td>
+                  <td className="py-2.5 px-3.5 font-semibold text-cyan-400">{row.predicted}</td>
+                  <td className="py-2.5 px-3.5 font-bold text-orange-400">{row.absError}</td>
+                  <td className="py-2.5 px-3.5 text-slate-400">{row.mae}</td>
+                  <td className="py-2.5 px-3.5 text-slate-400">{row.rmse}</td>
+                  <td className="py-2.5 px-3.5 font-bold text-cyan-300">{row.mape}</td>
                 </tr>
               ))}
             </tbody>
-            <tfoot className="bg-stone-100/90 border-t-2 border-stone-300 font-bold">
+            <tfoot className="bg-[#060b16] border-t-2 border-slate-700 font-bold">
               <tr>
                 <td className="py-3 px-3.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200 uppercase text-[10px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase text-[10px]">
                     OVERALL
                   </span>
                 </td>
-                <td className="py-3 px-3.5 text-stone-600">{data.overall.testCount} tests</td>
-                <td className="py-3 px-3.5 text-stone-400">—</td>
-                <td className="py-3 px-3.5 text-stone-400">—</td>
+                <td className="py-3 px-3.5 text-slate-400">{data.overall.testCount} tests</td>
+                <td className="py-3 px-3.5 text-slate-500">—</td>
+                <td className="py-3 px-3.5 text-slate-500">—</td>
                 <td className="py-3 px-3.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[11px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[11px]">
                     {data.overall.accuracy} Acc
                   </span>
                 </td>
                 <td className="py-3 px-3.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200 text-[11px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[11px]">
                     {data.overall.mae}
                   </span>
                 </td>
                 <td className="py-3 px-3.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-800 border border-rose-200 text-[11px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 text-[11px]">
                     {data.overall.rmse}
                   </span>
                 </td>
                 <td className="py-3 px-3.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-100 text-cyan-800 border border-cyan-200 text-[11px]">
+                  <span className="px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-[11px]">
                     {data.overall.mape}
                   </span>
                 </td>
@@ -406,19 +404,19 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
           </table>
         </div>
 
-        <p className="text-[11px] text-stone-500 italic mt-3 flex items-center gap-1.5">
-          <Info className="w-3.5 h-3.5 text-stone-400 shrink-0" />
-          <span>Chronological expanding-window validation: each model trains only on earlier years and forecasts 1 held-out year. No random split.</span>
+        <p className="text-[11px] text-slate-400 italic flex items-center gap-1.5">
+          <Info className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+          <span>Chronological expanding-window validation: each model trains only on earlier years and forecasts 1 held-out year. No lookahead bias.</span>
         </p>
       </div>
 
       {/* 5. SECTION 5: Actual vs Predicted across Test Years Dual-Axis Chart */}
-      <div className="bg-white rounded-3xl p-6 border border-[#E7E2DA] shadow-xs">
-        <div className="mb-2">
-          <h3 className="text-base font-serif font-bold text-stone-900">
+      <div className="bg-[#091124] rounded-3xl p-6 border border-slate-800 shadow-xl space-y-3">
+        <div>
+          <h3 className="text-base font-bold text-white">
             Actual vs Predicted across Test Years
           </h3>
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-400">
             Evaluating historical fit against held-out years with absolute error magnitude columns.
           </p>
         </div>
@@ -437,22 +435,22 @@ export const PopulationForecastingModule = ({ locationId = null }) => {
         <div className="flex flex-wrap items-center gap-3">
           <button 
             onClick={handlePrintDossier}
-            className="px-6 py-3 rounded-2xl bg-stone-900 hover:bg-stone-800 text-white font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
+            className="px-6 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
           >
-            <Download className="w-4 h-4 text-cyan-400" />
+            <Download className="w-4 h-4 text-black" />
             <span>Download Intelligence Dossier (PDF)</span>
           </button>
 
           <button 
             onClick={handleExportCSV}
-            className="px-6 py-3 rounded-2xl bg-white hover:bg-stone-100 border border-stone-300 text-stone-800 font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
+            className="px-6 py-3 rounded-2xl bg-[#081020] hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs uppercase tracking-wider shadow-md flex items-center gap-2 cursor-pointer transition-all hover:scale-[1.02]"
           >
-            <FileText className="w-4 h-4 text-primary" />
+            <FileText className="w-4 h-4 text-cyan-400" />
             <span>Export CSV Data</span>
           </button>
         </div>
 
-        <div className="text-xs text-stone-500 font-mono">
+        <div className="text-xs text-slate-400 font-mono">
           Model: ARIMA(1, 1, 0) • Verified without lookahead bias
         </div>
       </div>

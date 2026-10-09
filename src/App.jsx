@@ -59,7 +59,7 @@ export const App = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF7F2] text-stone-900 font-sans antialiased selection:bg-orange-500/20 selection:text-orange-900">
+    <div className="min-h-screen flex flex-col bg-[#030712] text-slate-100 font-sans antialiased selection:bg-cyan-500/30 selection:text-cyan-200">
       {/* Top Sticky Navigation */}
       <Navbar />
 

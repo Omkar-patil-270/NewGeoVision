@@ -30,14 +30,10 @@ export const Navbar = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isDark = currentPage === 'home' || currentPage === 'explore' || currentPage === 'story' || currentPage === 'globe';
+  const isDark = true;
 
   return (
-    <header className={`sticky top-0 z-50 border-b transition-colors duration-300 ${
-      isDark 
-        ? 'border-white/10 bg-[#030712]/90 text-white backdrop-blur-md' 
-        : 'border-[#E7E2DA] bg-[#FAF7F2]/95 backdrop-blur-md text-stone-900'
-    }`}>
+    <header className="sticky top-0 z-50 border-b transition-colors duration-300 border-white/10 bg-[#030712]/90 text-white backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         
         {/* Animated 3D Gyroscope Brand Logo */}

@@ -458,24 +458,24 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
   };
 
   return (
-    <div className="w-full min-h-[calc(100vh-65px)] bg-[#FAF7F2] text-stone-900 pb-20 font-sans">
+    <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 pb-20 font-sans">
       
       {/* Top Global Mode Navigation Bar (Stage 3 <-> Stage 4 Switcher) */}
-      <div className="bg-[#FAF7F2] border-b border-[#E7E2DA] sticky top-[65px] z-20 backdrop-blur-md px-4 sm:px-8 py-2.5">
+      <div className="bg-[#070e1c]/90 border-b border-slate-800 sticky top-[65px] z-20 backdrop-blur-md px-4 sm:px-8 py-2.5">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono font-bold text-stone-500 uppercase tracking-wider hidden sm:inline">INTELLIGENCE SUITE:</span>
-            <div className="inline-flex p-1 bg-stone-200/70 rounded-xl border border-stone-300/60">
+            <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider hidden sm:inline">INTELLIGENCE SUITE:</span>
+            <div className="inline-flex p-1 bg-[#091124] rounded-xl border border-slate-800">
               <button
                 type="button"
                 onClick={() => setActiveView("story")}
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeView === "story"
-                    ? "bg-white text-[#f95721] shadow-xs"
-                    : "text-stone-600 hover:text-stone-900"
+                    ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-sm"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#f95721]" />
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Story Studio (Past ➔ Current ➔ Future)</span>
               </button>
 
@@ -484,19 +484,19 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                 onClick={() => setActiveView("projections")}
                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   activeView === "projections"
-                    ? "bg-stone-900 text-white shadow-xs"
-                    : "text-stone-600 hover:text-stone-900"
+                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-sm font-bold"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+                <TrendingUp className="w-3.5 h-3.5" />
                 <span>Factor Deep Dive (Sensors &amp; 2030)</span>
               </button>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <span className="text-xs font-mono text-stone-500 hidden md:inline">Target:</span>
-            <span className="px-2.5 py-1 rounded-lg bg-orange-100 text-[#f95721] font-bold text-xs font-mono border border-orange-200">
+            <span className="text-xs font-mono text-slate-400 hidden md:inline">Target:</span>
+            <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-300 font-bold text-xs font-mono border border-cyan-500/30">
               {loc.name}, {loc.country}
             </span>
           </div>
@@ -510,13 +510,13 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8 animate-in fade-in duration-200">
           
           {/* Top Bar: Title + Focal Target + 3 Tri-Temporal Chronological Lenses */}
-          <div className="border-b border-[#E7E2DA] pb-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="border-b border-slate-800 pb-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#f95721] uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Chronological Story Studio</span>
-                <span className="text-stone-400">•</span>
-                <span className="text-stone-600 font-sans font-normal">Focal Target: <strong className="font-bold text-stone-900">{loc.name}, {loc.country}</strong></span>
+                <span className="text-slate-600">•</span>
+                <span className="text-slate-400 font-sans font-normal">Focal Target: <strong className="font-bold text-white">{loc.name}, {loc.country}</strong></span>
               </div>
             </div>
 
@@ -531,8 +531,8 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                     onClick={() => setActiveStoryStage(stage.key)}
                     className={`px-4 py-2 rounded-xl text-xs font-medium whitespace-nowrap border transition-all flex items-center gap-2 cursor-pointer ${
                       isActive
-                        ? "bg-orange-50 border-orange-300 text-[#f95721] font-bold shadow-2xs scale-[1.02]"
-                        : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
+                        ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 font-bold shadow-md shadow-cyan-500/20 scale-[1.02]"
+                        : "bg-[#091124] border-slate-800 text-slate-300 hover:bg-[#0c1630] hover:text-white"
                     }`}
                     title={stage.desc}
                   >
@@ -548,11 +548,11 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
             {/* Left Configuration Panel (5 Cols) */}
-            <div className="lg:col-span-5 bg-white p-5 rounded-3xl border border-stone-200 shadow-2xs space-y-5">
+            <div className="lg:col-span-5 bg-[#091124] p-5 rounded-3xl border border-slate-800 shadow-xl space-y-5">
               
               {/* Location Selection Dropdown */}
               <div>
-                <label className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1.5 tracking-wider">
+                <label className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1.5 tracking-wider">
                   LOCATION SELECTION
                 </label>
                 <select
@@ -561,10 +561,10 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                     setSelectedLocationId(e.target.value);
                     selectLocation(e.target.value);
                   }}
-                  className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2.5 text-xs text-stone-900 font-medium focus:outline-none focus:border-[#f95721] shadow-2xs cursor-pointer"
+                  className="w-full bg-[#060b16] border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white font-medium focus:outline-none focus:border-cyan-400 shadow-md cursor-pointer"
                 >
                   {allLocations.map((item) => (
-                    <option key={item.id} value={item.id}>
+                    <option key={item.id} value={item.id} className="bg-[#060b16] text-white">
                       {item.name}, {item.country} ({item.type || 'District'})
                     </option>
                   ))}
@@ -573,7 +573,7 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
               {/* Choose Story Modality (9 Modes - 2 Columns) */}
               <div>
-                <label className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-2 tracking-wider">
+                <label className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-2 tracking-wider">
                   CHOOSE STORY MODALITY (9 MODES)
                 </label>
                 <div className="grid grid-cols-2 gap-1.5">
@@ -586,8 +586,8 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                         onClick={() => setSelectedMode(mode.id)}
                         className={`p-2.5 rounded-xl text-[11px] text-left border transition-all flex items-center gap-2 cursor-pointer ${
                           isSelected
-                            ? "bg-orange-50 border-[#f95721] text-[#f95721] font-bold shadow-2xs"
-                            : "bg-stone-50/70 border-stone-200 text-stone-700 hover:bg-stone-100"
+                            ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 font-bold shadow-md shadow-cyan-500/20"
+                            : "bg-[#060b16] border-slate-800 text-slate-300 hover:text-white hover:bg-slate-800/50"
                         }`}
                       >
                         <span className="text-sm shrink-0">{getModalityEmoji(mode.id)}</span>
@@ -601,49 +601,49 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
               {/* Length, Tone, Language Controls */}
               <div className="grid grid-cols-3 gap-2">
                 <div>
-                  <label className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1 tracking-wider">
+                  <label className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1 tracking-wider">
                     LENGTH
                   </label>
                   <select
                     value={selectedLength}
                     onChange={(e) => setSelectedLength(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 text-xs text-stone-900 font-medium focus:outline-none focus:border-[#f95721]"
+                    className="w-full bg-[#060b16] border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white font-medium focus:outline-none focus:border-cyan-400"
                   >
-                    <option value="short">Short (1m)</option>
-                    <option value="medium">Medium (3m)</option>
-                    <option value="long">Long (5m)</option>
+                    <option value="short" className="bg-[#060b16] text-white">Short (1m)</option>
+                    <option value="medium" className="bg-[#060b16] text-white">Medium (3m)</option>
+                    <option value="long" className="bg-[#060b16] text-white">Long (5m)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1 tracking-wider">
+                  <label className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1 tracking-wider">
                     TONE
                   </label>
                   <select
                     value={selectedTone}
                     onChange={(e) => setSelectedTone(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 text-xs text-stone-900 font-medium focus:outline-none focus:border-[#f95721]"
+                    className="w-full bg-[#060b16] border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white font-medium focus:outline-none focus:border-cyan-400"
                   >
-                    <option value="cinematic">Cinematic</option>
-                    <option value="academic">Academic</option>
-                    <option value="poetic">Poetic</option>
-                    <option value="journalistic">Journalistic</option>
+                    <option value="cinematic" className="bg-[#060b16] text-white">Cinematic</option>
+                    <option value="academic" className="bg-[#060b16] text-white">Academic</option>
+                    <option value="poetic" className="bg-[#060b16] text-white">Poetic</option>
+                    <option value="journalistic" className="bg-[#060b16] text-white">Journalistic</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1 tracking-wider">
+                  <label className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1 tracking-wider">
                     LANGUAGE
                   </label>
                   <select
                     value={selectedLanguage}
                     onChange={(e) => setSelectedLanguage(e.target.value)}
-                    className="w-full bg-stone-50 border border-stone-200 rounded-xl px-2 py-1.5 text-xs text-stone-900 font-medium focus:outline-none focus:border-[#f95721]"
+                    className="w-full bg-[#060b16] border border-slate-800 rounded-xl px-2 py-1.5 text-xs text-white font-medium focus:outline-none focus:border-cyan-400"
                   >
-                    <option value="English">English</option>
-                    <option value="Hindi">हिन्दी</option>
-                    <option value="Marathi">मराठी</option>
-                    <option value="Japanese">日本語</option>
+                    <option value="English" className="bg-[#060b16] text-white">English</option>
+                    <option value="Hindi" className="bg-[#060b16] text-white">हिन्दी</option>
+                    <option value="Marathi" className="bg-[#060b16] text-white">मराठी</option>
+                    <option value="Japanese" className="bg-[#060b16] text-white">日本語</option>
                   </select>
                 </div>
               </div>
@@ -653,57 +653,57 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                 type="button"
                 onClick={handleGenerateStory}
                 disabled={isGenerating}
-                className="w-full py-3 px-4 rounded-2xl bg-[#f95721] hover:bg-[#e04512] text-white font-bold text-xs uppercase tracking-wider shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
+                className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs uppercase tracking-wider shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 active:scale-98 cursor-pointer"
               >
                 <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} />
-                <span>{isGenerating ? "Groq AI Synthesizing..." : "GENERATE NEW STORY VERSION"}</span>
+                <span>{isGenerating ? "AI Synthesizing..." : "GENERATE NEW STORY VERSION"}</span>
               </button>
 
             </div>
 
             {/* Right Story Canvas Pane (7 Cols - Image 3) */}
             <div className="lg:col-span-7 space-y-4">
-              <div className="bg-white rounded-3xl border border-stone-200 shadow-2xs overflow-hidden">
+              <div className="bg-[#091124] rounded-3xl border border-slate-800 shadow-xl overflow-hidden">
                 
                 {/* Photo Banner with Real Wikipedia / Wikimedia Image */}
-                <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-stone-900">
+                <div className="relative h-56 sm:h-64 w-full overflow-hidden bg-slate-950">
                   <img 
                     src={activeCoverUrl}
                     alt={loc.name}
                     className="w-full h-full object-cover transition-all duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#091124] via-black/40 to-transparent" />
 
                   {/* Photo Attribution badge */}
                   {realImages.length > 0 && (
-                    <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-[10px] text-white flex items-center gap-1.5">
+                    <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] text-white flex items-center gap-1.5">
                       <ImageIcon className="w-3 h-3 text-cyan-400" />
                       <span>{realImages[0].credit}</span>
                     </div>
                   )}
 
                   <div className="absolute bottom-5 left-5 right-5 text-white">
-                    <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-orange-400 mb-1">
+                    <div className="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400 mb-1">
                       {loc.name.toUpperCase()} • STORY
                     </div>
-                    <h2 className="text-2xl sm:text-3xl font-serif font-bold tracking-tight text-white drop-shadow-md">
+                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white drop-shadow-md">
                       {generatedStory.title}
                     </h2>
-                    <p className="text-xs text-stone-200 italic mt-0.5 font-serif">
+                    <p className="text-xs text-slate-300 italic mt-0.5">
                       {generatedStory.subtitle}
                     </p>
                   </div>
                 </div>
 
                 {/* Audio Bar & Save Controls (Image 3) */}
-                <div className="p-4 sm:p-5 border-b border-stone-100 flex items-center justify-between gap-3 bg-stone-50/50">
+                <div className="p-4 sm:p-5 border-b border-slate-800 flex items-center justify-between gap-3 bg-[#060b16]">
                   <button
                     type="button"
                     onClick={handleToggleNarration}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 shadow-xs cursor-pointer ${
                       isNarrating
-                        ? "bg-stone-900 text-white"
-                        : "bg-[#f95721] hover:bg-[#e04512] text-white"
+                        ? "bg-rose-600 text-white"
+                        : "bg-cyan-500 hover:bg-cyan-400 text-black shadow-md shadow-cyan-500/20"
                     }`}
                   >
                     {isNarrating ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -713,9 +713,9 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                   <button
                     type="button"
                     onClick={handleSaveStory}
-                    className="px-3 py-2 rounded-xl bg-white border border-stone-200 hover:border-stone-400 text-stone-700 text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+                    className="px-3 py-2 rounded-xl bg-[#091124] border border-slate-800 hover:border-slate-700 text-slate-300 text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
                   >
-                    {savedStatus ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Bookmark className="w-3.5 h-3.5 text-stone-500" />}
+                    {savedStatus ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Bookmark className="w-3.5 h-3.5 text-slate-400" />}
                     <span>{savedStatus ? "Saved" : "Save"}</span>
                   </button>
                 </div>
@@ -723,24 +723,24 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                 {/* Deep Prose Body Text (Image 3) */}
                 <div className="p-5 sm:p-7 space-y-4 relative">
                   {isLoadingGroq && (
-                    <div className="flex items-center gap-2 p-2 px-3 rounded-xl bg-orange-50 border border-orange-200 text-xs text-[#f95721] font-mono mb-2">
+                    <div className="flex items-center gap-2 p-2 px-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300 font-mono mb-2">
                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                      <span>Groq AI streaming analytical chapter...</span>
+                      <span>AI streaming analytical chapter...</span>
                     </div>
                   )}
 
-                  <div className="text-stone-800 text-sm sm:text-base leading-relaxed font-serif whitespace-pre-line">
+                  <div className="text-slate-200 text-sm sm:text-base leading-relaxed whitespace-pre-line font-sans">
                     {generatedStory.narrative}
                   </div>
 
                   {/* Active Lens Callout Card (Image 3) */}
-                  <div className="p-3.5 bg-orange-50/70 rounded-2xl border border-orange-200 mt-6 flex items-start gap-2.5">
+                  <div className="p-3.5 bg-cyan-500/10 rounded-2xl border border-cyan-500/30 mt-6 flex items-start gap-2.5">
                     <span className="text-lg shrink-0 mt-0.5">{currentStageObj.icon}</span>
                     <div>
-                      <div className="text-[11px] font-mono font-bold uppercase text-[#f95721] tracking-wider">
+                      <div className="text-[11px] font-mono font-bold uppercase text-cyan-400 tracking-wider">
                         ACTIVE LENS: {currentStageObj.label.toUpperCase()}
                       </div>
-                      <div className="text-xs text-stone-600 mt-0.5">
+                      <div className="text-xs text-slate-300 mt-0.5">
                         {currentStageObj.desc}
                       </div>
                     </div>
@@ -756,28 +756,28 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
           {/* ========================================================================= */}
           {/* TRI-TEMPORAL FACTOR COMPARISON: PAST vs CURRENT vs FUTURE 2030            */}
           {/* ========================================================================= */}
-          <div className="bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 shadow-2xs space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-stone-100 pb-5">
+          <div className="bg-[#091124] rounded-3xl border border-slate-800 p-6 sm:p-8 shadow-xl space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-5">
               <div>
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#f95721] uppercase tracking-wider mb-1">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
                   <Layers className="w-3.5 h-3.5" />
                   <span>Comparative Factor Matrix</span>
                 </div>
-                <h3 className="text-xl sm:text-2xl font-serif font-bold text-stone-900 tracking-tight">
+                <h3 className="text-xl sm:text-2xl font-sans font-bold text-white tracking-tight">
                   How {loc.name} Was, Is &amp; Will Be in 2030
                 </h3>
-                <p className="text-xs sm:text-sm text-stone-500 font-mono mt-0.5">
+                <p className="text-xs sm:text-sm text-slate-400 font-mono mt-0.5">
                   Side-by-side evolution across Air Quality, Demographics, Hydrology &amp; Climate.
                 </p>
               </div>
 
-              <div className="flex items-center gap-1.5 p-1 bg-stone-100 rounded-xl border border-stone-200 self-start sm:self-auto text-xs font-mono">
-                <span className="px-2.5 py-1 text-stone-600 font-semibold">Timeline:</span>
-                <span className="px-2 py-0.5 rounded-lg bg-white text-stone-800 font-bold shadow-2xs">Past</span>
-                <span className="text-stone-400">➔</span>
-                <span className="px-2 py-0.5 rounded-lg bg-white text-[#f95721] font-bold shadow-2xs">Current</span>
-                <span className="text-stone-400">➔</span>
-                <span className="px-2 py-0.5 rounded-lg bg-stone-900 text-white font-bold shadow-2xs">Future 2030</span>
+              <div className="flex items-center gap-1.5 p-1 bg-[#060b16] rounded-xl border border-slate-800 self-start sm:self-auto text-xs font-mono">
+                <span className="px-2.5 py-1 text-slate-400 font-semibold">Timeline:</span>
+                <span className="px-2 py-0.5 rounded-lg bg-[#091124] text-slate-200 font-bold border border-slate-700 shadow-xs">Past</span>
+                <span className="text-slate-600">➔</span>
+                <span className="px-2 py-0.5 rounded-lg bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40 shadow-xs">Current</span>
+                <span className="text-slate-600">➔</span>
+                <span className="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 shadow-xs">Future 2030</span>
               </div>
             </div>
 
@@ -786,18 +786,18 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
               {comparativeFactors.map((factor) => {
                 const IconComp = factor.icon;
                 return (
-                  <div key={factor.id} className="p-5 sm:p-6 bg-[#FAF7F2] rounded-2xl border border-stone-200/80 space-y-4">
+                  <div key={factor.id} className="p-5 sm:p-6 bg-[#060b16] rounded-2xl border border-slate-800 space-y-4">
                     
                     <div className="flex flex-wrap items-center justify-between gap-3">
                       <div className="flex items-center gap-2.5">
                         <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${factor.color}`}>
                           <IconComp className="w-4 h-4" />
                         </div>
-                        <h4 className="text-sm sm:text-base font-serif font-bold text-stone-900">
+                        <h4 className="text-sm sm:text-base font-sans font-bold text-white">
                           {factor.name}
                         </h4>
                       </div>
-                      <span className="text-[11px] font-mono font-medium text-stone-600 bg-white px-3 py-1 rounded-full border border-stone-200">
+                      <span className="text-[11px] font-mono font-medium text-slate-300 bg-[#091124] px-3 py-1 rounded-full border border-slate-800">
                         {factor.progress}
                       </span>
                     </div>
@@ -814,22 +814,22 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                         }}
                         className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
                           activeStoryStage === "past"
-                            ? "bg-amber-50/90 border-amber-400 ring-2 ring-amber-400/30 shadow-xs"
-                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                            ? "bg-amber-500/10 border-amber-400 ring-2 ring-amber-400/30 shadow-md shadow-amber-500/10"
+                            : "bg-[#091124] border-slate-800 hover:border-slate-700 hover:bg-[#0c1630]"
                         }`}
                         title="Click to load Past Story chapter"
                       >
-                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-amber-800 mb-1.5">
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-amber-400 mb-1.5">
                           <span className="flex items-center gap-1">🏛️ Past (How It Was)</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-100/80 text-amber-800">{factor.past.badge}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">{factor.past.badge}</span>
                         </div>
-                        <div className="text-base font-bold text-stone-900 mb-1">
+                        <div className="text-base font-bold text-white mb-1">
                           {factor.past.value}
                         </div>
-                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                        <p className="text-xs text-slate-300 leading-relaxed font-sans">
                           {factor.past.desc}
                         </p>
-                        <div className="mt-3 text-[10px] font-mono font-bold text-amber-700 flex items-center gap-1">
+                        <div className="mt-3 text-[10px] font-mono font-bold text-amber-400 flex items-center gap-1">
                           <span>Read Past Story</span>
                           <span>→</span>
                         </div>
@@ -844,22 +844,22 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                         }}
                         className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
                           activeStoryStage === "present"
-                            ? "bg-orange-50/90 border-orange-400 ring-2 ring-orange-400/30 shadow-xs"
-                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                            ? "bg-cyan-500/10 border-cyan-400 ring-2 ring-cyan-400/30 shadow-md shadow-cyan-500/10"
+                            : "bg-[#091124] border-slate-800 hover:border-slate-700 hover:bg-[#0c1630]"
                         }`}
                         title="Click to load Current Story chapter"
                       >
-                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-orange-800 mb-1.5">
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-cyan-400 mb-1.5">
                           <span className="flex items-center gap-1">🧭 Current (How It Is)</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-800">{factor.current.badge}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">{factor.current.badge}</span>
                         </div>
-                        <div className="text-base font-bold text-[#f95721] mb-1">
+                        <div className="text-base font-bold text-cyan-400 mb-1">
                           {factor.current.value}
                         </div>
-                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                        <p className="text-xs text-slate-300 leading-relaxed font-sans">
                           {factor.current.desc}
                         </p>
-                        <div className="mt-3 text-[10px] font-mono font-bold text-[#f95721] flex items-center gap-1">
+                        <div className="mt-3 text-[10px] font-mono font-bold text-cyan-400 flex items-center gap-1">
                           <span>Read Current Story</span>
                           <span>→</span>
                         </div>
@@ -874,22 +874,22 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                         }}
                         className={`text-left p-4 rounded-xl border transition-all cursor-pointer ${
                           activeStoryStage === "future"
-                            ? "bg-emerald-50/90 border-emerald-400 ring-2 ring-emerald-400/30 shadow-xs"
-                            : "bg-white border-stone-200 hover:border-stone-300 hover:bg-stone-50"
+                            ? "bg-emerald-500/10 border-emerald-400 ring-2 ring-emerald-400/30 shadow-md shadow-emerald-500/10"
+                            : "bg-[#091124] border-slate-800 hover:border-slate-700 hover:bg-[#0c1630]"
                         }`}
                         title="Click to load 2030 Story chapter"
                       >
-                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-emerald-800 mb-1.5">
+                        <div className="flex items-center justify-between text-[10px] font-mono font-bold uppercase text-emerald-400 mb-1.5">
                           <span className="flex items-center gap-1">🔮 Future (2030 Horizon)</span>
-                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">{factor.future.badge}</span>
+                          <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">{factor.future.badge}</span>
                         </div>
-                        <div className="text-base font-bold text-emerald-700 mb-1">
+                        <div className="text-base font-bold text-emerald-400 mb-1">
                           {factor.future.value}
                         </div>
-                        <p className="text-xs text-stone-600 leading-relaxed font-serif">
+                        <p className="text-xs text-slate-300 leading-relaxed font-sans">
                           {factor.future.desc}
                         </p>
-                        <div className="mt-3 text-[10px] font-mono font-bold text-emerald-700 flex items-center gap-1">
+                        <div className="mt-3 text-[10px] font-mono font-bold text-emerald-400 flex items-center gap-1">
                           <span>Read 2030 Story</span>
                           <span>→</span>
                         </div>
@@ -903,17 +903,17 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
             </div>
 
             {/* Quick Navigation to Telemetry & Sensors */}
-            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-stone-100">
-              <span className="text-xs text-stone-500 font-mono">
+            <div className="pt-2 flex flex-wrap items-center justify-between gap-3 border-t border-slate-800">
+              <span className="text-xs text-slate-400 font-mono">
                 Click any temporal box above to switch the AI story chapter, or view live sensors below.
               </span>
               <button
                 type="button"
                 onClick={() => setActiveView("projections")}
-                className="px-5 py-2.5 rounded-2xl bg-stone-900 hover:bg-black text-white text-xs font-bold flex items-center gap-2 shadow-sm transition-all cursor-pointer"
+                className="px-5 py-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-black text-xs font-bold flex items-center gap-2 shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
               >
                 <span>Explore Detailed Factor Sensors &amp; Projections</span>
-                <ArrowRight className="w-4 h-4 text-cyan-400" />
+                <ArrowRight className="w-4 h-4 text-black" />
               </button>
             </div>
 
@@ -929,16 +929,16 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8 animate-in fade-in duration-200">
           
           {/* Header Section */}
-          <div className="flex flex-wrap items-end justify-between gap-4 pb-5 border-b border-[#E7E2DA]">
+          <div className="flex flex-wrap items-end justify-between gap-4 pb-5 border-b border-slate-800">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-[#f95721] border border-orange-200 text-xs font-mono font-semibold uppercase mb-2">
-                <TrendingUp className="w-3.5 h-3.5 text-[#f95721]" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-xs font-mono font-semibold uppercase mb-2">
+                <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Factor Telemetry • Past ➔ Current ➔ Future 2030</span>
               </div>
-              <h1 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
-                Location Factors: <span className="text-[#f95721]">{loc.name}</span>
+              <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                Location Factors: <span className="text-cyan-400">{loc.name}</span>
               </h1>
-              <p className="text-xs sm:text-sm text-stone-500 mt-1 font-mono">
+              <p className="text-xs sm:text-sm text-slate-400 mt-1 font-mono">
                 Diagnostic telemetry across Air Quality, Population, Weather &amp; Groundwater for 2025–2030.
               </p>
             </div>
@@ -951,16 +951,16 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                   setSelectedLocationId(e.target.value);
                   selectLocation(e.target.value);
                 }}
-                className="bg-white border border-stone-200 rounded-xl px-3 py-1.5 text-xs text-stone-900 font-medium focus:border-[#f95721] focus:outline-none shadow-2xs"
+                className="bg-[#060b16] border border-slate-800 rounded-xl px-3 py-1.5 text-xs text-white font-medium focus:border-cyan-400 focus:outline-none shadow-sm"
               >
                 {allLocations.map((l) => (
-                  <option key={l.id} value={l.id}>
+                  <option key={l.id} value={l.id} className="bg-[#091124] text-white">
                     {l.name}, {l.country}
                   </option>
                 ))}
               </select>
 
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-orange-50 border border-orange-200 text-xs font-mono font-bold text-[#f95721] shadow-2xs">
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs font-mono font-bold text-cyan-300 shadow-sm">
                 <Calendar className="w-3.5 h-3.5" />
                 <span>2025–2030 Horizon</span>
               </div>
@@ -968,24 +968,24 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
               <button
                 type="button"
                 onClick={handleExportDossier}
-                className="px-3 py-1.5 rounded-xl bg-white border border-stone-200 hover:border-[#f95721] text-stone-700 hover:text-[#f95721] text-xs font-semibold flex items-center gap-1.5 shadow-2xs transition-colors cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-[#091124] border border-slate-800 hover:border-cyan-400 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5 text-[#f95721]" />
+                <Download className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Export Dossier</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => window.print()}
-                className="px-2.5 py-1.5 rounded-xl bg-white border border-stone-200 hover:border-stone-400 text-stone-700 text-xs font-semibold flex items-center gap-1 shadow-2xs transition-colors"
+                className="px-2.5 py-1.5 rounded-xl bg-[#091124] border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-semibold flex items-center gap-1 shadow-sm transition-colors cursor-pointer"
                 title="Print dossier"
               >
-                <Printer className="w-3.5 h-3.5 text-stone-600" />
+                <Printer className="w-3.5 h-3.5 text-slate-400" />
               </button>
             </div>
           </div>
 
-          {/* Filter Pills Bar (Image 4: All 4 Signals, Weather, Population, AQI, Groundwater) */}
+          {/* Filter Pills Bar (All 4 Signals, Weather, Population, AQI, Groundwater) */}
           <div className="flex flex-wrap items-center gap-2">
             {[
               { id: "all", label: "All 4 Signals", icon: TrendingUp },
@@ -1002,8 +1002,8 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
                   onClick={() => setActiveSignalFilter(tab.id)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
                     isActive
-                      ? "bg-[#f95721] text-white font-bold shadow-xs"
-                      : "bg-white border border-stone-200 text-stone-600 hover:border-stone-300"
+                      ? "bg-cyan-500 text-black font-bold shadow-md shadow-cyan-500/20"
+                      : "bg-[#091124] border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700"
                   }`}
                 >
                   <span>{tab.label}</span>
@@ -1019,54 +1019,54 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
             
             {/* -------------------- CARD 1: AIR QUALITY (AQI) -------------------- */}
             {(activeSignalFilter === "all" || activeSignalFilter === "aqi") && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-2xs space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+              <div className="bg-[#091124] rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
                       <Wind className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-serif font-bold text-stone-900">1. Air Quality (AQI) &amp; Atmospheric Telemetry</h3>
-                      <p className="text-xs text-stone-500 font-mono">OpenAQ Sensor Network • CPCB Calibration • ARIMA Multi-Horizon</p>
+                      <h3 className="text-xl font-bold text-white">1. Air Quality (AQI) &amp; Atmospheric Telemetry</h3>
+                      <p className="text-xs text-slate-400 font-mono">OpenAQ Sensor Network • CPCB Calibration • ARIMA Multi-Horizon</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-mono font-bold">
+                  <span className="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/30 text-xs font-mono font-bold">
                     Current AQI: {livePredictions?.aqi?.current ? Math.round(livePredictions.aqi.current) : (loc.aqi || 74)} • {((livePredictions?.aqi?.current || loc.aqi || 74) > 100) ? "Unhealthy" : "Moderate"}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Fine Particulate (PM2.5)</div>
-                    <div className="text-xl font-bold text-stone-900 mt-1">32.4 µg/m³</div>
-                    <div className="text-[11px] text-amber-600 mt-1 font-medium">2.1x WHO Guideline</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Fine Particulate (PM2.5)</div>
+                    <div className="text-xl font-bold text-white mt-1">32.4 µg/m³</div>
+                    <div className="text-[11px] text-amber-400 mt-1 font-medium">2.1x WHO Guideline</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Coarse Dust (PM10)</div>
-                    <div className="text-xl font-bold text-stone-900 mt-1">68.1 µg/m³</div>
-                    <div className="text-[11px] text-emerald-600 mt-1 font-medium">Within CPCB Safe Limit</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Coarse Dust (PM10)</div>
+                    <div className="text-xl font-bold text-white mt-1">68.1 µg/m³</div>
+                    <div className="text-[11px] text-emerald-400 mt-1 font-medium">Within CPCB Safe Limit</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">2030 Baseline AQI</div>
-                    <div className="text-xl font-bold text-stone-900 mt-1">
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">2030 Baseline AQI</div>
+                    <div className="text-xl font-bold text-white mt-1">
                       {livePredictions?.aqi?.forecast_5yr ? `${Math.round(livePredictions.aqi.forecast_5yr[livePredictions.aqi.forecast_5yr.length - 1]?.value || 65)} AQI` : "65 AQI"}
                     </div>
-                    <div className="text-[11px] text-emerald-600 mt-1 font-medium">-12% with EV Transition</div>
+                    <div className="text-[11px] text-emerald-400 mt-1 font-medium">-12% with EV Transition</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">2030 Stress Trajectory</div>
-                    <div className="text-xl font-bold text-rose-600 mt-1">{Math.min(280, Math.round(realBase.aqiNum * 1.35))} AQI</div>
-                    <div className="text-[11px] text-rose-600 mt-1 font-medium">Without EV / Filter Policies</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">2030 Stress Trajectory</div>
+                    <div className="text-xl font-bold text-rose-400 mt-1">{Math.min(280, Math.round(realBase.aqiNum * 1.35))} AQI</div>
+                    <div className="text-[11px] text-rose-400 mt-1 font-medium">Without EV / Filter Policies</div>
                   </div>
                 </div>
 
                 {/* Simple Explainer for Citizens */}
-                <div className="p-4 bg-amber-50/70 rounded-2xl border border-amber-200 text-xs leading-relaxed space-y-1.5">
-                  <div className="font-bold text-amber-950 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-amber-700" />
+                <div className="p-4 bg-amber-500/10 rounded-2xl border border-amber-500/30 text-xs leading-relaxed space-y-1.5">
+                  <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-amber-400" />
                     <span>Simple Explanation: What this means for your daily health</span>
                   </div>
-                  <p className="text-amber-900 font-medium">
+                  <p className="text-amber-200 font-medium">
                     The air quality in {loc.name} currently stands at <strong>{realBase.aqiNum} AQI</strong>. By 2030, adopting electric city buses and industrial chimney filters will bring pollution down to <strong>{Math.max(20, Math.round(realBase.aqiNum * 0.48))} AQI (Healthy &amp; Clean)</strong>, ensuring children, athletes, and elderly residents can exercise outdoors without respiratory strain.
                   </p>
                 </div>
@@ -1075,31 +1075,31 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
             {/* -------------------- CARD 2: POPULATION FORECASTING (ARIMA + 3-YR MOVING AVG + VALIDATION) -------------------- */}
             {(activeSignalFilter === "all" || activeSignalFilter === "population") && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-2xs space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+              <div className="bg-[#091124] rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center">
                       <Users className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-serif font-bold text-stone-900">2. Population &amp; Demographic Forecasting</h3>
-                      <p className="text-xs text-stone-500 font-mono">
+                      <h3 className="text-xl font-bold text-white">2. Population &amp; Demographic Forecasting</h3>
+                      <p className="text-xs text-slate-400 font-mono">
                         World Bank API Census Data • ARIMA(1,1,0) Multi-Step • 3-Yr Moving Average (2015–2030)
                       </p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-mono font-bold">
+                  <span className="px-3 py-1 rounded-full bg-blue-500/10 text-blue-300 border border-blue-500/30 text-xs font-mono font-bold">
                     Pop: {realBase.formatPop(realBase.popNum)}
                   </span>
                 </div>
 
                 {/* Simple Explainer for Citizens */}
-                <div className="p-4 bg-blue-50/70 rounded-2xl border border-blue-200 text-xs leading-relaxed space-y-1.5">
-                  <div className="font-bold text-blue-950 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-blue-700" />
+                <div className="p-4 bg-blue-500/10 rounded-2xl border border-blue-500/30 text-xs leading-relaxed space-y-1.5">
+                  <div className="font-bold text-blue-300 flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-blue-400" />
                     <span>Simple Explanation: What this means for city planning</span>
                   </div>
-                  <p className="text-blue-900 font-medium">
+                  <p className="text-blue-200 font-medium">
                     {loc.name} has a resident population of <strong>{realBase.formatPop(realBase.popNum)}</strong>. By 2030, population models project steady growth to approximately <strong>{realBase.formatPop(realBase.popNum * 1.06)}</strong>. This predictable increase requires municipal planners to allocate ~12% more affordable housing, expanded school classrooms, and upgraded drinking water distribution grids.
                   </p>
                 </div>
@@ -1111,47 +1111,47 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
             {/* -------------------- CARD 3: WEATHER & HEAT STRESS -------------------- */}
             {(activeSignalFilter === "all" || activeSignalFilter === "weather") && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-2xs space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+              <div className="bg-[#091124] rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-rose-500/10 text-rose-400 flex items-center justify-center">
                       <Thermometer className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-serif font-bold text-stone-900">3. Weather, Temperature Anomaly &amp; Monsoon Variability</h3>
-                      <p className="text-xs text-stone-500 font-mono">Open-Meteo ERA5 Reanalysis • SARIMA Temperature Projection up to 2030</p>
+                      <h3 className="text-xl font-bold text-white">3. Weather, Temperature Anomaly &amp; Monsoon Variability</h3>
+                      <p className="text-xs text-slate-400 font-mono">Open-Meteo ERA5 Reanalysis • SARIMA Temperature Projection up to 2030</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-mono font-bold">
+                  <span className="px-3 py-1 rounded-full bg-rose-500/10 text-rose-300 border border-rose-500/30 text-xs font-mono font-bold">
                     Temp: {livePredictions?.weather?.current ? `${Math.round(livePredictions.weather.current)}°C` : `${loc.temperature || 28}°C`} • {loc.weatherCondition || "Pleasant"}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Mean Temp Delta (2030)</div>
-                    <div className="text-2xl font-bold text-stone-900 mt-1">+0.9 °C</div>
-                    <div className="text-[11px] text-amber-600 mt-1 font-medium">CMIP6 SSP2-4.5 Ensemble</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Mean Temp Delta (2030)</div>
+                    <div className="text-2xl font-bold text-white mt-1">+0.9 °C</div>
+                    <div className="text-[11px] text-amber-400 mt-1 font-medium">CMIP6 SSP2-4.5 Ensemble</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Heatwave Days (&gt;40°C)</div>
-                    <div className="text-2xl font-bold text-rose-600 mt-1">16 Days/Year</div>
-                    <div className="text-[11px] text-rose-600 mt-1 font-medium">+4 days vs historical baseline</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Heatwave Days (&gt;40°C)</div>
+                    <div className="text-2xl font-bold text-rose-400 mt-1">16 Days/Year</div>
+                    <div className="text-[11px] text-rose-400 mt-1 font-medium">+4 days vs historical baseline</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Monsoon Variance</div>
-                    <div className="text-2xl font-bold text-sky-600 mt-1">±11.5% Erratic</div>
-                    <div className="text-[11px] text-sky-700 mt-1 font-medium">Short high-intensity showers</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Monsoon Variance</div>
+                    <div className="text-2xl font-bold text-sky-400 mt-1">±11.5% Erratic</div>
+                    <div className="text-[11px] text-sky-400 mt-1 font-medium">Short high-intensity showers</div>
                   </div>
                 </div>
 
                 {/* Simple Explainer for Citizens */}
-                <div className="p-4 bg-rose-50/70 rounded-2xl border border-rose-200 text-xs leading-relaxed space-y-1.5">
-                  <div className="font-bold text-rose-950 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-rose-700" />
+                <div className="p-4 bg-rose-500/10 rounded-2xl border border-rose-500/30 text-xs leading-relaxed space-y-1.5">
+                  <div className="font-bold text-rose-300 flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-rose-400" />
                     <span>Simple Explanation: What this means for your daily climate</span>
                   </div>
-                  <p className="text-rose-900 font-medium">
+                  <p className="text-rose-200 font-medium">
                     Summer peak temperatures in {loc.name} are warming by about <strong>+0.9°C</strong> by 2030, with roughly 16 days touching high heat. Planting shade trees along major streets and painting building rooftops white (cool roofs) can lower indoor home temperatures by 3°C to 5°C naturally without high AC electricity bills.
                   </p>
                 </div>
@@ -1160,56 +1160,56 @@ export const LocationIntelligenceHub = ({ defaultView = "story" }) => {
 
             {/* -------------------- CARD 4: CGWB GROUNDWATER -------------------- */}
             {(activeSignalFilter === "all" || activeSignalFilter === "groundwater") && (
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200 shadow-2xs space-y-6">
-                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-stone-100 pb-4">
+              <div className="bg-[#091124] rounded-3xl p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+                <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
                       <Droplets className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="text-xl font-serif font-bold text-stone-900">4. CGWB Groundwater &amp; Hydrological Resilience</h3>
-                      <p className="text-xs text-stone-500 font-mono">Central Ground Water Board (CGWB) • Projection to 2030</p>
+                      <h3 className="text-xl font-bold text-white">4. CGWB Groundwater &amp; Hydrological Resilience</h3>
+                      <p className="text-xs text-slate-400 font-mono">Central Ground Water Board (CGWB) • Projection to 2030</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-cyan-50 text-cyan-700 border border-cyan-200 text-xs font-mono font-bold">
+                  <span className="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 text-xs font-mono font-bold">
                     Water Depth: {realBase.gwNum} m bgl • Safe Extraction Stage
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Current Water Depth</div>
-                    <div className="text-2xl font-bold text-stone-900 mt-1">
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Current Water Depth</div>
+                    <div className="text-2xl font-bold text-white mt-1">
                       {realBase.gwNum} m
                     </div>
-                    <div className="text-[11px] text-stone-500 mt-1">Meters below ground level</div>
+                    <div className="text-[11px] text-slate-400 mt-1">Meters below ground level</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Annual Depletion Rate</div>
-                    <div className="text-2xl font-bold text-rose-600 mt-1">
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Annual Depletion Rate</div>
+                    <div className="text-2xl font-bold text-rose-400 mt-1">
                       -0.24 m/yr
                     </div>
-                    <div className="text-[11px] text-rose-600 mt-1">Overdraft pressure</div>
+                    <div className="text-[11px] text-rose-400 mt-1">Overdraft pressure</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">Extraction / Recharge</div>
-                    <div className="text-2xl font-bold text-amber-600 mt-1">61.5%</div>
-                    <div className="text-[11px] text-amber-700 mt-1">Safe Reservoir Margin</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">Extraction / Recharge</div>
+                    <div className="text-2xl font-bold text-amber-400 mt-1">61.5%</div>
+                    <div className="text-[11px] text-amber-400 mt-1">Safe Reservoir Margin</div>
                   </div>
-                  <div className="p-4 bg-stone-50 rounded-2xl border border-stone-200/80">
-                    <div className="text-stone-500 font-mono text-[10px] uppercase">2030 Recharge Goal</div>
-                    <div className="text-2xl font-bold text-emerald-600 mt-1">{Math.max(3.2, (realBase.gwNum - 1.2)).toFixed(1)} m bgl</div>
-                    <div className="text-[11px] text-emerald-600 mt-1">With Rooftop Rainwater Harvest</div>
+                  <div className="p-4 bg-[#060b16] rounded-2xl border border-slate-800">
+                    <div className="text-slate-400 font-mono text-[10px] uppercase">2030 Recharge Goal</div>
+                    <div className="text-2xl font-bold text-emerald-400 mt-1">{Math.max(3.2, (realBase.gwNum - 1.2)).toFixed(1)} m bgl</div>
+                    <div className="text-[11px] text-emerald-400 mt-1">With Rooftop Rainwater Harvest</div>
                   </div>
                 </div>
 
                 {/* Simple Explainer for Citizens */}
-                <div className="p-4 bg-cyan-50/70 rounded-2xl border border-cyan-200 text-xs leading-relaxed space-y-1.5">
-                  <div className="font-bold text-cyan-950 flex items-center gap-1.5">
-                    <Info className="w-4 h-4 text-cyan-700" />
+                <div className="p-4 bg-cyan-500/10 rounded-2xl border border-cyan-500/30 text-xs leading-relaxed space-y-1.5">
+                  <div className="font-bold text-cyan-300 flex items-center gap-1.5">
+                    <Info className="w-4 h-4 text-cyan-400" />
                     <span>Simple Explanation: What this means for your water supply</span>
                   </div>
-                  <p className="text-cyan-900 font-medium">
+                  <p className="text-cyan-200 font-medium">
                     The underground water table in {loc.name} is currently <strong>{realBase.gwNum} meters below ground</strong>. By collecting monsoon rainwater on apartment and house rooftops and feeding it into percolation pits, our water level can rise to <strong>{Math.max(3.2, (realBase.gwNum - 1.2)).toFixed(1)} meters</strong> by 2030, ensuring community borewells never go dry during summer.
                   </p>
                 </div>

@@ -459,20 +459,21 @@ export const ComparePage = () => {
             <table className="w-full text-left border-collapse font-sans">
               <thead>
                 <tr className="border-b border-slate-800 bg-[#060b16] text-xs font-mono uppercase text-slate-400">
-                  <th className="py-3.5 px-4 font-bold text-slate-400 w-1/4">Signal &amp; Dimension</th>
-                  <th className="py-3.5 px-4 font-bold text-cyan-300 w-1/3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                      <span>{cityA.name}</span>
+                  <th className="py-3.5 px-5 font-bold text-slate-400 w-2/5">Signal &amp; Dimension</th>
+                  <th className="py-3.5 px-5 font-bold text-cyan-300 w-[30%]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm shadow-cyan-400/50" />
+                      <span className="text-sm font-black text-white">{cityA.name}</span>
+                      <span className="text-[10px] text-cyan-400 font-mono">Target A</span>
                     </div>
                   </th>
-                  <th className="py-3.5 px-4 font-bold text-blue-300 w-1/3">
-                    <div className="flex items-center gap-1.5">
-                      <span className="w-2 h-2 rounded-full bg-blue-400" />
-                      <span>{cityB.name}</span>
+                  <th className="py-3.5 px-5 font-bold text-blue-300 w-[30%]">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-blue-400 shadow-sm shadow-blue-400/50" />
+                      <span className="text-sm font-black text-white">{cityB.name}</span>
+                      <span className="text-[10px] text-blue-400 font-mono">Target B</span>
                     </div>
                   </th>
-                  <th className="py-3.5 px-4 font-bold text-emerald-400 text-right">Advantage / Delta</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800/80 text-xs">
@@ -484,42 +485,46 @@ export const ComparePage = () => {
                       className="hover:bg-cyan-500/5 transition-colors group"
                     >
                       {/* Metric Name */}
-                      <td className="py-3.5 px-4 font-mono text-slate-300 font-semibold flex items-center gap-2">
-                        <RowIcon className="w-4 h-4 text-cyan-400 shrink-0" />
-                        <span>{row.label}</span>
+                      <td className="py-4 px-5 font-mono text-slate-300 font-semibold">
+                        <div className="flex items-center gap-2.5">
+                          <div className="p-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                            <RowIcon className="w-4 h-4 shrink-0" />
+                          </div>
+                          <div>
+                            <div className="text-slate-100 font-bold">{row.label}</div>
+                            {row.advantage && (
+                              <div className="text-[10px] text-slate-500 font-normal">
+                                Comparative Metric: {row.advantage}
+                              </div>
+                            )}
+                          </div>
+                        </div>
                       </td>
 
                       {/* City A Value */}
-                      <td className="py-3.5 px-4 text-slate-200">
-                        {row.badgeA ? (
-                          <span className={`px-2.5 py-0.5 rounded-full font-mono text-xs font-bold border ${row.badgeA}`}>
-                            {row.valA}
-                          </span>
-                        ) : (
-                          <span className="font-medium text-white">{row.valA}</span>
-                        )}
+                      <td className="py-4 px-5 text-slate-200">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {row.badgeA ? (
+                            <span className={`px-2.5 py-1 rounded-xl font-mono text-xs font-bold border ${row.badgeA}`}>
+                              {row.valA}
+                            </span>
+                          ) : (
+                            <span className="font-semibold text-white text-sm">{row.valA}</span>
+                          )}
+                        </div>
                       </td>
 
                       {/* City B Value */}
-                      <td className="py-3.5 px-4 text-slate-200">
-                        {row.badgeB ? (
-                          <span className={`px-2.5 py-0.5 rounded-full font-mono text-xs font-bold border ${row.badgeB}`}>
-                            {row.valB}
-                          </span>
-                        ) : (
-                          <span className="font-medium text-white">{row.valB}</span>
-                        )}
-                      </td>
-
-                      {/* Comparative Advantage */}
-                      <td className="py-3.5 px-4 text-right font-mono text-[11px]">
-                        {row.advantage ? (
-                          <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30 font-semibold">
-                            {row.advantage}
-                          </span>
-                        ) : (
-                          <span className="text-slate-500">—</span>
-                        )}
+                      <td className="py-4 px-5 text-slate-200">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          {row.badgeB ? (
+                            <span className={`px-2.5 py-1 rounded-xl font-mono text-xs font-bold border ${row.badgeB}`}>
+                              {row.valB}
+                            </span>
+                          ) : (
+                            <span className="font-semibold text-white text-sm">{row.valB}</span>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );

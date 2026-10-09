@@ -524,15 +524,15 @@ export const Earth3DViewer = ({
             <span>🌍 Cesium 3D Earth</span>
           </button>
           <button
-            onClick={() => setViewMode("3d")}
+            onClick={() => setViewMode("street")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
-              viewMode === "3d"
+              viewMode === "street"
                 ? "bg-cyan-500 text-black font-bold shadow-xs"
                 : "text-slate-400 hover:text-white"
             }`}
           >
-            <Globe className="w-3.5 h-3.5" />
-            <span>Stylized 3D</span>
+            <Compass className="w-3.5 h-3.5" />
+            <span>🛣️ Street View of Earth Globe</span>
           </button>
           <button
             onClick={() => setViewMode("satellite")}
@@ -549,7 +549,13 @@ export const Earth3DViewer = ({
         {/* Live Status Pill */}
         <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#040816]/95 backdrop-blur-md border border-cyan-500/40 text-cyan-300 text-xs font-mono shadow-md pointer-events-auto">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
-          <span><strong>Cesium Ion 3D Globe:</strong> Real satellite telemetry &amp; live heatmaps</span>
+          <span>
+            {viewMode === "street" 
+              ? <strong>Street View Mode: OpenStreetMap road networks, street names &amp; POIs</strong>
+              : viewMode === "satellite"
+              ? <strong>Satellite Mode: Esri high-res earth imagery &amp; territorial boundaries</strong>
+              : <strong>Cesium Ion 3D Globe: Real satellite telemetry &amp; live heatmaps</strong>}
+          </span>
         </div>
 
       </div>
@@ -611,8 +617,18 @@ export const Earth3DViewer = ({
             }}
           />
         </div>
+      ) : viewMode === "street" ? (
+        <RealEarthMap 
+          height="100%" 
+          initialStyle="streets" 
+          onLocationSelect={(loc) => setSelectedPin(loc)} 
+        />
       ) : viewMode === "satellite" ? (
-        <RealEarthMap height="100%" onLocationSelect={(loc) => setSelectedPin(loc)} />
+        <RealEarthMap 
+          height="100%" 
+          initialStyle="satellite" 
+          onLocationSelect={(loc) => setSelectedPin(loc)} 
+        />
       ) : (
         <div 
           ref={mountRef} 
@@ -621,7 +637,7 @@ export const Earth3DViewer = ({
       )}
 
       {/* Floating Bottom Location Panel for 3D Globe with Warm Luxury Editorial Design */}
-      {(viewMode === "3d" || viewMode === "cesium") && selectedPin && panelOpen && showInternalPanel && (
+      {(viewMode === "cesium" || viewMode === "street" || viewMode === "3d") && selectedPin && panelOpen && showInternalPanel && (
         <div className="absolute bottom-4 left-3 right-3 sm:left-6 sm:right-6 z-20 mx-auto max-w-2xl rounded-3xl border-2 border-orange-200 bg-white/95 backdrop-blur-md p-4 sm:p-5 text-stone-900 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300">
           <button
             onClick={() => setPanelOpen(false)}

@@ -511,25 +511,6 @@ export const StackedStoryCardsStudio = () => {
 
         </div>
 
-        {/* Scrollable Location Chips for the Active Category */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pt-1">
-          {activeCategoryList.map((item) => {
-            const isSelected = selectedLocId === item.id;
-            return (
-              <button
-                key={item.id}
-                onClick={() => handleSelectLocation(item.id)}
-                className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
-                  isSelected
-                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/25 scale-105"
-                    : "bg-[#070e1c] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800"
-                }`}
-              >
-                {item.name}
-              </button>
-            );
-          })}
-        </div>
 
       </div>
 

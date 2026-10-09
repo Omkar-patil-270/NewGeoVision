@@ -7,9 +7,9 @@ import {
   Search, Maximize2, ZoomIn, ZoomOut, Check, ArrowRight, X
 } from 'lucide-react';
 import { locationService } from '../../services/locationService';
-import { getLocationBoundary, getBoundaryLatLngs } from '../../services/boundaryService';
+import { getLocationBoundary, getBoundaryLatLngs, fetchRealLocationBoundary, subscribeBoundaryUpdates } from '../../services/boundaryService';
 
-export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
+export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initialStyle = "satellite" }) => {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef({});
@@ -20,7 +20,7 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
   const { currentLocation, selectLocation, setCurrentPage, setGeoAIChatOpen } = useApp();
   const allLocations = locationService.getAllLocations();
 
-  const [mapStyle, setMapStyle] = useState("satellite"); // 'satellite', 'streets', 'dark'
+  const [mapStyle, setMapStyle] = useState(initialStyle); // 'satellite', 'streets', 'dark'
   const [selectedPopupLoc, setSelectedPopupLoc] = useState(null);
 
   // Map Tile Providers (High-Resolution Satellite & OpenStreetMaps)
@@ -158,15 +158,15 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
       });
       setSelectedPopupLoc(currentLocation);
 
-      // Render Territorial Boundary Polygon
-      if (boundaryPolygonRef.current) {
-        map.removeLayer(boundaryPolygonRef.current);
-        boundaryPolygonRef.current = null;
-      }
+      // Render Territorial Boundary Polygon (Real GeoJSON)
+      const renderBoundary = (bMeta) => {
+        if (!map || !bMeta || !bMeta.polygon || bMeta.polygon.length < 3) return;
+        if (boundaryPolygonRef.current) {
+          map.removeLayer(boundaryPolygonRef.current);
+          boundaryPolygonRef.current = null;
+        }
 
-      const latLngs = getBoundaryLatLngs(currentLocation);
-      const meta = getLocationBoundary(currentLocation);
-      if (latLngs && latLngs.length > 2) {
+        const latLngs = bMeta.polygon.map(([lng, lat]) => [lat, lng]);
         const poly = L.polygon(latLngs, {
           color: '#00F0FF',
           weight: 3.5,
@@ -175,16 +175,33 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null }) => {
           fillOpacity: 0.12
         }).addTo(map);
 
-        poly.bindTooltip(`🛡️ ${meta.name} (${meta.area})`, {
+        poly.bindTooltip(`🛡️ ${bMeta.name} (${bMeta.area || 'Real Territory'})`, {
           permanent: false,
           direction: 'top',
           className: 'bg-stone-900 text-cyan-300 font-mono text-xs px-2 py-1 rounded shadow-lg'
         });
 
         boundaryPolygonRef.current = poly;
-      }
+      };
+
+      // Draw immediate cached boundary
+      const immediateMeta = getLocationBoundary(currentLocation);
+      if (immediateMeta) renderBoundary(immediateMeta);
+
+      // Fetch real OSM boundary asynchronously if not already real
+      fetchRealLocationBoundary(currentLocation).then(realMeta => {
+        if (realMeta && mapInstanceRef.current) {
+          renderBoundary(realMeta);
+        }
+      });
     }
   }, [currentLocation]);
+
+  useEffect(() => {
+    if (initialStyle && mapInstanceRef.current && initialStyle !== mapStyle) {
+      handleStyleChange(initialStyle);
+    }
+  }, [initialStyle]);
 
   // 3. Switch Tile Layer (Satellite vs Street vs Dark)
   const handleStyleChange = (styleKey) => {

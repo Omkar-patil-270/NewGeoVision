@@ -5,6 +5,7 @@ import {
 } from '../data/forecasts';
 import { predictionService } from '../services/predictionService';
 import { PopulationForecastingModule } from '../components/predictions/PopulationForecastingModule';
+import { ForecastHeatmapGlobe } from '../components/earth/ForecastHeatmapGlobe';
 import { 
   TrendingUp, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
   HelpCircle, Info, ArrowUpRight, ArrowDownRight, Layers,
@@ -186,21 +187,6 @@ export const ForecastPage = () => {
             </p>
           </div>
 
-          {/* Quick Location Switcher Dropdown */}
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-400 font-mono">Target:</span>
-            <select
-              value={loc.id}
-              onChange={(e) => selectLocation(e.target.value)}
-              className="rounded-2xl border border-slate-800 bg-[#091124] px-3.5 py-2 text-xs font-bold text-white focus:border-cyan-400 focus:outline-none shadow-md"
-            >
-              {allLocations.map((l) => (
-                <option key={l.id} value={l.id} className="bg-[#060b16] text-white">
-                  {l.name} ({l.country})
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
 
         {/* ================= EXACT FORECASTING PLAN BANNER & FLOWCHART ================= */}
@@ -385,6 +371,14 @@ export const ForecastPage = () => {
             <PopulationForecastingModule locationId={loc?.id} />
           </div>
         )}
+
+        {/* ================= SPATIO-TEMPORAL FORECASTING HEATMAP 3D GLOBE ================= */}
+        <div className="mb-10">
+          <ForecastHeatmapGlobe
+            currentLocation={loc}
+            onLocationSelect={(selectedLoc) => selectLocation(selectedLoc.id)}
+          />
+        </div>
 
         {/* 3. Model Benchmark Comparison Suite */}
         <div className="rounded-3xl border border-slate-800 bg-[#091124] p-6 sm:p-8 shadow-xl mb-10">

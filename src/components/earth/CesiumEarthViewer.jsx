@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useImperativeHandle, forwardRef } f
 import * as Cesium from 'cesium';
 import 'cesium/Build/Cesium/Widgets/widgets.css';
 import '../../cesiumConfig';
-import { getLocationBoundary, getBoundaryFlatDegrees } from '../../services/boundaryService';
+import { getLocationBoundary, getBoundaryFlatDegrees, fetchRealLocationBoundary } from '../../services/boundaryService';
 
 const LABELS_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png";
 const SATELLITE_FALLBACK_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
@@ -263,65 +263,85 @@ export const CesiumEarthViewer = forwardRef(({
 
     if (!visible || !loc) return;
 
-    const flatCoords = getBoundaryFlatDegrees(loc);
-    const meta = getLocationBoundary(loc);
-    if (!flatCoords || flatCoords.length < 6) return;
+    const drawBoundaryEntities = (flatCoords, meta) => {
+      if (!viewerRef.current || !flatCoords || flatCoords.length < 6) return;
+      const viewer = viewerRef.current;
 
-    try {
-      // 1. Semi-translucent Polygon Fill (subtle cyan #00F0FF)
-      boundaryEntityRef.current = viewer.entities.add({
-        polygon: {
-          hierarchy: Cesium.Cartesian3.fromDegreesArray(flatCoords),
-          material: Cesium.Color.fromCssColorString('#00F0FF').withAlpha(0.12),
-          height: 10
-        }
-      });
+      if (boundaryEntityRef.current) viewer.entities.remove(boundaryEntityRef.current);
+      if (boundaryLineRef.current) viewer.entities.remove(boundaryLineRef.current);
+      if (boundaryLabelRef.current) viewer.entities.remove(boundaryLabelRef.current);
 
-      // 2. Continuous Glowing Boundary Outline
-      const closedLoop = [...flatCoords, flatCoords[0], flatCoords[1]];
-      boundaryLineRef.current = viewer.entities.add({
-        polyline: {
-          positions: Cesium.Cartesian3.fromDegreesArray(closedLoop),
-          width: 4,
-          material: new Cesium.PolylineGlowMaterialProperty({
-            glowPower: 0.35,
-            taperPower: 1.0,
-            color: Cesium.Color.fromCssColorString('#00F0FF')
-          }),
-          clampToGround: true
-        }
-      });
+      try {
+        // 1. Semi-translucent Polygon Fill (subtle cyan #00F0FF)
+        boundaryEntityRef.current = viewer.entities.add({
+          polygon: {
+            hierarchy: Cesium.Cartesian3.fromDegreesArray(flatCoords),
+            material: Cesium.Color.fromCssColorString('#00F0FF').withAlpha(0.12),
+            height: 10
+          }
+        });
 
-      // 3. Northern Boundary Label Marker
-      let maxLat = -90;
-      let bestLng = flatCoords[0];
-      for (let i = 0; i < flatCoords.length; i += 2) {
-        const lng = flatCoords[i];
-        const lat = flatCoords[i + 1];
-        if (lat > maxLat) {
-          maxLat = lat;
-          bestLng = lng;
+        // 2. Continuous Glowing Boundary Outline
+        const closedLoop = [...flatCoords, flatCoords[0], flatCoords[1]];
+        boundaryLineRef.current = viewer.entities.add({
+          polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArray(closedLoop),
+            width: 4,
+            material: new Cesium.PolylineGlowMaterialProperty({
+              glowPower: 0.35,
+              taperPower: 1.0,
+              color: Cesium.Color.fromCssColorString('#00F0FF')
+            }),
+            clampToGround: true
+          }
+        });
+
+        // 3. Northern Boundary Label Marker
+        let maxLat = -90;
+        let bestLng = flatCoords[0];
+        for (let i = 0; i < flatCoords.length; i += 2) {
+          const lng = flatCoords[i];
+          const lat = flatCoords[i + 1];
+          if (lat > maxLat) {
+            maxLat = lat;
+            bestLng = lng;
+          }
         }
+
+        boundaryLabelRef.current = viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(bestLng, maxLat + 0.003),
+          label: {
+            text: `🛡️ ${meta?.name || `${loc.name} Boundary`} (${meta?.area || 'Real Territory'})`,
+            font: "bold 12px 'Plus Jakarta Sans', sans-serif",
+            fillColor: Cesium.Color.fromCssColorString('#00F0FF'),
+            outlineColor: Cesium.Color.BLACK,
+            outlineWidth: 3,
+            style: Cesium.LabelStyle.FILL_AND_OUTLINE,
+            showBackground: true,
+            backgroundColor: Cesium.Color.fromCssColorString('#060B18').withAlpha(0.9),
+            pixelOffset: new Cesium.Cartesian2(0, -18),
+            disableDepthTestDistance: Number.POSITIVE_INFINITY
+          }
+        });
+      } catch (e) {
+        console.warn("Boundary rendering notice:", e);
       }
+    };
 
-      boundaryLabelRef.current = viewer.entities.add({
-        position: Cesium.Cartesian3.fromDegrees(bestLng, maxLat + 0.003),
-        label: {
-          text: `🛡️ ${meta?.name || `${loc.name} Boundary`} (${meta?.area || '145 km²'})`,
-          font: "bold 12px 'Plus Jakarta Sans', sans-serif",
-          fillColor: Cesium.Color.fromCssColorString('#00F0FF'),
-          outlineColor: Cesium.Color.BLACK,
-          outlineWidth: 3,
-          style: Cesium.LabelStyle.FILL_AND_OUTLINE,
-          showBackground: true,
-          backgroundColor: Cesium.Color.fromCssColorString('#060B18').withAlpha(0.9),
-          pixelOffset: new Cesium.Cartesian2(0, -18),
-          disableDepthTestDistance: Number.POSITIVE_INFINITY
-        }
-      });
-    } catch (e) {
-      console.warn("Boundary rendering notice:", e);
+    const immediateFlat = getBoundaryFlatDegrees(loc);
+    const immediateMeta = getLocationBoundary(loc);
+    if (immediateFlat && immediateFlat.length >= 6) {
+      drawBoundaryEntities(immediateFlat, immediateMeta);
     }
+
+    // Fetch real administrative boundary asynchronously
+    fetchRealLocationBoundary(loc).then(realMeta => {
+      if (realMeta && realMeta.polygon && realMeta.polygon.length >= 3 && viewerRef.current) {
+        const realFlat = [];
+        realMeta.polygon.forEach(([lng, lat]) => realFlat.push(lng, lat));
+        drawBoundaryEntities(realFlat, realMeta);
+      }
+    }).catch(() => {});
   };
 
   // Dynamic GIS Radar Heatmap Overlay

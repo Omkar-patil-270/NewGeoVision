@@ -18,16 +18,16 @@ export const GLOBAL_LOCATIONS = [
     aqi: 74,
     temperature: 28,
     weatherCondition: "Pleasant / Part-Cloud",
-    bannerImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
     description: "An ancient Deccan jewel at the foothills of the Sahyadris, renowned for 1,300 years of recorded history, the Hemadpanthi Mahalaxmi Temple, royal social reforms under Rajarshi Chhatrapati Shahu Maharaj, sacred red-soil wrestling akhadas, and iconic dual culinary broths.",
     highlights: ["Mahalaxmi Temple (Ambabai)", "Panhala Fort", "New Palace Museum", "Motibag Talim Akhada", "Rankala Lake", "Tambda & Pandhra Rassa"],
     gallery: [
-      { category: "Historical", url: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=800&q=80", caption: "Bhavani Mandap & Maratha Courtyards" },
-      { category: "Architecture", url: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=800&q=80", caption: "Hemadpanthi Basalt Pillar Joints" },
-      { category: "Nature", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", caption: "Rankala Lake Waters at Sunset" },
-      { category: "Culture", url: "https://images.unsplash.com/photo-1517649763962-0c623266ddc0?auto=format&fit=crop&w=800&q=80", caption: "Red Clay Wrestling Talim Training" },
-      { category: "Food", url: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=800&q=80", caption: "Spicy Kat Misal and Artisanal Deccan Broths" },
-      { category: "Landmarks", url: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80", caption: "Panhala Fort Hilltop Citadels" }
+      { category: "Historical", url: "/images/kolhapur/bhavani_mandap.jpg", caption: "Bhavani Mandap & Maratha Courtyards" },
+      { category: "Architecture", url: "/images/kolhapur/mahalaxmi_temple.jpg", caption: "Mahalaxmi Temple Ancient Basalt Sanctuaries" },
+      { category: "Nature", url: "/images/kolhapur/rankala_lake.jpg", caption: "Rankala Lake Waters at Sunset" },
+      { category: "Culture", url: "/images/kolhapur/kusti_akhada.jpg", caption: "Red Clay Wrestling Talim Training" },
+      { category: "Food", url: "/images/kolhapur/kolhapuri_misal.jpg", caption: "Spicy Kat Misal and Artisanal Deccan Broths" },
+      { category: "Landmarks", url: "/images/kolhapur/panhala_fort.jpg", caption: "Panhala Fort Hilltop Citadels" }
     ]
   },
   {
@@ -44,13 +44,12 @@ export const GLOBAL_LOCATIONS = [
     aqi: 142,
     temperature: 31,
     weatherCondition: "Humid / Coastal Breeze",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/bandra.jpg",
     description: "The kinetic metropolis on the Arabian Sea, blending Victorian Gothic architecture, Bollywood dreams, global shipping ports, and ancient Elephanta cave sanctuaries.",
     highlights: ["Gateway of India", "Marine Drive Queen's Necklace", "Elephanta Caves", "Chhatrapati Shivaji Maharaj Terminus", "Kala Ghoda Art District"],
     gallery: [
-      { category: "Landmarks", url: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=800&q=80", caption: "Gateway of India at Dawn" },
-      { category: "Night", url: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&w=800&q=80", caption: "Marine Drive Queen's Necklace Lights" },
-      { category: "Street", url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80", caption: "Colaba Causeway Street Bazaars" }
+      { category: "Landmarks", url: "/images/locations/bandra.jpg", caption: "Bandra-Worli Sea Link & Waterfront" },
+      { category: "Heritage", url: "/images/locations/kanheri.jpg", caption: "Kanheri Rock-Cut Buddhist Caves" }
     ]
   },
   {
@@ -67,12 +66,13 @@ export const GLOBAL_LOCATIONS = [
     aqi: 88,
     temperature: 27,
     weatherCondition: "Clear / Mild",
-    bannerImage: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/pune_shaniwarwada.jpg",
     description: "Cultural capital of Maharashtra, historic seat of the Maratha Peshwas, and a high-tech education and automotive manufacturing corridor nestled beneath the Sahyadri mountains.",
     highlights: ["Shaniwar Wada", "Aga Khan Palace", "Sinhagad Fort", "Pataleshwar Cave Temple", "Osho International Resort"],
     gallery: [
-      { category: "Historical", url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80", caption: "Peshwa Citadel Gates at Shaniwar Wada" },
-      { category: "Architecture", url: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=800&q=80", caption: "Aga Khan Palace Italian Arches" }
+      { category: "Historical", url: "/images/locations/pune_shaniwarwada.jpg", caption: "Peshwa Citadel Gates at Shaniwar Wada" },
+      { category: "Fortress", url: "/images/locations/sinhagad.jpg", caption: "Historic Sinhagad Hill Fortress" },
+      { category: "Reservoir", url: "/images/locations/khadakwasla.jpg", caption: "Khadakwasla Dam Lake" }
     ]
   },
   {
@@ -89,11 +89,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 265,
     temperature: 29,
     weatherCondition: "Hazy / Moderate Wind",
-    bannerImage: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/delhi_indiagate.jpg",
     description: "A palimpsest of seven imperial cities where Mughal sandstone bastions, Sufi shrines, and broad Lutyens boulevards tell the geopolitical story of South Asia.",
     highlights: ["Qutub Minar", "Red Fort", "Humayun's Tomb", "India Gate", "Chandni Chowk"],
     gallery: [
-      { category: "Historical", url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80", caption: "Mughal Red Sandstone Minarets" }
+      { category: "Historical", url: "/images/locations/delhi_indiagate.jpg", caption: "India Gate Imperial Boulevard" }
     ]
   },
   {
@@ -110,11 +110,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 62,
     temperature: 26,
     weatherCondition: "Crisp / Sunny",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/nashik.jpg",
     description: "Spiritual sanctuary on the sacred banks of the Godavari river, host to the historic Kumbh Mela, and India's premier high-altitude vineyard terroir.",
     highlights: ["Trimbakeshwar Temple", "Panchavati & Sita Gufaa", "Sula Vineyards", "Pandavleni Caves"],
     gallery: [
-      { category: "Nature", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", caption: "Godavari River Ghats and Morning Mists" }
+      { category: "Nature", url: "/images/locations/nashik.jpg", caption: "Pandavleni Caves & Godavari River Valley" }
     ]
   },
   {
@@ -131,11 +131,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 45,
     temperature: 18,
     weatherCondition: "Overcast / Light Drizzle",
-    bannerImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/960px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
     description: "The global center of art, fashion, gastronomy, and philosophical enlightenment, bisected by the Seine and defined by Haussmann's grand stone boulevards.",
     highlights: ["Eiffel Tower", "Louvre Museum", "Notre-Dame Cathedral", "Montmartre", "Champs-Élysées"],
     gallery: [
-      { category: "Landmarks", url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", caption: "Eiffel Tower over the Seine River" }
+      { category: "Landmarks", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/960px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg", caption: "Eiffel Tower over the Seine River" }
     ]
   },
   {
@@ -152,11 +152,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 32,
     temperature: 21,
     weatherCondition: "Clear / Pleasant",
-    bannerImage: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/960px-Skyscrapers_of_Shinjuku_2009_January.jpg",
     description: "Where neon cyber-skylines and ultra-precise high-speed transit intersect with Edo-era Shinto shrines, zen stone gardens, and world-leading robotics.",
     highlights: ["Shinjuku Neon Crossing", "Senso-ji Temple", "Meiji Jingu Shrine", "Shibuya Sky", "Akihabara Tech District"],
     gallery: [
-      { category: "Night", url: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80", caption: "Tokyo Neon Cyberpunk Skyline" }
+      { category: "Night", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Skyscrapers_of_Shinjuku_2009_January.jpg/960px-Skyscrapers_of_Shinjuku_2009_January.jpg", caption: "Tokyo Shinjuku Skyline & Crossing" }
     ]
   },
   {
@@ -173,11 +173,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 38,
     temperature: 16,
     weatherCondition: "Scattered Showers",
-    bannerImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg/960px-Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg",
     description: "Two millennia of continuous world trade, parliamentary democracy, theater districts, and royal parks radiating from the zero-degree prime meridian.",
     highlights: ["Big Ben & Parliament", "Tower Bridge", "British Museum", "Tate Modern", "Hyde Park"],
     gallery: [
-      { category: "Landmarks", url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80", caption: "Tower Bridge and the Thames Embankment" }
+      { category: "Landmarks", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg/960px-Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg", caption: "Big Ben and Palace of Westminster" }
     ]
   },
   {
@@ -194,11 +194,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 52,
     temperature: 22,
     weatherCondition: "Sunny / Breezy",
-    bannerImage: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Front_view_of_Statue_of_Liberty_%28cropped%29.jpg/960px-Front_view_of_Statue_of_Liberty_%28cropped%29.jpg",
     description: "The vertical canyon city of architectural ambition, financial markets, Broadway stages, and Ellis Island immigrant dreams on the Atlantic seaboard.",
     highlights: ["Empire State Building", "Central Park", "Statue of Liberty", "Brooklyn Bridge", "Metropolitan Museum"],
     gallery: [
-      { category: "Landmarks", url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80", caption: "Manhattan Art Deco Tower Canyons" }
+      { category: "Landmarks", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Front_view_of_Statue_of_Liberty_%28cropped%29.jpg/960px-Front_view_of_Statue_of_Liberty_%28cropped%29.jpg", caption: "Statue of Liberty on New York Harbor" }
     ]
   },
   {
@@ -215,11 +215,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 110,
     temperature: 36,
     weatherCondition: "Warm / Clear",
-    bannerImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/960px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg",
     description: "A visionary desert metropolis rising from golden dunes, featuring record-breaking skyscrapers, autonomous transit systems, and artificial archipelago wonders.",
     highlights: ["Burj Khalifa", "Museum of the Future", "Palm Jumeirah", "Dubai Mall", "Al Fahidi Historic District"],
     gallery: [
-      { category: "Architecture", url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80", caption: "Burj Khalifa and Marina Skyline" }
+      { category: "Architecture", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/960px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg", caption: "Burj Khalifa and Marina Skyline" }
     ]
   },
   {
@@ -236,11 +236,11 @@ export const GLOBAL_LOCATIONS = [
     aqi: 40,
     temperature: 30,
     weatherCondition: "Tropical / Warm",
-    bannerImage: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/960px-Marina_Bay_Sands_%28I%29.jpg",
     description: "An ultra-modern island nation exemplifying sustainable biophilic architecture, autonomous green transit networks, and vibrant Peranakan and Malay culinary hawker stalls.",
     highlights: ["Gardens by the Bay", "Marina Bay Sands", "Jewel Changi", "Chinatown & Little India", "Sentosa Island"],
     gallery: [
-      { category: "Architecture", url: "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80", caption: "Supertrees at Gardens by the Bay" }
+      { category: "Architecture", url: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c7/Marina_Bay_Sands_%28I%29.jpg/960px-Marina_Bay_Sands_%28I%29.jpg", caption: "Marina Bay Sands Waterfront" }
     ]
   }
 ];
@@ -263,7 +263,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 68,
     temperature: 28,
     weatherCondition: "Pleasant / Mild",
-    bannerImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/kolhapur/mahalaxmi_temple.jpg",
     description: "The pivotal central taluka of Kolhapur, encompassing the core historic city, Sri Ambabai temple sanctuary, sacred Panchganga riverbanks, and agricultural plains.",
     highlights: ["Mahalaxmi Temple", "Bhavani Mandap", "Rankala Lake", "Brahmapuri Excavations"]
   },
@@ -282,7 +282,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 42,
     temperature: 24,
     weatherCondition: "Misty / Cool Breeze",
-    bannerImage: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/panhala.jpg",
     description: "Famed for its strategic Maratha fort where Chhatrapati Shivaji Maharaj spent over 500 days, surrounded by mist-veiled Sahyadri valleys and dense monsoon flora.",
     highlights: ["Panhala Fort", "Sajja Kothi", "Teen Darwaza", "Tabak Udyan", "Pawankhind Corridor"]
   },
@@ -301,7 +301,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 76,
     temperature: 29,
     weatherCondition: "Clear / Sunny",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/ichalkaranji.jpg",
     description: "The industrial powerhouse of Kolhapur, housing the bustling textile cluster of Ichalkaranji (Manchester of Maharashtra) and thriving sugarcane cooperatives.",
     highlights: ["Ichalkaranji Textile Park", "Ramling Temple", "Spinning Mills", "Panchganga Agro Belt"]
   },
@@ -320,7 +320,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 65,
     temperature: 29,
     weatherCondition: "Warm / River Mist",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
     description: "Located at the auspicious confluence of the Krishna and Panchganga rivers at Narsobawadi, renowned as a premier Dattatreya spiritual pilgrimage center and fertile farmland.",
     highlights: ["Nrusinhawadi (Narsobawadi)", "Krishna-Panchganga Sangam", "Kopeshwar Khidrapur Temple", "Jaggery Mills"]
   },
@@ -339,7 +339,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 34,
     temperature: 23,
     weatherCondition: "Fresh / Green Canopy",
-    bannerImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/talukas/radhanagari.jpg",
     description: "A biodiverse haven in the Western Ghats housing the famous Radhanagari Bison Sanctuary, home to the Indian Gaur, and the century-old Laxmi Talav Dam built by Shahu Maharaj.",
     highlights: ["Radhanagari Wildlife Sanctuary", "Laxmi Talav (Dam)", "Dajipur Bison Reserve", "Evergreen Rainforests"]
   },
@@ -358,7 +358,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 72,
     temperature: 28,
     weatherCondition: "Breezy / Warm",
-    bannerImage: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/kagal.jpg",
     description: "The ancestral birthplace of Rajarshi Chhatrapati Shahu Maharaj, today transformed into a 5-star MIDC industrial zone hosting modern manufacturing clusters alongside rich sugarcane estates.",
     highlights: ["Kagal 5-Star MIDC", "Ghatge Royal Palace", "Dudhganga Basin", "Ramling Lake"]
   },
@@ -377,7 +377,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 55,
     temperature: 27,
     weatherCondition: "Part-Cloud / Pleasant",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/panhala.jpg",
     description: "Strategic commercial junction on the banks of the Hiranyakeshi River bordering Karnataka, renowned for its brisk agricultural markets, chili trading, and education hubs.",
     highlights: ["Hiranyakeshi River Ghats", "Samangad Fort", "Chili Mandi", "Ghodewadi Lake"]
   },
@@ -396,7 +396,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 38,
     temperature: 25,
     weatherCondition: "Crisp / Forest Air",
-    bannerImage: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/sinhagad.jpg",
     description: "Nestled beneath the historical Bhudargad hill-fort with its sacred Dudhsagar natural spring lake, Gargoti mineral museums, and pristine Western Ghats spurs.",
     highlights: ["Bhudargad Fort", "Dudhsagar Lake", "Gargoti Mineral Museum", "Vedganga River"]
   },
@@ -415,7 +415,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 32,
     temperature: 24,
     weatherCondition: "Cool / Verdant",
-    bannerImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/amba_ghat.jpg",
     description: "Famous for GI-tagged aromatic Ajra Ghansal rice, scenic waterfalls such as Ramtirth on the Hiranyakeshi river, and tranquil coffee and cashew groves.",
     highlights: ["Ramtirth Waterfall", "Ajra Ghansal Rice Terraces", "Hiranyakeshi Dam", "Western Ghats Trails"]
   },
@@ -434,7 +434,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 30,
     temperature: 23,
     weatherCondition: "Highland Forest Mist",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/talukas/gaganbawda.jpg",
     description: "The southernmost taluka of Kolhapur bordering Goa and Belagavi, blessed with lush highland forests, roaring monsoon waterfalls like Swapnavel and Tilari canyon gorge.",
     highlights: ["Tilari Canyon & Dam", "Swapnavel Waterfall", "Gandharvagad Fort", "Dense Konkan Ghats"]
   },
@@ -453,7 +453,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 35,
     temperature: 24,
     weatherCondition: "Misty Mountain Pass",
-    bannerImage: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/amba_ghat.jpg",
     description: "A mountain-pass taluka framing the spectacular Amba Ghat corridor between Kolhapur and coastal Ratnagiri, adorned with ancient forts like Vishalgad.",
     highlights: ["Vishalgad Fort", "Amba Ghat Mountain Pass", "Pawankhind Memorial", "Manoli Dam"]
   },
@@ -472,7 +472,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 25,
     temperature: 21,
     weatherCondition: "Heavy Monsoon Mist",
-    bannerImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/talukas/gaganbawda.jpg",
     description: "Renowned for recording the highest annual rainfall in Western Maharashtra, featuring the dramatic Bawda Fort, Gagangiri Maharaj Ashram, and panoramic Konkan vistas.",
     highlights: ["Gagangarh Fort", "Gagangiri Maharaj Ashram", "Bhuibawda Ghat Pass", "Karul Ghat Viewpoint"]
   },
@@ -493,7 +493,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 88,
     temperature: 27,
     weatherCondition: "Clear / Pleasant",
-    bannerImage: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/sinhagad.jpg",
     description: "The primary metropolitan taluka encompassing Pune city proper, Hinjawadi & Magarpatta IT corridors, Sinhagad foothill valleys, and Maratha historical monuments.",
     highlights: ["Shaniwar Wada", "Aga Khan Palace", "Sinhagad Fort", "Khadakwasla Dam"]
   },
@@ -512,7 +512,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 38,
     temperature: 24,
     weatherCondition: "Verdant / Fresh",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/mulshi.jpg",
     description: "Lush Western Ghats reservoir basin home to Tata Hydroelectric Mulshi Dam, Tamhini Ghat tropical forest reserve, and high-altitude eco-resorts.",
     highlights: ["Mulshi Dam Lake", "Tamhini Ghat", "Kailasgad Fort", "Plus Valley Trek"]
   },
@@ -531,7 +531,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 52,
     temperature: 25,
     weatherCondition: "Breezy / Mountain Air",
-    bannerImage: "https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/lohagad.jpg",
     description: "The ancestral homeland of Shivaji Maharaj's fierce Mavala warriors, encompassing the iconic hill resorts of Lonavala-Khandala, Karla & Bhaja rock-cut Buddhist caves.",
     highlights: ["Lonavala & Khandala", "Karla & Bhaja Caves", "Lohagad Fort", "Pavana Dam"]
   },
@@ -550,7 +550,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 62,
     temperature: 29,
     weatherCondition: "Warm / Clear Skies",
-    bannerImage: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/pune_shaniwarwada.jpg",
     description: "Celebrated nationwide as India's benchmark agro-industrial technology model, housing state-of-the-art Krishi Vigyan Kendras, cooperative sugar refineries, and dairy grids.",
     highlights: ["Krishi Vigyan Kendra Agro-Tech", "Nira River Basin", "Sugar Cooperatives", "Baramati Textile Park"]
   },
@@ -571,7 +571,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 135,
     temperature: 31,
     weatherCondition: "Humid / Active",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/bandra.jpg",
     description: "The kinetic western heartbeat of Mumbai Suburban, hosting Bollywood media production empires, SEEPZ technology export zones, and international airport terminals.",
     highlights: ["SEEPZ Export Zone", "Lokhandwala Complex", "Versova Beach", "Chhatrapati Shivaji Maharaj Airport"]
   },
@@ -590,7 +590,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 110,
     temperature: 30,
     weatherCondition: "Coastal / Forest Border",
-    bannerImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/kanheri.jpg",
     description: "A rare global urban-wildland interface, hosting Sanjay Gandhi National Park, 2,000-year-old Kanheri rock-cut Buddhist caves, and dense coastal mangroves.",
     highlights: ["Sanjay Gandhi National Park", "Kanheri Caves", "Gorai Beach & Pagoda", "Mangrove Corridors"]
   },
@@ -609,7 +609,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 122,
     temperature: 31,
     weatherCondition: "Sea Breeze / Humid",
-    bannerImage: "https://images.unsplash.com/photo-1566552881560-0be862a7c445?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/bandra.jpg",
     description: "Famed as the Queen of the Suburbs and home to Bandra-Kurla Complex (BKC)—India's premier financial center—alongside heritage Portuguese churches and Bandra Sea Link.",
     highlights: ["Bandra-Worli Sea Link", "Bandra-Kurla Complex (BKC)", "Mount Mary Basilica", "Bandstand Promenade"]
   },
@@ -633,7 +633,6 @@ export const ADMINISTRATIVE_REGISTRY = [
     bannerImage: "/images/satara/kaas_plateau.jpg",
     description: "The historical capital of the Maratha Empire, crowned by Ajinkyatara Fort and the UNESCO World Natural Heritage site of Kas Plateau (Valley of Flowers).",
     highlights: ["Kas Plateau (Valley of Flowers)", "Ajinkyatara Fort", "Satara Kandi Pedha", "Thoseghar Waterfalls"]
-
   },
   {
     id: "sangli",
@@ -650,7 +649,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 64,
     temperature: 29,
     weatherCondition: "Sunny / Clear",
-    bannerImage: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/sangli.jpg",
     description: "India's turmeric trading capital situated on the Krishna River, celebrated for Ganpati temple ghats, grape orchards, and classical music heritage.",
     highlights: ["Sangli Ganpati Temple", "Krishna River Promenade", "Tasgaon Vineyards", "Miraj Sitar Craft"]
   },
@@ -669,7 +668,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 78,
     temperature: 32,
     weatherCondition: "Warm / Dry",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/solapur.jpg",
     description: "Famed globally for Solapuri chaddars and terry towels, ancient Siddheshwar water-temple, and Great Indian Bustard wildlife sanctuaries.",
     highlights: ["Siddheshwar Temple & Lake", "Solapur Bhuikot Fort", "Textile Handlooms", "Nanaj Bustard Sanctuary"]
   },
@@ -688,7 +687,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 82,
     temperature: 30,
     weatherCondition: "Warm / Dry",
-    bannerImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/aurangabad.jpg",
     description: "Tourism capital of Maharashtra housing the world-renowned UNESCO World Heritage rock-cut temples of Ellora (Kailasa) and Ajanta caves, Bibi Ka Maqbara, and Daulatabad Fort.",
     highlights: ["Ellora Kailasa Temple", "Ajanta Frescoes", "Bibi Ka Maqbara", "Daulatabad Fort"]
   },
@@ -707,7 +706,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 95,
     temperature: 33,
     weatherCondition: "Warm / Sunny",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/nagpur.jpg",
     description: "Geographical center of India marked by the Zero Mile Stone, winter capital of Maharashtra, sweet orange orchards, and the gateway to central India's tiger reserves.",
     highlights: ["Zero Mile Monument", "Deekshabhoomi Stupa", "Tadoba Tiger Gateway", "Futala Lake"]
   },
@@ -726,7 +725,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 125,
     temperature: 31,
     weatherCondition: "Humid / Warm",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/thane.jpg",
     description: "Historic terminus of India's first passenger railway in 1853, today a booming metropolis of 30+ scenic lakes, Yeoor Hills forest reserve, and thriving technology parks.",
     highlights: ["Masunda (Talao Pali) Lake", "Yeoor Hills", "Upvan Lake", "Ghopbunder Fort"]
   },
@@ -747,7 +746,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 92,
     temperature: 29,
     weatherCondition: "Tropical Deccan",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/pune_shaniwarwada.jpg",
     description: "India's powerhouse economy contributing ~15% of national GDP, spanning the majestic Sahyadri mountain ranges, 350+ Maratha hill and sea forts, and Arabian sea coast.",
     highlights: ["Sahyadri Western Ghats", "350+ Chhatrapati Shivaji Forts", "Konkan Coastline", "Deccan Basalt Plateau"]
   },
@@ -766,7 +765,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 68,
     temperature: 28,
     weatherCondition: "Mild / Tropical",
-    bannerImage: "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/hampi.jpg",
     description: "Home to India's high-tech Silicon Valley in Bengaluru, ancient UNESCO monuments of Hampi and Pattadakal, rich sandalwood and coffee estates in Coorg.",
     highlights: ["Hampi Vijayanagara Ruins", "Bengaluru Tech Hub", "Mysuru Palace", "Western Ghats Coffee Estates"]
   },
@@ -785,7 +784,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 104,
     temperature: 31,
     weatherCondition: "Arid / Coastal",
-    bannerImage: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/statue_of_unity.jpg",
     description: "India's longest coastline with 1,600 km of maritime ports, Asiatic lion sanctuary in Gir, Statue of Unity, and vibrant diamond and textile manufacturing centers.",
     highlights: ["Statue of Unity", "Rann of Kutch White Desert", "Gir Asiatic Lion Sanctuary", "Dholavira Harappan Site"]
   },
@@ -804,7 +803,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 115,
     temperature: 33,
     weatherCondition: "Warm / Arid Desert",
-    bannerImage: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "/images/locations/amber_fort.jpg",
     description: "India's largest state by area, renowned for hilltop Rajput citadels, gilded sand dunes of Jaisalmer, romantic palaces of Udaipur, and deep folk traditions.",
     highlights: ["Jaipur Amber Fort", "Udaipur Lake Palace", "Jaisalmer Golden Fort", "Thar Desert Dunes"]
   },
@@ -825,7 +824,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 112,
     temperature: 28,
     weatherCondition: "Monsoonal Subcontinent",
-    bannerImage: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Taj_Mahal_%28Edited%29.jpeg/960px-Taj_Mahal_%28Edited%29.jpeg",
     description: "The world's most populous democracy and 5th largest economy, spanning the snow-capped Himalayas, sacred river basins, biodiverse Deccan plateau, and extensive maritime peninsulas.",
     highlights: ["Himalayan Mountain Spine", "Gangetic & Deccan Basins", "UNESCO Heritage Clusters", "Digital Public Infrastructure"]
   },
@@ -844,7 +843,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 28,
     temperature: 16,
     weatherCondition: "Temperate Maritime",
-    bannerImage: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg/960px-View_of_Mount_Fuji_from_%C5%8Cwakudani_20211202.jpg",
     description: "An island nation balancing millennia of Zen philosophy, Shinto sacred shrines, and robotic high-speed transit with Mount Fuji's iconic volcanic silhouette.",
     highlights: ["Mount Fuji Volcanic Cone", "Kyoto Imperial Temples", "Tokyo Megacity", "Shinkansen High-Speed Rail"]
   },
@@ -863,7 +862,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 35,
     temperature: 15,
     weatherCondition: "Temperate European",
-    bannerImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg/960px-Tour_Eiffel_Wikimedia_Commons_%28cropped%29.jpg",
     description: "A cultural and economic cornerstone of Western Europe, encompassing Atlantic coasts, Mediterranean rivieras, Alpine peaks, and historic river vineyards.",
     highlights: ["Paris Haussmannian Architecture", "Alps & Mont Blanc", "Loire Valley Châteaux", "Côte d'Azur Riviera"]
   },
@@ -882,7 +881,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 32,
     temperature: 13,
     weatherCondition: "Maritime Temperate",
-    bannerImage: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg/960px-Elizabeth_Tower_and_the_north_front_of_the_Palace_of_Westminster%2C_London.jpg",
     description: "An island nation comprising England, Scotland, Wales, and Northern Ireland, defined by parliamentary democracy, the Industrial Revolution, and global financial institutions.",
     highlights: ["Thames Maritime Corridor", "Scottish Highlands", "Stonehenge Megaliths", "Lake District"]
   },
@@ -901,7 +900,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 45,
     temperature: 18,
     weatherCondition: "Diverse Continental",
-    bannerImage: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Front_view_of_Statue_of_Liberty_%28cropped%29.jpg/960px-Front_view_of_Statue_of_Liberty_%28cropped%29.jpg",
     description: "A federal republic spanning 50 states from the Atlantic to the Pacific, encompassing vast plains, the Rocky Mountains, innovation centers like Silicon Valley, and financial centers like Wall Street.",
     highlights: ["Grand Canyon Gorge", "Silicon Valley", "Yellowstone National Park", "Great Lakes System"]
   },
@@ -920,7 +919,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 108,
     temperature: 35,
     weatherCondition: "Subtropical Arid",
-    bannerImage: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1600&q=80",
+    bannerImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg/960px-Burj_Khalifa_%28worlds_tallest_building%29_and_the_Dubai_skyline_%2825781049892%29.jpg",
     description: "A federation of seven emirates on the Arabian Gulf, leading global futuristic architecture, space exploration initiatives, renewable solar parks, and trade gateways.",
     highlights: ["Burj Khalifa & Future Museum", "Sheikh Zayed Grand Mosque", "Noor Abu Dhabi Solar Complex", "Rub' al Khali Desert"]
   }
@@ -1116,12 +1115,12 @@ export const locationService = {
       aqi: estAqi,
       temperature: estTemp,
       weatherCondition: estTemp < 5 ? "Sub-Zero / Crisp" : estTemp > 30 ? "Warm / Sunny" : "Mild & Clear",
-      bannerImage: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80",
+      bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
       description: `Planetary coordinate locked at latitude ${normLat}°, longitude ${normLng}° within the ${geo.name} sector (${geo.region}, ${geo.country}). GeoVision provides full environmental telemetry, multi-scenario predictions, and synthesized narratives for this geographic point.`,
       highlights: [`Geodesic Point [${normLat}, ${normLng}]`, `${geo.region} Continental Shelf`, "Atmospheric Sensor Interpolation", "2030-2050 ML Trajectory"],
       gallery: [
-        { category: "Satellite", url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80", caption: "Orbital View of Target Sector" },
-        { category: "Terrain", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", caption: "Geographic Surface Topology" }
+        { category: "Satellite", url: "/images/kolhapur/panchganga_ghat.jpg", caption: "Orbital View of Target Sector" },
+        { category: "Terrain", url: "/images/talukas/radhanagari.jpg", caption: "Geographic Surface Topology" }
       ]
     };
 
@@ -1156,7 +1155,7 @@ export const locationService = {
       aqi: data.aqi || 58,
       temperature: data.temperature || 24,
       weatherCondition: "Telemetry Active",
-      bannerImage: data.bannerImage || "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1600&q=80",
+      bannerImage: data.bannerImage || "/images/kolhapur/panchganga_ghat.jpg",
       description: data.description || `${safeName} (${data.country || 'Global'}) is an active geographic node monitored by GeoVisionAI for real-time environmental telemetry, AI-generated cultural stories, and predictive modeling up to 2030.`,
       highlights: [safeName, data.country, `Lat ${lat.toFixed(2)}°, Lon ${lng.toFixed(2)}°`, "2030 Environmental Trajectory"],
       gallery: []

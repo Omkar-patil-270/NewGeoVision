@@ -1,9 +1,11 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
+import { globalGeoAIService } from '../../services/globalGeoAIService';
 import { getStoryCardsForCity } from '../../data/storyLocationData';
 import { 
-  ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp
+  ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
+  Search, MapPin, Navigation, Sparkles, Globe, Loader2, X
 } from 'lucide-react';
 
 export const StackedStoryCardsStudio = () => {
@@ -16,7 +18,66 @@ export const StackedStoryCardsStudio = () => {
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   const [activeFoodIndex, setActiveFoodIndex] = useState(0);
 
+  // Category and Search States
+  const [activeCategoryTab, setActiveCategoryTab] = useState("districts"); // 'talukas' | 'districts' | 'states' | 'global'
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchingAI, setIsSearchingAI] = useState(false);
+  const [isLocatingGPS, setIsLocatingGPS] = useState(false);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const searchRef = useRef(null);
+
   const loc = allLocations.find(l => l.id === selectedLocId) || currentLocation || allLocations[0];
+
+  // Group locations into structured categories
+  const categorizedLocations = useMemo(() => {
+    const talukaIds = [
+      'karvir', 'panhala', 'hatkangale', 'shirol', 'kagal', 'gadhinglaj', 
+      'chandgad', 'ajara', 'bhudargad', 'radhanagari', 'gaganbawda', 'shahuwadi',
+      'haveli', 'mulshi', 'maval', 'baramati', 'junnar', 'bandra', 'mahabaleshwar', 
+      'wai', 'karad', 'miraj', 'pandharpur'
+    ];
+    const districtIds = [
+      'kolhapur', 'satara', 'pune', 'mumbai', 'sangli', 'solapur', 
+      'aurangabad', 'nagpur', 'thane'
+    ];
+    const stateCountryIds = [
+      'maharashtra', 'karnataka', 'gujarat', 'rajasthan', 'india', 
+      'japan', 'france', 'united-kingdom', 'united-states', 'uae'
+    ];
+    const globalMetroIds = [
+      'tokyo', 'paris', 'london', 'newyork', 'dubai', 'delhi', 'kyoto', 'sydney'
+    ];
+
+    return {
+      talukas: allLocations.filter(l => talukaIds.includes(l.id) || l.type === 'Taluka'),
+      districts: allLocations.filter(l => districtIds.includes(l.id) || l.type === 'District'),
+      states: allLocations.filter(l => stateCountryIds.includes(l.id) || l.type === 'State' || l.type === 'Country'),
+      global: allLocations.filter(l => globalMetroIds.includes(l.id) || l.country !== 'India')
+    };
+  }, [allLocations]);
+
+  // Filtered search results
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    const q = searchQuery.toLowerCase().trim();
+    return allLocations.filter(l => 
+      l.name.toLowerCase().includes(q) || 
+      (l.region && l.region.toLowerCase().includes(q)) ||
+      (l.country && l.country.toLowerCase().includes(q)) ||
+      (l.highlights && l.highlights.some(h => h.toLowerCase().includes(q)))
+    ).slice(0, 8);
+  }, [searchQuery, allLocations]);
+
+  // Close search dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSearchDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Sync with AppContext if currentLocation changes externally
   useEffect(() => {
@@ -31,8 +92,60 @@ export const StackedStoryCardsStudio = () => {
     setActiveCardIndex(0);
     setActiveGalleryIndex(0);
     setActiveFoodIndex(0);
+    setShowSearchDropdown(false);
+    setSearchQuery("");
     if (typeof stopAudio === 'function') stopAudio();
     setIsSpeaking(false);
+  };
+
+  // Live AI Search for ANY arbitrary village, town, or global destination
+  const handleSearchGlobalAI = async (queryText) => {
+    const target = queryText || searchQuery;
+    if (!target.trim()) return;
+
+    setIsSearchingAI(true);
+    try {
+      const intel = await globalGeoAIService.fetchCityIntel(target);
+      if (intel) {
+        const registered = locationService.registerCustomLocation({
+          name: intel.name,
+          country: "Global",
+          region: intel.description || "Administrative Center",
+          bannerImage: intel.image,
+          description: intel.extract,
+          highlights: [intel.name, "Verified Real Photos", "Historical Timeline", "Civic Life"],
+          gallery: (intel.galleryImages || []).map((img, i) => ({
+            url: img,
+            caption: `${intel.name} Sight ${i + 1}`
+          }))
+        });
+
+        if (registered?.id) {
+          handleSelectLocation(registered.id);
+        }
+      }
+    } catch (err) {
+      console.warn("Global AI search failed:", err);
+    } finally {
+      setIsSearchingAI(false);
+      setShowSearchDropdown(false);
+      setSearchQuery("");
+    }
+  };
+
+  // Real-time GPS Detection
+  const handleDetectGPS = async () => {
+    setIsLocatingGPS(true);
+    try {
+      const userLoc = await globalGeoAIService.detectUserLocation();
+      if (userLoc?.city) {
+        await handleSearchGlobalAI(userLoc.city);
+      }
+    } catch (err) {
+      console.warn("GPS detection failed:", err);
+    } finally {
+      setIsLocatingGPS(false);
+    }
   };
 
   // Base 7 Curated Story Cards
@@ -97,65 +210,182 @@ export const StackedStoryCardsStudio = () => {
     setActiveFoodIndex(0);
   };
 
+  const activeCategoryList = categorizedLocations[activeCategoryTab] || categorizedLocations.districts;
+
   return (
     <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between p-3 sm:p-6 select-none overflow-x-hidden font-sans">
       
       {/* ================= 1. CLEAN STUDIO HEADER ================= */}
       <div className="w-full max-w-6xl mx-auto space-y-3 shrink-0">
         
-        {/* Top Header Row with Quick City Switcher */}
+        {/* Top Header Row with Location Details & Controls */}
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
           <div>
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
+              <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2 flex-wrap">
                 <span>Stories of {loc.name}</span>
                 <span className="text-xs font-mono font-normal px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
-                  Global Story Studio
+                  {loc.badge || "100% Real Photography"}
                 </span>
               </h1>
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              3D fanned cards stacked in depth. Authentic local photography, verified history, and voice narration.
+              Explore 100% real verified photos and 3D fanned stories for all talukas, districts, states, countries, and global cities.
             </p>
           </div>
 
-          {/* Quick City Switcher & Forecast */}
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {[
-              { id: "kolhapur", label: "Kolhapur ⭐" },
-              { id: "satara", label: "Satara 🏰" },
-              { id: "mumbai", label: "Mumbai" },
-              { id: "pune", label: "Pune" },
-              { id: "delhi", label: "Delhi" },
-              { id: "tokyo", label: "Tokyo 🇯🇵" },
-              { id: "paris", label: "Paris 🇫🇷" }
-            ].map((city) => {
-              const isSelected = selectedLocId === city.id;
-              return (
-                <button
-                  key={city.id}
-                  onClick={() => handleSelectLocation(city.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                    isSelected
-                      ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/25 scale-105"
-                      : "bg-[#070e1c] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800"
-                  }`}
-                >
-                  {city.label}
-                </button>
-              );
-            })}
+          {/* Quick Actions: GPS Auto-Detect & Forecast */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDetectGPS}
+              disabled={isLocatingGPS}
+              className="px-3 py-1.5 rounded-xl bg-[#091326] border border-cyan-500/40 hover:bg-cyan-900/30 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md disabled:opacity-50"
+              title="Detect your real GPS location and generate stories"
+            >
+              {isLocatingGPS ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-cyan-400" />
+              ) : (
+                <Navigation className="w-3.5 h-3.5 text-cyan-400" />
+              )}
+              <span>{isLocatingGPS ? "Locating..." : "My GPS"}</span>
+            </button>
 
             <button
               onClick={() => setCurrentPage('predictions')}
-              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 transition-all cursor-pointer ml-1"
+              className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-mono font-bold text-xs flex items-center gap-1.5 shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
               title="View environmental forecast for this location"
             >
               <TrendingUp className="w-3.5 h-3.5" />
               <span>Forecast</span>
             </button>
           </div>
+        </div>
+
+        {/* Global Search & Category Tabs Navigation Bar */}
+        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 pt-1">
+          
+          {/* Category Tabs Switcher */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar shrink-0">
+            {[
+              { id: "districts", label: "📍 Districts (9)" },
+              { id: "talukas", label: "🏛️ Talukas (20+)" },
+              { id: "states", label: "🗺️ States & Nations" },
+              { id: "global", label: "🌍 Global Metros" }
+            ].map((tab) => {
+              const isTabActive = activeCategoryTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCategoryTab(tab.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    isTabActive
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-md shadow-cyan-500/20"
+                      : "bg-[#060c18] text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Real-time Global Search Input with AI Autocomplete */}
+          <div ref={searchRef} className="relative flex-1 max-w-md">
+            <div className="relative flex items-center">
+              <Search className="w-4 h-4 text-cyan-400 absolute left-3 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setShowSearchDropdown(true);
+                }}
+                onFocus={() => setShowSearchDropdown(true)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && searchQuery.trim()) {
+                    handleSearchGlobalAI(searchQuery);
+                  }
+                }}
+                placeholder="Search any village, taluka, city, or global place..."
+                className="w-full pl-9 pr-9 py-1.5 rounded-xl bg-[#070e1c] border border-slate-800 focus:border-cyan-400 text-xs text-white placeholder-slate-500 outline-none transition-all"
+              />
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 text-slate-400 hover:text-white cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Dropdown Suggestions */}
+            {showSearchDropdown && (searchQuery.trim().length > 0) && (
+              <div className="absolute top-full left-0 right-0 mt-1.5 bg-[#091224] border border-cyan-500/40 rounded-2xl shadow-2xl overflow-hidden z-50 divide-y divide-slate-800">
+                {searchResults.length > 0 && (
+                  <div className="max-h-56 overflow-y-auto">
+                    {searchResults.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleSelectLocation(item.id)}
+                        className="w-full px-3 py-2 text-left hover:bg-cyan-500/10 flex items-center justify-between text-xs text-slate-200 transition-colors cursor-pointer group"
+                      >
+                        <div className="flex items-center gap-2">
+                          <MapPin className="w-3.5 h-3.5 text-cyan-400 group-hover:scale-110 transition-transform" />
+                          <span className="font-bold text-white">{item.name}</span>
+                          <span className="text-[10px] text-slate-400">({item.region || item.country})</span>
+                        </div>
+                        <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-slate-800 text-cyan-300">
+                          {item.badge || "Verified"}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* Live Wikipedia Global AI Search Action */}
+                <button
+                  onClick={() => handleSearchGlobalAI(searchQuery)}
+                  disabled={isSearchingAI}
+                  className="w-full px-3.5 py-2.5 bg-gradient-to-r from-cyan-950/60 to-blue-950/60 hover:from-cyan-900/80 hover:to-blue-900/80 text-left flex items-center justify-between text-xs text-cyan-300 cursor-pointer font-mono font-bold"
+                >
+                  <div className="flex items-center gap-2">
+                    {isSearchingAI ? (
+                      <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                    )}
+                    <span>
+                      {isSearchingAI ? `Fetching real photos for "${searchQuery}"...` : `Search Global AI for "${searchQuery}"`}
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-cyan-400">Live Wikipedia Intel</span>
+                </button>
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* Scrollable Location Chips for the Active Category */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar pt-1">
+          {activeCategoryList.map((item) => {
+            const isSelected = selectedLocId === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => handleSelectLocation(item.id)}
+                className={`px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                  isSelected
+                    ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/25 scale-105"
+                    : "bg-[#070e1c] text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800"
+                }`}
+              >
+                {item.name}
+              </button>
+            );
+          })}
         </div>
 
       </div>

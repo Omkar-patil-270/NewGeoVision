@@ -405,36 +405,9 @@ export const StackedStoryCardsStudio = () => {
           </div>
         </div>
 
-        {/* Global Search & Category Tabs Navigation Bar */}
-        <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 pt-1">
-          
-          {/* Category Tabs Switcher */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar shrink-0">
-            {[
-              { id: "districts", label: "📍 Districts (9)" },
-              { id: "talukas", label: "🏛️ Talukas (20+)" },
-              { id: "states", label: "🗺️ States & Nations" },
-              { id: "global", label: "🌍 Global Metros" }
-            ].map((tab) => {
-              const isTabActive = activeCategoryTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveCategoryTab(tab.id)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
-                    isTabActive
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-md shadow-cyan-500/20"
-                      : "bg-[#060c18] text-slate-400 hover:text-white border border-slate-800 hover:border-slate-700"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Real-time Global Search Input with AI Autocomplete */}
-          <div ref={searchRef} className="relative flex-1 max-w-md">
+        {/* Real-time Global Search Input with AI Autocomplete */}
+        <div className="w-full pt-1 flex items-center justify-center">
+          <div ref={searchRef} className="relative w-full max-w-xl">
             <div className="relative flex items-center">
               <Search className="w-4 h-4 text-cyan-400 absolute left-3 pointer-events-none" />
               <input

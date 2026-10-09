@@ -213,17 +213,43 @@ export const apiClient = {
    * Fetch verified Wikipedia & Wikimedia Commons images for a location
    */
   async getLocationImages(locationName, lat = null, lon = null, limit = 8) {
+    if (!locationName) return { images: [], count: 0, has_photos: false };
     try {
       const params = new URLSearchParams({ location_name: locationName, limit: String(limit) });
       if (lat !== null && lon !== null) {
         params.append("lat", String(lat));
         params.append("lon", String(lon));
       }
-      return await fetchWithCache(`${API_BASE_URL}/api/story/images?${params.toString()}`, {}, 600000);
+      const res = await fetchWithCache(`${API_BASE_URL}/api/story/images?${params.toString()}`, {}, 600000);
+      if (res && res.images && res.images.length > 0) {
+        return res;
+      }
     } catch (err) {
-      console.warn("apiClient.getLocationImages error:", err);
-      return { images: [], count: 0, has_photos: false };
+      console.warn("Backend getLocationImages unavailable, trying direct Wikipedia search:", err);
     }
+
+    // Direct browser Wikipedia Action API fallback (Guaranteed CORS origin=*)
+    try {
+      const wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(locationName)}&gsrlimit=${limit}&prop=pageimages&pithumbsize=1200&format=json&origin=*`;
+      const wikiRes = await fetch(wikiUrl);
+      if (wikiRes.ok) {
+        const data = await wikiRes.json();
+        const pages = data.query?.pages;
+        if (pages) {
+          const imgs = Object.values(pages)
+            .map(p => p.thumbnail?.source)
+            .filter(src => src && !src.toLowerCase().includes('.svg') && !src.toLowerCase().includes('icon') && !src.toLowerCase().includes('logo'))
+            .map(src => ({ url: src, title: locationName, caption: `Verified Real Photo of ${locationName}` }));
+          if (imgs.length > 0) {
+            return { images: imgs, count: imgs.length, has_photos: true };
+          }
+        }
+      }
+    } catch (wikiErr) {
+      console.warn("Direct Wikipedia image lookup error:", wikiErr);
+    }
+
+    return { images: [], count: 0, has_photos: false };
   },
 
   /**

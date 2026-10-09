@@ -320,7 +320,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
   // Active cover image (Real Wikipedia image first, then fallback)
   const activeCoverImage = realPhotos.length > 0 
     ? realPhotos[0].url 
-    : (currentLocation?.bannerImage || "https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1600&q=80");
+    : (currentLocation?.bannerImage || "/images/kolhapur/panchganga_ghat.jpg");
 
   return (
     <div className="w-full max-w-3xl mx-auto relative z-30" ref={searchContainerRef}>

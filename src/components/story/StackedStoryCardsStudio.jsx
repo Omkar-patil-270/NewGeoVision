@@ -9,6 +9,8 @@ import {
   Layers, Clock, Compass as CompassIcon, SlidersHorizontal
 } from 'lucide-react';
 
+import { getStoryCardsForCity } from '../../data/storyLocationData';
+
 export const StackedStoryCardsStudio = () => {
   const { currentLocation, selectLocation, playNarration, stopAudio } = useApp();
   const allLocations = locationService.getAllLocations();
@@ -43,246 +45,10 @@ export const StackedStoryCardsStudio = () => {
     setIsSpeaking(false);
   };
 
-  // 100% AUTHENTIC REAL LOCAL PHOTOGRAPHS FOR KOLHAPUR
-  const kolhapurPhotos = {
-    mahalaxmi: "/images/kolhapur/mahalaxmi_temple.jpg",
-    panhala: "/images/kolhapur/panhala_fort.jpg",
-    panhalaView: "/images/kolhapur/panhala_view.jpg",
-    newPalace: "/images/kolhapur/new_palace.jpg",
-    rankala: "/images/kolhapur/rankala_lake.jpg",
-    bhavaniMandap: "/images/kolhapur/bhavani_mandap.jpg",
-    shahuMaharaj: "/images/kolhapur/shahu_maharaj.jpg",
-    misal: "/images/kolhapur/kolhapuri_misal.jpg",
-    chappals: "/images/kolhapur/kolhapuri_chappals.jpg",
-    panchganga: "/images/kolhapur/panchganga_ghat.jpg",
-    kusti: "/images/kolhapur/kusti_akhada.jpg"
-  };
-
-  // Base 7 Curated Story Cards with Real Photos & Authentic Facts
+  // Dynamically compute base story cards for the selected location (Kolhapur, Mumbai, Tokyo, Paris, etc.)
   const baseStoryCards = useMemo(() => {
-    return [
-      {
-        id: "history",
-        category: "History & Royalty",
-        categoryKey: "history",
-        categoryIcon: Landmark,
-        pillLabel: "History",
-        badge: "1,300-Year Heritage",
-        title: "Sovereigns, Social Equality & The Karveer Throne",
-        subtitle: "From ancient Shilahara kings to the revolutionary socialist governance of Rajarshi Shahu Maharaj.",
-        era: "royal",
-        image: kolhapurPhotos.bhavaniMandap,
-        imageCaption: "Historic Bhavani Mandap & Royal Maratha Court, Kolhapur (Real Photo)",
-        narratives: {
-          default: `Documented as 'Karveer' in classical Sanskrit epics, Kolhapur is one of India's most celebrated royal cities. In 1707, Maharani Tarabai established the independent Kolhapur seat of the Maratha dynasty, crafting an enduring legacy of chivalry and independence.\n\nThe city's greatest golden era emerged under Rajarshi Chhatrapati Shahu Maharaj (1874–1922). A visionary philosopher king, Shahu Maharaj issued the world's first affirmative-action reservation decree in 1902, abolished caste segregation, funded free primary schooling for all children, and built the historic red-soil wrestling talims that still train India's champions today.`,
-          traveler: `When visiting Kolhapur's historic quarter, begin your walk at Bhavani Mandap, situated right beside the royal palace complex. Here you'll see the life-size statue of Maharani Tarabai and preserved royal weaponry. Combined with the nearby New Palace, it offers a complete journey into 300 years of Maratha royal history.`,
-          foodie: `The royal courts of Kolhapur were renowned for their opulent culinary feasts. Royal chefs refined the art of slow-cooked Deccan mutton dishes, crafting the iconic Tambda and Pandhra Rassa specifically for royal banquets and wrestling celebrations hosted by the Maharaja.`,
-          history: `Historical inscriptions prove Kolhapur's origin dates back to the 7th-century Shilahara and Rashtrakuta dynasties. In 1902, Rajarshi Shahu Maharaj revolutionized Indian governance by reserving 50% of state administrative posts for backward communities—the first affirmative action policy in modern history.`,
-          nature: `Kolhapur's historic settlement was deliberately chosen for its pristine location on the banks of the Panchganga river and natural water harvesting lakes like Rankala, designed to support both agrarian abundance and military defense.`
-        },
-        highlights: [
-          "Ancient capital founded over 1,300 years ago",
-          "Pioneered world's 1st social reservation policy in 1902",
-          "Seat of Maharani Tarabai & Rajarshi Chhatrapati Shahu Maharaj"
-        ]
-      },
-      {
-        id: "tourist",
-        category: "Famous Tourist Places",
-        categoryKey: "tourist",
-        categoryIcon: Camera,
-        pillLabel: "Tourist Places",
-        badge: "Must-Visit Attractions",
-        title: "Sacred Temples, Hilltop Citadels & Royal Palaces",
-        subtitle: "Explore Kolhapur's iconic landmarks with verified authentic photography.",
-        era: "ancient",
-        gallery: [
-          {
-            title: "Sri Ambabai Mahalaxmi Temple",
-            desc: "7th-century Hemadpanthi architectural marvel & sacred Maha Shakti Peetha.",
-            image: kolhapurPhotos.mahalaxmi,
-            caption: "Real Photo: Sri Mahalaxmi Temple, Kolhapur"
-          },
-          {
-            title: "Panhala Fort (Hill Citadel)",
-            desc: "Strategic mountain fort where Chhatrapati Shivaji Maharaj escaped the siege.",
-            image: kolhapurPhotos.panhala,
-            caption: "Real Photo: Panhala Fort Ramparts & Valley View"
-          },
-          {
-            title: "New Palace & Shahu Museum",
-            desc: "Victorian Indo-Saracenic palace holding authentic Maratha royal armory.",
-            image: kolhapurPhotos.newPalace,
-            caption: "Real Photo: Royal New Palace, Kolhapur"
-          },
-          {
-            title: "Rankala Lake & Shalini Palace",
-            desc: "Scenic 9th-century quarry lake featuring the submerged stone Sandhya Math.",
-            image: kolhapurPhotos.rankala,
-            caption: "Real Photo: Rankala Lake Sunset Promenade"
-          }
-        ],
-        narratives: {
-          default: `Kolhapur is packed with world-renowned sights. Begin your morning at Sri Ambabai (Mahalaxmi) Temple, constructed in the 7th century using basalt stone without mortar. Twice each year during the Kiranotsav festival, the setting sun aligns directly onto the deity's idol.\n\nTake a scenic 20-minute drive into the misty Sahyadris to Panhala Fort, perched 3,000 feet above the valley with massive granaries and secret escape corridors. Conclude your evening at the historic Rankala Lake promenade, admiring the sunset reflection of Shalini Palace.`,
-          traveler: `For tourists, visit Mahalaxmi temple early between 6:00 AM and 8:30 AM for peaceful darshan. Head to Panhala Fort before noon for clear panoramic valley views from Sajja Kothi. Spend sunset at Rankala Lake promenade, which features evening boat rides and delicious street snacks!`,
-          foodie: `Each tourist attraction has legendary food spots next door! Right outside Mahalaxmi Temple's Mahadwar gate, try authentic local Bhadang and hot Poha. At Rankala Lake's Chowpatty, sample Bhel and freshly pressed sugarcane juice!`,
-          history: `Panhala Fort was the strategic seat of the Maratha Empire and features the legendary Sajja Kothi, where Sambhaji Maharaj was stationed. The New Palace, completed in 1884 by British architect Charles Mant, preserves authentic royal swords, cannons, and letters.`,
-          nature: `Rankala Lake covers over 260 acres and attracts migratory aquatic birds during the winter. Panhala Fort sits within dense Sahyadri hill forests, offering crisp mountain air and cool subtropical mist year-round.`
-        },
-        highlights: [
-          "Mahalaxmi Temple (7th-century Shakti Peeth with Kiranotsav)",
-          "Panhala Fort (3,000 ft mountain ramparts & Sajja Kothi)",
-          "Rankala Lake (260-acre promenade with Sandhya Math)"
-        ]
-      },
-      {
-        id: "food",
-        category: "Famous Food & Delicacies",
-        categoryKey: "food",
-        categoryIcon: Utensils,
-        pillLabel: "Famous Food",
-        badge: "Legendary Culinary Heritage",
-        title: "Tambda Rassa, Pandhra Rassa & Authentic Kolhapuri Misal",
-        subtitle: "Deccan spices, slow-simmered broths, and authentic fiery misal pav.",
-        era: "modern",
-        foodGallery: [
-          {
-            name: "Authentic Kolhapuri Misal Pav",
-            tag: "World-Famous Breakfast",
-            desc: "Sprouted moth beans in fiery 'kat' gravy, garnished with farsan, onions, and fresh lemon.",
-            image: kolhapurPhotos.misal,
-            caption: "Real Photo: Authentic Kolhapuri Misal Pav"
-          },
-          {
-            name: "Tambda Rassa (Red Mutton Broth)",
-            tag: "Fiery Deccan Broth",
-            desc: "Aromatic red soup simmered with mutton stock, Lavangi chilies, and 32 hand-ground spices.",
-            image: kolhapurPhotos.panchganga,
-            caption: "Real Photo: Authentic Kolhapuri Culinary Tradition"
-          },
-          {
-            name: "Pure Cane Jaggery (Kolhapuri Gul)",
-            tag: "GI-Tagged Sweetness",
-            desc: "Golden jaggery handcrafted in boiling pans along the fertile Panchganga sugarcane basin.",
-            image: kolhapurPhotos.bhavaniMandap,
-            caption: "Real Photo: Kolhapur Jaggery Market & Heritage"
-          }
-        ],
-        narratives: {
-          default: `Nowhere in India does food command as much passion as in Kolhapur! The dual broths are its crowning culinary jewel: Tambda Rassa (a fiery red soup simmered with 32 secret spices) and Pandhra Rassa (a silky coconut milk broth that soothes the spices).\n\nFor breakfast, Kolhapuri Misal reigns supreme. Unlike sweeter misals elsewhere, authentic Kolhapuri misal is served with spicy 'kat' poured over sprouted moth beans, topped with crisp farsan and fresh lemon. Wash it down with sweet sugarcane juice crafted from local jaggery cane!`,
-          traveler: `Must-visit food stops in Kolhapur: Head to Phadtare Misal or Bawda Misal for an unbeatable morning breakfast. For lunch or dinner, visit authentic Thali destinations like Hotel Opal or Dehati to experience the legendary Tambda and Pandhra Rassa unlimited service!`,
-          foodie: `The secret of Kolhapuri Misal is the 'Kanda-Lasun Masala' (onion-garlic masala) roasted on heavy iron griddles. The Pandhra Rassa uses white mutton bone stock emulsified with coconut milk, poppy seeds (khus khus), and white pepper—producing a velvety soup that balances heat perfectly.`,
-          history: `Kolhapur's spicy culinary tradition developed alongside its wrestling culture. High-protein mutton broths and pure unrefined sugarcane jaggery provided the immense stamina needed by pehlwans training in red-soil wrestling talims.`,
-          nature: `The fertile alluvial soils of the Panchganga river basin produce India's finest sugarcane and pungent Lavangi chilies, giving Kolhapuri cuisine its signature natural flavors.`
-        },
-        highlights: [
-          "Kolhapuri Misal: Sprouted moth beans with fiery 'kat' broth",
-          "Tambda & Pandhra Rassa: Iconic red and white mutton soups",
-          "Kolhapuri Gul: Famous GI-tagged golden sugarcane jaggery"
-        ]
-      },
-      {
-        id: "governance",
-        category: "City Administration & Mayor",
-        categoryKey: "governance",
-        categoryIcon: Building2,
-        pillLabel: "City & Mayor",
-        badge: "Municipal Governance",
-        title: "Kolhapur Municipal Corporation (KMC) & Smart City Civic Life",
-        subtitle: "From historic royal welfare councils to 21st-century digital smart governance.",
-        era: "modern",
-        image: kolhapurPhotos.newPalace,
-        imageCaption: "Kolhapur Civic Administration & Heritage Town Center (Real Photo)",
-        narratives: {
-          default: `Civic management in Kolhapur is governed by the Kolhapur Municipal Corporation (KMC), established to deliver high-quality public services across 81 municipal wards.\n\nHeaded by the First Citizen Mayor and Municipal Commissioner, the KMC manages city water filtration from the Panchganga river, rapid road connectivity, underground drainage, and heritage conservation of ancient stone structures like Bhavani Mandap and Rankala Lake.`,
-          traveler: `Civic authorities in Kolhapur maintain clean tourist corridors, dedicated battery car shuttles around Mahalaxmi Temple, well-lit pedestrian pathways at Rankala Lake, and multiple tourist information kiosks for visiting families.`,
-          foodie: `KMC health and sanitation inspectors work closely with the Food Safety and Standards Authority (FSSAI) to certify clean street food hubs around Rankala Chowpatty and Mahadwar road, ensuring hygienic street food experiences.`,
-          history: `Modern civic governance in Kolhapur owes its foundation to Rajarshi Shahu Maharaj, who established India's first cooperative societies, built the historic Radhanagari dam for urban water security, and created modern municipal town planning in 1895.`,
-          nature: `The Municipal Corporation has spearheaded the Panchganga River Rejuvenation Mission, installing decentralized sewage treatment plants (STPs) and creating urban tree plantations along the ring road.`
-        },
-        highlights: [
-          "81 Municipal Wards managed by KMC",
-          "Radhanagari Dam supplies 100% clean urban drinking water",
-          "Smart City heritage conservation for temples and lakes"
-        ]
-      },
-      {
-        id: "culture",
-        category: "Population & Culture",
-        categoryKey: "culture",
-        categoryIcon: Users,
-        pillLabel: "Population",
-        badge: "3.85 Million Residents",
-        title: "Red-Soil Wrestling Talims, Bheeda & Deccan Warmth",
-        subtitle: "Home to India's wrestling capital, folk Lavani, and heartwarming community hospitality.",
-        era: "royal",
-        image: kolhapurPhotos.kusti,
-        imageCaption: "Authentic Red-Soil Wrestling Talim (Kushti Akhada), Kolhapur (Real Photo)",
-        narratives: {
-          default: `Kolhapur is home to approximately 3.85 Million residents across the district. Known throughout India as the 'Cradle of Wrestling' (Kustiche Maherghar), the city houses dozens of historic red-soil wrestling talims (Motibagh, Gangavesh, Shahupuri).\n\nThe culture of Kolhapur is defined by 'Bheeda'—a proud, warm-hearted camaraderie where locals treat visitors like family. From vibrant Ganeshotsav dhol-tasha beats to rural jatra folk fairs, life in Kolhapur is celebratory and deeply unified.`,
-          traveler: `Visitors are welcome to quietly observe morning training at Gangavesh Talim or Motibagh Talim between 6:00 AM and 7:30 AM. Seeing young pehlwans training on sacred red soil mixed with turmeric, curd, and pure ghee is an unforgettable cultural experience!`,
-          foodie: `Wrestlers in Kolhapur consume a legendary high-protein diet: 4 to 5 liters of whole buffalo milk, soaked almonds, pure jaggery, and mutton broth daily. This dietary tradition anchors the city's obsession with fresh dairy and hearty meats.`,
-          history: `Rajarshi Shahu Maharaj gave wrestling royal patronage by building the Khasbag Maidan in 1912—one of Asia's largest wrestling arenas, capable of seating 30,000 spectators for traditional bouts.`,
-          nature: `The connection between human culture and the soil is literal here: the red soil in wrestling akhadas is carefully sifted, treated with natural herbs, and revered as mother earth by thousands of athletes.`
-        },
-        highlights: [
-          "Wrestling Capital of India (Historic Gangavesh & Motibagh Talims)",
-          "Khasbag Maidan: 30,000-capacity royal wrestling colosseum",
-          "Legendary 'Kolhapuri Bheeda' warm community hospitality"
-        ]
-      },
-      {
-        id: "nature",
-        category: "Greenery & Nature",
-        categoryKey: "nature",
-        categoryIcon: Trees,
-        pillLabel: "Greenery",
-        badge: "Western Ghats Corridor",
-        title: "Panchganga River Basin & Sahyadri Forest Canopies",
-        subtitle: "Lush biodiversity, fertile sugarcane corridors, and the Radhanagari wildlife sanctuary.",
-        era: "ancient",
-        image: kolhapurPhotos.panchganga,
-        imageCaption: "Historic Panchganga River Ghats & Water Corridor, Kolhapur (Real Photo)",
-        narratives: {
-          default: `Situated in the fertile rain shadow of the Western Ghats (Sahyadris), Kolhapur enjoys a rich natural landscape. The Panchganga river—formed by the confluence of five sacred streams (Kumbhi, Kasari, Bhogavati, Tulsi, and Saraswati)—winds gracefully through the city.\n\nJust 45 km to the southwest lies the Radhanagari Wildlife Sanctuary, a UNESCO World Heritage biodiversity hotspot home to the majestic Indian Bison (Gaur), leopards, hornbills, and dense semi-evergreen monsoon rainforests.`,
-          traveler: `Nature lovers should take day trips to Radhanagari Wildlife Sanctuary to see Indian Gaurs grazing in misty meadows, or drive up to Panhala Fort during the monsoon to see cascading seasonal waterfalls along the hills.`,
-          foodie: `The nutrient-rich black cotton soils deposited by the Panchganga river make Kolhapur the sugar bowl of India, yielding thick sugarcane that fuels the region's famous jaggery industry.`,
-          history: `The Panchganga river ghats have served as sacred bathing and prayer steps for over a thousand years. Ancient Hemadpanthi stone temples still line the water's edge, creating a timeless riverside skyline.`,
-          nature: `Kolhapur's natural ecosystem features over 1,200 flowering plant species, 250 bird species, and vital tiger corridors connecting Maharashtra with Karnataka through the Western Ghats.`
-        },
-        highlights: [
-          "Panchganga River: Confluence of 5 sacred Sahyadri streams",
-          "Radhanagari Sanctuary: World-heritage Indian Bison habitat",
-          "Lush monsoon waterfalls and pleasant subtropical climate"
-        ]
-      },
-      {
-        id: "visit",
-        category: "Why You Should Visit",
-        categoryKey: "visit",
-        categoryIcon: Compass,
-        pillLabel: "Why Visit",
-        badge: "Travel Guide",
-        title: "Handcrafted Chappals, Sacred Blessings & Scenic Roads",
-        subtitle: "Everything you need to know to plan an unforgettable journey to Kolhapur.",
-        era: "modern",
-        image: kolhapurPhotos.chappals,
-        imageCaption: "Authentic Handcrafted Kolhapuri Chappals in Local Bazaar (Real Photo)",
-        narratives: {
-          default: `Kolhapur is one of Maharashtra's most rewarding travel destinations, combining spiritual sanctity, royal Maratha heritage, unmatched food, and world-class craft shopping.\n\nNo trip is complete without shopping for authentic GI-tagged Kolhapuri Chappals—handcrafted by master leather artisans in narrow lanes around Chappal Line and Shivaji Market—and traditional Kolhapuri Saaj gold jewelry. The ideal time to visit is from October to March when pleasant winter weather makes sightseeing delightful.`,
-          traveler: `Getting to Kolhapur: Located directly on the 6-lane National Highway 48 (NH-48), it is a smooth 4-hour drive from Pune (230 km) and 7 hours from Mumbai (380 km). The city also has direct express trains and Chhatrapati Rajaram Maharaj Airport (KLH) with daily flights.`,
-          foodie: `A 2-day foodie itinerary: Day 1 breakfast at Phadtare Misal, lunch of Tambda-Pandhra rassa at Hotel Opal, evening Rankala street bhel. Day 2 breakfast at Bawda Misal, afternoon mutton thali at Dehati, and taking home Kolhapuri jaggery and roasted spicy thecha!`,
-          history: `Combine your visit with heritage stops: spend half a day at Bhavani Mandap and New Palace, take a guided audio tour of Mahalaxmi Temple, and hike up to Panhala Fort to witness the defensive architecture of Maratha citadels.`,
-          nature: `Plan your trip during the post-monsoon months (October–December) to see the surrounding Sahyadri hills in emerald green with roaring streams and cool morning breezes.`
-        },
-        highlights: [
-          "GI-Tagged Kolhapuri Chappals & authentic Kolhapuri Saaj gold",
-          "Best season: October to March (Pleasant winter weather)",
-          "Seamless access via 6-lane NH-48 Highway, Railway & Airport"
-        ]
-      }
-    ];
-  }, [kolhapurPhotos]);
+    return getStoryCardsForCity(selectedLocId, loc);
+  }, [selectedLocId, loc]);
 
   // Dynamically Filtered Story Cards based on Category Filter
   const filteredCards = useMemo(() => {
@@ -384,23 +150,31 @@ export const StackedStoryCardsStudio = () => {
             </p>
           </div>
 
-          {/* Quick City Switcher */}
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#070e1c] border border-slate-800 text-xs font-mono">
-            {["kolhapur", "mumbai", "pune"].map((cityId) => {
-              const c = allLocations.find(l => l.id === cityId);
-              if (!c) return null;
-              const isSelected = selectedLocId === cityId;
+          {/* Quick City Switcher: Regional & Global */}
+          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#070e1c] border border-slate-800 text-xs font-mono flex-wrap">
+            <span className="text-[10px] text-slate-500 uppercase px-1 font-bold">City:</span>
+            {[
+              { id: "kolhapur", label: "Kolhapur ⭐" },
+              { id: "mumbai", label: "Mumbai" },
+              { id: "pune", label: "Pune" },
+              { id: "delhi", label: "Delhi" },
+              { id: "tokyo", label: "Tokyo 🇯🇵" },
+              { id: "paris", label: "Paris 🇫🇷" },
+              { id: "london", label: "London 🇬🇧" },
+              { id: "new-york", label: "New York 🇺🇸" }
+            ].map((city) => {
+              const isSelected = selectedLocId === city.id;
               return (
                 <button
-                  key={cityId}
-                  onClick={() => handleSelectLocation(cityId)}
-                  className={`px-3 py-1 rounded-xl transition-all cursor-pointer font-bold ${
+                  key={city.id}
+                  onClick={() => handleSelectLocation(city.id)}
+                  className={`px-2.5 py-1 rounded-xl transition-all cursor-pointer font-bold ${
                     isSelected
                       ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/20"
-                      : "text-slate-400 hover:text-white"
+                      : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                   }`}
                 >
-                  {c.name}
+                  {city.label}
                 </button>
               );
             })}

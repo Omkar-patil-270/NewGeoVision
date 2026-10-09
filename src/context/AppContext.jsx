@@ -17,7 +17,13 @@ export const AppProvider = ({ children }) => {
   // 'story', 'historical', 'guide', 'legend', 'culture', 'tourism', 'environment', 'economy', 'future'
 
   // Navigation Route
-  const [currentPage, setCurrentPage] = useState("home"); 
+  const [currentPage, setCurrentPage] = useState(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('page') || "home";
+    } catch {
+      return "home";
+    }
+  }); 
   // 'home', 'explore', 'location', 'story', 'intelligence', 'predictions', 'tourism', 'compare', 'saved', 'photo', 'about'
 
   // 3D Earth GIS Layers
@@ -46,7 +52,13 @@ export const AppProvider = ({ children }) => {
   const [compareLocations, setCompareLocations] = useState(["kolhapur", "pune"]);
 
   // Floating GeoAI Chatbot State
-  const [geoAIChatOpen, setGeoAIChatOpen] = useState(false);
+  const [geoAIChatOpen, setGeoAIChatOpen] = useState(() => {
+    try {
+      return new URLSearchParams(window.location.search).get('chat') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // Omni-search modal
   const [searchModalOpen, setSearchModalOpen] = useState(false);

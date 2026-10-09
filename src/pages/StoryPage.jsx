@@ -1,10 +1,10 @@
 import React from 'react';
-import { FilterWiseStoryStudio } from '../components/story/FilterWiseStoryStudio';
+import { KeplerStudio } from '../components/kepler/KeplerStudio';
 
 export const StoryPage = () => {
   return (
-    <div className="min-h-screen bg-[#0d0f12] text-zinc-100">
-      <FilterWiseStoryStudio />
+    <div className="w-full h-full bg-[#070b12] text-slate-100 overflow-hidden">
+      <KeplerStudio />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
+import { KeplerStudio } from '../components/kepler/KeplerStudio';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { AIChangeDetectionSplit } from '../components/visual/AIChangeDetectionSplit';
 import { locationService } from '../services/locationService';
@@ -21,7 +22,7 @@ export const ExplorePage = () => {
     setGeoAIChatOpen
   } = useApp();
 
-  const [activeViewMode, setActiveViewMode] = useState("globe"); // "globe" (default 3D Earth) or "change"
+  const [activeViewMode, setActiveViewMode] = useState("kepler"); // "kepler" (default) | "globe" | "change"
   const [searchQuery, setSearchQuery] = useState("");
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
@@ -90,8 +91,19 @@ export const ExplorePage = () => {
 
 
 
-        {/* Center: View Switcher (3D Earth Globe vs Change Detection) */}
+        {/* Center: View Switcher (Kepler 3D Studio vs 3D Earth Globe vs Change Detection) */}
         <div className="flex items-center gap-1 p-1 rounded-2xl bg-[#030614] border border-slate-800 text-xs font-mono font-bold shadow-md">
+          <button
+            onClick={() => setActiveViewMode("kepler")}
+            className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeViewMode === "kepler"
+                ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-black font-bold shadow-md shadow-cyan-500/20"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            <span>⬡ Kepler 3D Studio</span>
+          </button>
+
           <button
             onClick={() => setActiveViewMode("globe")}
             className={`px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
@@ -135,17 +147,19 @@ export const ExplorePage = () => {
             <span>AI Geo-Agent</span>
           </button>
 
-          <button
-            onClick={() => setPanelOpen(!panelOpen)}
-            className={`p-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
-              panelOpen 
-                ? "bg-slate-800 text-white border-slate-700" 
-                : "bg-slate-900 text-slate-400 border-slate-800 hover:text-white"
-            }`}
-            title="Toggle Right Intelligence Drawer"
-          >
-            <Activity className="w-4 h-4" />
-          </button>
+          {activeViewMode !== "kepler" && (
+            <button
+              onClick={() => setPanelOpen(!panelOpen)}
+              className={`p-1.5 rounded-xl border text-xs font-mono transition-colors cursor-pointer ${
+                panelOpen 
+                  ? "bg-slate-800 text-white border-slate-700" 
+                  : "bg-slate-900 text-slate-400 border-slate-800 hover:text-white"
+              }`}
+              title="Toggle Right Intelligence Drawer"
+            >
+              <Activity className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
       </div>
@@ -153,8 +167,12 @@ export const ExplorePage = () => {
       {/* ================= 2. MAIN 3D EARTH GLOBE / VISUAL CANVAS ================= */}
       <div className="relative flex-1 w-full overflow-hidden">
         
-        {/* Full-Screen Interactive 3D Earth Globe or Change Detection Split */}
-        {activeViewMode === "globe" ? (
+        {/* Full-Screen Interactive Kepler Studio, 3D Earth Globe, or Change Detection Split */}
+        {activeViewMode === "kepler" ? (
+          <div className="absolute inset-0 w-full h-full z-0">
+            <KeplerStudio initialLocation={currentLocation} />
+          </div>
+        ) : activeViewMode === "globe" ? (
           <div className="absolute inset-0 w-full h-full z-0">
             <Earth3DViewer 
               fullBleed={true}
@@ -171,52 +189,54 @@ export const ExplorePage = () => {
           </div>
         )}
 
-        {/* Floating Quick Fly Pills & Search Bar (Centered at Top) */}
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
-          <div className="pointer-events-auto flex flex-col items-center gap-1.5">
-            <form 
-              onSubmit={handleSearchSubmit}
-              className="w-full flex items-center rounded-full bg-black/85 backdrop-blur-md border border-cyan-500/40 hover:border-cyan-400 px-3.5 py-1.5 shadow-2xl transition-all"
-            >
-              <Search className="w-3.5 h-3.5 text-cyan-400 mr-2 shrink-0" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search global destination or coordinates..."
-                className="w-full bg-transparent text-xs text-white placeholder:text-slate-500 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="px-3 py-1 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2 cursor-pointer"
+        {/* Floating Quick Fly Pills & Search Bar (Only shown on non-Kepler modes) */}
+        {activeViewMode !== "kepler" && (
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-20 w-full max-w-lg px-4 pointer-events-none">
+            <div className="pointer-events-auto flex flex-col items-center gap-1.5">
+              <form 
+                onSubmit={handleSearchSubmit}
+                className="w-full flex items-center rounded-full bg-black/85 backdrop-blur-md border border-cyan-500/40 hover:border-cyan-400 px-3.5 py-1.5 shadow-2xl transition-all"
               >
-                {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Analyze"}
-              </button>
-            </form>
+                <Search className="w-3.5 h-3.5 text-cyan-400 mr-2 shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search global destination or coordinates..."
+                  className="w-full bg-transparent text-xs text-white placeholder:text-slate-500 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-1 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-[11px] font-mono uppercase tracking-wider shrink-0 ml-2 cursor-pointer"
+                >
+                  {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Analyze"}
+                </button>
+              </form>
 
-            <div className="flex flex-wrap items-center justify-center gap-1 text-[10px] font-mono">
-              {quickFlyList.slice(0, 6).map((c) => {
-                const isCurrent = currentLocation.name.toLowerCase() === c.toLowerCase();
-                return (
-                  <button
-                    key={c}
-                    onClick={() => handleQuickFly(c)}
-                    className={`px-2.5 py-0.5 rounded-full transition-all backdrop-blur-md cursor-pointer ${
-                      isCurrent
-                        ? 'bg-cyan-500 text-black font-bold border border-cyan-400 shadow-md shadow-cyan-500/25'
-                        : 'bg-black/60 text-slate-300 border border-slate-800 hover:text-white'
-                    }`}
-                  >
-                    {c}
-                  </button>
-                );
-              })}
+              <div className="flex flex-wrap items-center justify-center gap-1 text-[10px] font-mono">
+                {quickFlyList.slice(0, 6).map((c) => {
+                  const isCurrent = currentLocation.name.toLowerCase() === c.toLowerCase();
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => handleQuickFly(c)}
+                      className={`px-2.5 py-0.5 rounded-full transition-all backdrop-blur-md cursor-pointer ${
+                        isCurrent
+                          ? 'bg-cyan-500 text-black font-bold border border-cyan-400 shadow-md shadow-cyan-500/25'
+                          : 'bg-black/60 text-slate-300 border border-slate-800 hover:text-white'
+                      }`}
+                    >
+                      {c}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* ================= 3. USER-FRIENDLY RIGHT INTELLIGENCE DRAWER ================= */}
-        {panelOpen && (
+        {activeViewMode !== "kepler" && panelOpen && (
           <div className="absolute top-3 right-4 bottom-4 z-20 w-80 sm:w-96 rounded-3xl bg-[#060D1E]/95 backdrop-blur-2xl border-2 border-cyan-500/40 shadow-2xl flex flex-col overflow-hidden text-xs">
             
             {/* Panel Header */}

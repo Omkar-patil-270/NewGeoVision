@@ -14,6 +14,7 @@ import { LocationPage } from './pages/LocationPage';
 import { StoryPage } from './pages/StoryPage';
 import { IntelligencePage } from './pages/IntelligencePage';
 import { PredictionsPage } from './pages/PredictionsPage';
+import { ForecastPage } from './pages/ForecastPage';
 import { TourismPage } from './pages/TourismPage';
 import { ComparePage } from './pages/ComparePage';
 import { SavedPage } from './pages/SavedPage';
@@ -43,7 +44,7 @@ export const App = () => {
       case 'intelligence':
         return <IntelligencePage />;
       case 'predictions':
-        return <PredictionsPage />;
+        return <ForecastPage />;
       case 'tourism':
         return <TourismPage />;
       case 'compare':
@@ -68,7 +69,7 @@ export const App = () => {
       </main>
 
       {/* Warm Editorial Footer */}
-      {currentPage !== 'home' && currentPage !== 'explore' && currentPage !== 'globe' && <Footer />}
+      {currentPage !== 'home' && currentPage !== 'explore' && currentPage !== 'globe' && currentPage !== 'story' && <Footer />}
 
       {/* Floating Global Systems */}
       <GeoAIAssistant />

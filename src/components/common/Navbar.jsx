@@ -30,7 +30,7 @@ export const Navbar = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const isDark = currentPage === 'home' || currentPage === 'explore';
+  const isDark = currentPage === 'home' || currentPage === 'explore' || currentPage === 'story' || currentPage === 'globe';
 
   return (
     <header className={`sticky top-0 z-50 border-b transition-colors duration-300 ${

@@ -2,10 +2,12 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
 import { globalGeoAIService } from '../../services/globalGeoAIService';
+import { apiClient } from '../../services/apiClient';
 import { getStoryCardsForCity } from '../../data/storyLocationData';
 import { 
   ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
-  Search, MapPin, Navigation, Sparkles, Globe, Loader2, X
+  Search, MapPin, Navigation, Sparkles, Globe, Loader2, X,
+  Camera, Eye, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
 
 export const StackedStoryCardsStudio = () => {
@@ -17,6 +19,15 @@ export const StackedStoryCardsStudio = () => {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   const [activeFoodIndex, setActiveFoodIndex] = useState(0);
+
+  // Story Perspective Filter ('default' | 'traveler' | 'foodie' | 'history' | 'nature')
+  const [activeStoryFilter, setActiveStoryFilter] = useState('default');
+
+  // Categorized Photo Gallery Modal State
+  const [showCategorizedGallery, setShowCategorizedGallery] = useState(false);
+  const [galleryCategoryFilter, setGalleryCategoryFilter] = useState('all');
+  const [locationPhotoData, setLocationPhotoData] = useState(null);
+  const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
 
   // Category and Search States
   const [activeCategoryTab, setActiveCategoryTab] = useState("districts"); // 'talukas' | 'districts' | 'states' | 'global'
@@ -155,6 +166,24 @@ export const StackedStoryCardsStudio = () => {
     }
   };
 
+  // Load Categorized Real Photos from LocationImageService
+  useEffect(() => {
+    let active = true;
+    if (loc?.name) {
+      setIsLoadingPhotos(true);
+      apiClient.getCategorizedLocationImages(loc.name).then(data => {
+        if (active && data) {
+          setLocationPhotoData(data);
+        }
+      }).catch(err => {
+        console.warn("Failed loading categorized photos:", err);
+      }).finally(() => {
+        if (active) setIsLoadingPhotos(false);
+      });
+    }
+    return () => { active = false; };
+  }, [loc?.name]);
+
   // Auto-enrich any arbitrary location that doesn't have curated cards
   useEffect(() => {
     let active = true;
@@ -164,7 +193,7 @@ export const StackedStoryCardsStudio = () => {
     if (!isCurated && loc?.name) {
       setIsEnrichingDeck(true);
       globalGeoAIService.fetchCityIntel(loc.name).then(intel => {
-        if (active && intel && (intel.galleryImages?.length > 0 || intel.image)) {
+        if (active && intel && (intel.galleryImages?.length > 0 || intel.image || intel.categories)) {
           const deck = globalGeoAIService.generateDynamicStoryDeck(intel, { country: loc.country });
           setLiveEnrichedDeck(deck);
         }
@@ -192,11 +221,11 @@ export const StackedStoryCardsStudio = () => {
   // Active Story Card
   const currentCard = storyCards[activeCardIndex] || storyCards[0];
 
-  // Dynamic Narrative text
+  // Dynamic Narrative text with filter lens support
   const dynamicStoryText = useMemo(() => {
     if (!currentCard) return "";
-    return currentCard.narratives?.default || currentCard.desc || "";
-  }, [currentCard]);
+    return currentCard.narratives?.[activeStoryFilter] || currentCard.narratives?.default || currentCard.desc || "";
+  }, [currentCard, activeStoryFilter]);
 
   // Audio Playback via Web Speech API
   const handleToggleVoice = () => {
@@ -285,6 +314,15 @@ export const StackedStoryCardsStudio = () => {
                 <Navigation className="w-3.5 h-3.5 text-cyan-400" />
               )}
               <span>{isLocatingGPS ? "Locating..." : "My GPS"}</span>
+            </button>
+
+            <button
+              onClick={() => setShowCategorizedGallery(true)}
+              className="px-3 py-1.5 rounded-xl bg-[#091326] border border-amber-500/50 hover:bg-amber-950/40 text-amber-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+              title="Explore real photos categorized into 5 themes"
+            >
+              <Camera className="w-3.5 h-3.5 text-amber-400" />
+              <span>Photos {locationPhotoData?.totalImages ? `(${locationPhotoData.totalImages})` : ''}</span>
             </button>
 
             <button
@@ -678,6 +716,35 @@ export const StackedStoryCardsStudio = () => {
                   {/* Right Column: Story Narrative & Highlights */}
                   <div className="flex flex-col justify-between space-y-3 overflow-hidden">
                     
+                    {/* Filter-Based Story Perspective Switcher */}
+                    {isCenter && (
+                      <div className="flex items-center gap-1 overflow-x-auto pb-1 shrink-0 no-scrollbar">
+                        <span className="text-[10px] font-mono text-cyan-400 font-bold uppercase shrink-0 mr-1">Lens:</span>
+                        {[
+                          { id: 'default', label: '📖 Overview' },
+                          { id: 'traveler', label: '🧳 Traveler' },
+                          { id: 'foodie', label: '🍲 Foodie' },
+                          { id: 'history', label: '📜 History' },
+                          { id: 'nature', label: '🌿 Nature' }
+                        ].map(f => (
+                          <button
+                            key={f.id}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setActiveStoryFilter(f.id);
+                            }}
+                            className={`px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+                              activeStoryFilter === f.id
+                                ? "bg-cyan-500/30 text-cyan-200 border border-cyan-400 shadow-sm"
+                                : "bg-[#060c18] text-slate-400 hover:text-white border border-slate-800"
+                            }`}
+                          >
+                            {f.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
                     {/* Story Narrative */}
                     <div className="flex-1 overflow-y-auto pr-1 space-y-2">
                       <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans whitespace-pre-line">
@@ -735,6 +802,140 @@ export const StackedStoryCardsStudio = () => {
           })}
         </div>
       </div>
+
+      {/* ================= 4. CATEGORIZED REAL PHOTO GALLERY MODAL ================= */}
+      {showCategorizedGallery && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+          <div className="w-full max-w-5xl bg-[#091124] border border-cyan-500/40 rounded-3xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            
+            {/* Modal Header */}
+            <div className="p-4 sm:p-6 border-b border-slate-800 bg-[#070e1c] flex items-center justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <Camera className="w-5 h-5 text-amber-400" />
+                  <h2 className="text-lg sm:text-xl font-bold text-white">
+                    Real Photo Gallery: {loc.name}
+                  </h2>
+                </div>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Verified photographs across Google Places, Wikimedia Commons, Unsplash & Pexels
+                </p>
+              </div>
+              <button
+                onClick={() => setShowCategorizedGallery(false)}
+                className="p-2 rounded-2xl bg-[#0e172a] hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer border border-slate-800"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Category Filter Tabs */}
+            <div className="p-3 sm:px-6 bg-[#060b16] border-b border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
+              {[
+                { id: 'all', label: `🌟 All Categories (${locationPhotoData?.totalImages || 0})` },
+                { id: 'tourist_attractions', label: '🏛️ Tourist Attractions' },
+                { id: 'historical_places', label: '📜 Historical Places' },
+                { id: 'famous_food', label: '🍲 Famous Food' },
+                { id: 'nature_scenery', label: '🌲 Nature & Scenery' },
+                { id: 'local_culture', label: '🎭 Local Culture' }
+              ].map(catTab => (
+                <button
+                  key={catTab.id}
+                  onClick={() => setGalleryCategoryFilter(catTab.id)}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer whitespace-nowrap ${
+                    galleryCategoryFilter === catTab.id
+                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-sm"
+                      : "bg-[#091224] text-slate-400 hover:text-white border border-slate-800"
+                  }`}
+                >
+                  {catTab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Gallery Grid */}
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+              {isLoadingPhotos ? (
+                <div className="py-20 flex flex-col items-center justify-center gap-3">
+                  <Loader2 className="w-8 h-8 animate-spin text-cyan-400" />
+                  <span className="text-xs font-mono text-slate-400">Retrieving verified photos for {loc.name}...</span>
+                </div>
+              ) : (
+                (() => {
+                  const categoriesToDisplay = locationPhotoData?.categories?.filter(c => 
+                    galleryCategoryFilter === 'all' || c.id === galleryCategoryFilter
+                  ) || [];
+
+                  const allImages = categoriesToDisplay.flatMap(c => 
+                    (c.images || []).map(img => ({ ...img, categoryName: c.name }))
+                  );
+
+                  if (allImages.length === 0) {
+                    return (
+                      <div className="py-16 text-center text-slate-400 text-xs font-mono">
+                        No images found for this category. Try switching categories or selecting another location.
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                      {allImages.map((img, idx) => (
+                        <div
+                          key={idx}
+                          className="group relative rounded-2xl overflow-hidden bg-black/60 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col"
+                        >
+                          <div className="aspect-[16/10] w-full overflow-hidden relative">
+                            <img
+                              src={img.url}
+                              alt={img.title}
+                              loading="lazy"
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute top-2 left-2 flex items-center gap-1.5">
+                              <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[9px] font-mono text-cyan-300 border border-cyan-500/40">
+                                {img.source || "Verified"}
+                              </span>
+                              {img.placeVerified && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-[9px] font-mono text-emerald-300 border border-emerald-500/40">
+                                  ✓ Verified Place
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="p-3 bg-[#081020] flex-1 flex flex-col justify-between space-y-1">
+                            <div>
+                              <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold block">
+                                {img.categoryName || img.category}
+                              </span>
+                              <h4 className="text-xs font-bold text-white line-clamp-1">{img.title}</h4>
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-mono line-clamp-1 italic">
+                              {img.attribution || "Photo via Google Places / Wikimedia"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="p-3 sm:px-6 bg-[#070e1c] border-t border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
+              <span>Total: {locationPhotoData?.totalImages || 0} real photographs</span>
+              <button
+                onClick={() => setShowCategorizedGallery(false)}
+                className="px-4 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs transition-colors cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
     </div>
   );

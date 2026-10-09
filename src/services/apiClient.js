@@ -210,6 +210,30 @@ export const apiClient = {
   },
 
   /**
+   * Location-Based Image Retrieval System:
+   * Retrieves verified real photographs organized into 5 categories
+   * (Google Places, Wikimedia Commons, Unsplash, Pexels)
+   */
+  async getCategorizedLocationImages(locationName, category = null, lat = null, lon = null, limit = 6) {
+    if (!locationName) return null;
+    try {
+      const params = new URLSearchParams({ location: locationName, limit: String(limit) });
+      if (category && category !== "all") params.append("category", category);
+      if (lat !== null && lon !== null) {
+        params.append("lat", String(lat));
+        params.append("lon", String(lon));
+      }
+      const res = await fetchWithCache(`${API_BASE_URL}/api/locations/images?${params.toString()}`, {}, 600000);
+      if (res && res.categories && res.categories.length > 0) {
+        return res;
+      }
+    } catch (err) {
+      console.warn("apiClient.getCategorizedLocationImages error:", err);
+    }
+    return null;
+  },
+
+  /**
    * Fetch verified Wikipedia & Wikimedia Commons images for a location
    */
   async getLocationImages(locationName, lat = null, lon = null, limit = 8) {

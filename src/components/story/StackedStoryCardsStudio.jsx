@@ -5,10 +5,12 @@ import { globalGeoAIService } from '../../services/globalGeoAIService';
 import { apiClient } from '../../services/apiClient';
 import { getCategorizedPhotos } from '../../services/categorizedPhotoService';
 import { getStoryCardsForCity } from '../../data/storyLocationData';
+import { MaharashtraHeritageDashboard } from './MaharashtraHeritageDashboard';
 import { 
   ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
   Search, MapPin, Navigation, Sparkles, Globe, Loader2, X,
-  Camera, Eye, ExternalLink, Image as ImageIcon
+  Camera, Eye, ExternalLink, Image as ImageIcon,
+  ShieldCheck, ShieldAlert, AlertTriangle, Info, Filter
 } from 'lucide-react';
 
 export const StackedStoryCardsStudio = () => {
@@ -16,6 +18,7 @@ export const StackedStoryCardsStudio = () => {
   const allLocations = locationService.getAllLocations();
 
   const [selectedLocId, setSelectedLocId] = useState(currentLocation?.id || "kolhapur");
+  const [showHeritageDashboard, setShowHeritageDashboard] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
@@ -27,6 +30,8 @@ export const StackedStoryCardsStudio = () => {
   // Categorized Photo Gallery Modal State
   const [showCategorizedGallery, setShowCategorizedGallery] = useState(false);
   const [galleryCategoryFilter, setGalleryCategoryFilter] = useState('all');
+  const [imageTypeFilter, setImageTypeFilter] = useState('all'); // 'all' | 'actual_photo' | 'wikimedia'
+  const [googleUsageData, setGoogleUsageData] = useState(null);
   const [locationPhotoData, setLocationPhotoData] = useState(null);
   const [isLoadingPhotos, setIsLoadingPhotos] = useState(false);
 
@@ -167,20 +172,37 @@ export const StackedStoryCardsStudio = () => {
     }
   };
 
-  // Load Categorized Real Photos from LocationImageService
+  // Fetch initial Google Places API usage status
+  useEffect(() => {
+    let active = true;
+    apiClient.getGoogleUsageStatus().then(status => {
+      if (active && status) setGoogleUsageData(status);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  // Load Categorized Real Photos from LocationImageService with strict location isolation
   useEffect(() => {
     let active = true;
     if (loc?.name) {
-      // 1. Instantly set verified curated photos (< 1ms)
+      setIsLoadingPhotos(true);
+      // 1. Instantly set verified curated photos (< 1ms) or clear to prevent any leakage
       const instant = getCategorizedPhotos(loc.name);
       if (instant && instant.categories?.length > 0) {
         setLocationPhotoData(instant);
+      } else {
+        setLocationPhotoData(null);
       }
 
-      // 2. Asynchronously check backend Places/Unsplash/Wiki enhancement
+      // 2. Asynchronously check backend Places/Unsplash/Wiki enhancement & Google Usage
       apiClient.getCategorizedLocationImages(loc.name).then(data => {
-        if (active && data && data.categories?.length > 0) {
-          setLocationPhotoData(data);
+        if (active && data) {
+          if (data.categories?.length > 0) {
+            setLocationPhotoData(data);
+          }
+          if (data.googleUsage) {
+            setGoogleUsageData(data.googleUsage);
+          }
         }
       }).catch(err => {
         console.warn("Real photo sync notice:", err);
@@ -190,6 +212,37 @@ export const StackedStoryCardsStudio = () => {
     }
     return () => { active = false; };
   }, [loc?.name]);
+
+  // Compute live counts for Image-Type Filter
+  const filterCounts = useMemo(() => {
+    if (!locationPhotoData?.categories) return { all: 0, actual: 0, wiki: 0 };
+    const allImgs = locationPhotoData.categories.flatMap(c => c.images || []);
+    const seen = new Set();
+    let allCount = 0;
+    let actualCount = 0;
+    let wikiCount = 0;
+
+    for (const img of allImgs) {
+      const key = (img.url || img.title || '').toLowerCase().trim();
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      allCount++;
+
+      const isActual = img.imageType === 'actual_photo' || 
+                       img.sourceProvider === 'google_places' || 
+                       (img.source && img.source.toLowerCase().includes('google')) || 
+                       img.placeVerified === true;
+      const isWiki = img.sourceProvider === 'wikimedia' || 
+                     img.imageType === 'wikimedia' || 
+                     (img.source && img.source.toLowerCase().includes('wiki')) ||
+                     (img.sourceUrl && img.sourceUrl.includes('wikimedia.org'));
+      
+      if (isActual) actualCount++;
+      if (isWiki) wikiCount++;
+    }
+
+    return { all: allCount, actual: actualCount, wiki: wikiCount };
+  }, [locationPhotoData]);
 
   // Auto-enrich any arbitrary location that doesn't have curated cards
   useEffect(() => {
@@ -353,6 +406,15 @@ export const StackedStoryCardsStudio = () => {
 
   const activeCategoryList = categorizedLocations[activeCategoryTab] || categorizedLocations.districts;
 
+  // Render Dedicated 3-District Heritage Dashboard if activated
+  if (showHeritageDashboard) {
+    return (
+      <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between select-none overflow-x-hidden font-sans">
+        <MaharashtraHeritageDashboard onExitToGlobal={() => setShowHeritageDashboard(false)} />
+      </div>
+    );
+  }
+
   return (
     <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between p-3 sm:p-6 select-none overflow-x-hidden font-sans">
       
@@ -392,6 +454,41 @@ export const StackedStoryCardsStudio = () => {
               <span>{isLocatingGPS ? "Locating..." : "My GPS"}</span>
             </button>
 
+            {/* Compact Google API Usage Indicator */}
+            <button
+              onClick={() => setShowCategorizedGallery(true)}
+              className={`px-2.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-mono shadow-md cursor-pointer ${
+                googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
+                  ? "bg-rose-950/50 border-rose-500/60 text-rose-300 hover:bg-rose-900/40"
+                  : googleUsageData?.status === 'warning_high'
+                  ? "bg-amber-950/50 border-amber-500/60 text-amber-300 hover:bg-amber-900/40"
+                  : googleUsageData?.status === 'warning_info'
+                  ? "bg-yellow-950/40 border-yellow-500/50 text-yellow-300 hover:bg-yellow-900/30"
+                  : "bg-[#091326] border-cyan-500/40 text-cyan-300 hover:border-cyan-300 hover:bg-cyan-950/30"
+              }`}
+              title={`Google Places Usage: ${googleUsageData?.usage_percentage ?? 0}% (${googleUsageData?.total_requests ?? 0}/${googleUsageData?.max_monthly_allowance ?? 1000} requests used). Zero-cost safeguard active.`}
+            >
+              <span className={`w-2 h-2 rounded-full ${
+                googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
+                  ? "bg-rose-500 animate-pulse"
+                  : googleUsageData?.status === 'warning_high'
+                  ? "bg-amber-400 animate-pulse"
+                  : googleUsageData?.status === 'warning_info'
+                  ? "bg-yellow-400"
+                  : "bg-emerald-400"
+              }`} />
+              <div className="flex items-center gap-1">
+                <span className="font-bold">
+                  {googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
+                    ? "Google Paused"
+                    : `Google: ${googleUsageData?.usage_percentage ?? 0}%`}
+                </span>
+                <span className="text-[10px] text-slate-400 hidden xl:inline">
+                  ({googleUsageData?.remaining_allowance ?? 1000} left)
+                </span>
+              </div>
+            </button>
+
             <button
               onClick={() => setShowCategorizedGallery(true)}
               className="px-3 py-1.5 rounded-xl bg-[#091326] border border-amber-500/50 hover:bg-amber-950/40 text-amber-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
@@ -399,6 +496,15 @@ export const StackedStoryCardsStudio = () => {
             >
               <Camera className="w-3.5 h-3.5 text-amber-400" />
               <span>Photos {locationPhotoData?.totalImages ? `(${locationPhotoData.totalImages})` : ''}</span>
+            </button>
+
+            <button
+              onClick={() => setShowHeritageDashboard(true)}
+              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
+              title="Explore Sangli, Satara & Kolhapur Chapter Dashboard"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+              <span>Heritage Dashboard</span>
             </button>
 
             <button
@@ -412,7 +518,32 @@ export const StackedStoryCardsStudio = () => {
           </div>
         </div>
 
+        {/* Maharashtra Heritage Districts Callout Banner */}
+        <div className="w-full p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-[#070e1c] to-blue-950/70 border border-cyan-500/40 flex flex-wrap items-center justify-between gap-3 shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+              <Sparkles className="w-4 h-4 text-cyan-400" />
+            </div>
+            <div>
+              <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
+                <span>Discover Maharashtra's Heritage</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  Sangli • Satara • Kolhapur
+                </span>
+              </h3>
+              <p className="text-[11px] text-slate-300 font-mono">
+                Explore 7 deep interactive chapters, historical sovereigns, taluka breakdowns, and telemetry forecasts.
+              </p>
+            </div>
+          </div>
 
+          <button
+            onClick={() => setShowHeritageDashboard(true)}
+            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
+          >
+            <span>Open Heritage Dashboard →</span>
+          </button>
+        </div>
 
       </div>
 
@@ -787,7 +918,7 @@ export const StackedStoryCardsStudio = () => {
                   </h2>
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Verified photographs across Google Places, Wikimedia Commons, Unsplash & Pexels
+                  Primary: Google Places Photos • Automatic Backup: Wikimedia Commons & Verified Curated Archives
                 </p>
               </div>
               <button
@@ -798,10 +929,124 @@ export const StackedStoryCardsStudio = () => {
               </button>
             </div>
 
+            {/* Google Places Usage & Safety Allowance Banner */}
+            <div className="p-3 sm:px-6 bg-[#050b16] border-b border-slate-800">
+              {googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded' ? (
+                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wide">
+                        Google image request limit reached. Google image retrieval is temporarily paused and will resume when the usage allowance resets.
+                      </h4>
+                      <p className="text-[11px] text-slate-300 font-mono mt-0.5">
+                        Existing backup image retrieval system is active (Wikimedia Commons & verified regional archives). 0 Google API calls made while paused.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0 flex items-center gap-2 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-rose-500/40 text-rose-200">
+                    <span>Allowance: {googleUsageData.total_requests || googleUsageData.usedRequests || 0}/{googleUsageData.max_monthly_allowance || 1000} req</span>
+                    <span>•</span>
+                    <span>Reset: {googleUsageData.reset_date_expected || "Verified Cycle"}</span>
+                  </div>
+                </div>
+              ) : googleUsageData?.status === 'warning_high' ? (
+                <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wide">
+                        Google Usage Warning: {googleUsageData.usage_percentage || 85}% of Safety Threshold Reached
+                      </h4>
+                      <p className="text-[11px] text-slate-300 font-mono mt-0.5">
+                        Precautionary hard pause triggers at 95% to maintain 100% free $0.00 zero-spend allowance. Seamless backup failover prepared.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="shrink-0 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-amber-500/40 text-amber-200">
+                    {googleUsageData.remaining_allowance || 150} requests remaining
+                  </div>
+                </div>
+              ) : googleUsageData?.status === 'warning_info' ? (
+                <div className="p-2.5 rounded-xl bg-yellow-950/30 border border-yellow-500/40 flex items-center justify-between text-xs font-mono text-yellow-300">
+                  <div className="flex items-center gap-2">
+                    <Info className="w-4 h-4 text-yellow-400 shrink-0" />
+                    <span>Google Places usage approaching threshold: {googleUsageData.usage_percentage}% used ({googleUsageData.total_requests || 0}/{googleUsageData.max_monthly_allowance || 1000} req).</span>
+                  </div>
+                  <span className="text-[11px] text-slate-400">{googleUsageData.remaining_allowance || 300} req remaining</span>
+                </div>
+              ) : (
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span className="text-slate-300">
+                      Google Places Primary: <span className="text-emerald-400 font-bold">Active</span>
+                    </span>
+                    <span className="text-slate-500">|</span>
+                    <span className="text-slate-400">
+                      Estimated Usage: <span className="text-cyan-300 font-bold">{googleUsageData?.usage_percentage ?? 0}%</span> ({googleUsageData?.total_requests ?? 0}/{googleUsageData?.max_monthly_allowance ?? 1000} req)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
+                    <span className="px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-[10px]">
+                      100% Free Safeguard ($0.00 spend)
+                    </span>
+                    <span>Reset: {googleUsageData?.reset_date_expected || "Next Month"}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Image-Type Filter */}
+            <div className="p-3 sm:px-6 bg-[#070e1c] border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 text-xs font-mono font-bold uppercase text-slate-300 tracking-wider">
+                  <Filter className="w-3.5 h-3.5 text-cyan-400" />
+                  <span>Image Type:</span>
+                </div>
+                <div className="inline-flex rounded-xl p-1 bg-[#030712] border border-slate-800 gap-1">
+                  <button
+                    onClick={() => setImageTypeFilter('all')}
+                    className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                      imageTypeFilter === 'all'
+                        ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    🌟 All Images ({filterCounts.all})
+                  </button>
+                  <button
+                    onClick={() => setImageTypeFilter('actual_photo')}
+                    className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                      imageTypeFilter === 'actual_photo'
+                        ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    📸 Actual Photos ({filterCounts.actual})
+                  </button>
+                  <button
+                    onClick={() => setImageTypeFilter('wikimedia')}
+                    className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition-all cursor-pointer ${
+                      imageTypeFilter === 'wikimedia'
+                        ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/30"
+                        : "text-slate-400 hover:text-white"
+                    }`}
+                  >
+                    🌐 Wikipedia / Wikimedia ({filterCounts.wiki})
+                  </button>
+                </div>
+              </div>
+
+              <span className="text-[11px] font-mono text-slate-400">
+                Location: <span className="text-cyan-300 font-bold">{loc.name}</span> • Deduplicated
+              </span>
+            </div>
+
             {/* Category Filter Tabs */}
             <div className="p-3 sm:px-6 bg-[#060b16] border-b border-slate-800/80 flex items-center gap-2 overflow-x-auto no-scrollbar">
               {[
-                { id: 'all', label: `🌟 All Categories (${locationPhotoData?.totalImages || 0})` },
+                { id: 'all', label: `All Themes (${locationPhotoData?.totalImages || 0})` },
                 { id: 'tourist_attractions', label: '🏛️ Tourist Attractions' },
                 { id: 'historical_places', label: '📜 Historical Places' },
                 { id: 'famous_food', label: '🍲 Famous Food' },
@@ -835,14 +1080,46 @@ export const StackedStoryCardsStudio = () => {
                     galleryCategoryFilter === 'all' || c.id === galleryCategoryFilter
                   ) || [];
 
-                  const allImages = categoriesToDisplay.flatMap(c => 
-                    (c.images || []).map(img => ({ ...img, categoryName: c.name }))
+                  let rawImages = categoriesToDisplay.flatMap(c => 
+                    (c.images || []).map(img => ({
+                      ...img,
+                      categoryName: c.name,
+                      categoryKey: c.id
+                    }))
                   );
+
+                  // Apply Image-Type Filter
+                  if (imageTypeFilter === 'actual_photo') {
+                    rawImages = rawImages.filter(img => 
+                      img.imageType === 'actual_photo' || 
+                      img.sourceProvider === 'google_places' || 
+                      (img.source && img.source.toLowerCase().includes('google')) || 
+                      img.placeVerified === true
+                    );
+                  } else if (imageTypeFilter === 'wikimedia') {
+                    rawImages = rawImages.filter(img => 
+                      img.sourceProvider === 'wikimedia' || 
+                      img.imageType === 'wikimedia' || 
+                      (img.source && img.source.toLowerCase().includes('wiki')) ||
+                      (img.sourceUrl && img.sourceUrl.includes('wikimedia.org'))
+                    );
+                  }
+
+                  // Strict Deduplication by normalized URL and title
+                  const seen = new Set();
+                  const allImages = [];
+                  for (const img of rawImages) {
+                    const normKey = (img.url || img.title || '').toLowerCase().trim();
+                    if (normKey && !seen.has(normKey)) {
+                      seen.add(normKey);
+                      allImages.push(img);
+                    }
+                  }
 
                   if (allImages.length === 0) {
                     return (
                       <div className="py-16 text-center text-slate-400 text-xs font-mono">
-                        No images found for this category. Try switching categories or selecting another location.
+                        No images found matching your filter selection. Try selecting "All Images" or another category.
                       </div>
                     );
                   }
@@ -861,27 +1138,76 @@ export const StackedStoryCardsStudio = () => {
                               loading="lazy"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
-                            <div className="absolute top-2 left-2 flex items-center gap-1.5">
-                              <span className="px-2 py-0.5 rounded-full bg-black/75 backdrop-blur-md text-[9px] font-mono text-cyan-300 border border-cyan-500/40">
-                                {img.source || "Verified"}
-                              </span>
+                            <div className="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
+                              {/* Source Provider Badge */}
+                              {img.sourceProvider === 'google_places' || (img.source && img.source.toLowerCase().includes('google')) ? (
+                                <span className="px-2 py-0.5 rounded-full bg-cyan-950/85 backdrop-blur-md text-[9px] font-mono text-cyan-300 border border-cyan-500/50 flex items-center gap-1">
+                                  <Camera className="w-2.5 h-2.5" />
+                                  <span>Google Places Photo</span>
+                                </span>
+                              ) : img.sourceProvider === 'wikimedia' || (img.source && img.source.toLowerCase().includes('wiki')) ? (
+                                <span className="px-2 py-0.5 rounded-full bg-blue-950/85 backdrop-blur-md text-[9px] font-mono text-blue-300 border border-blue-500/50 flex items-center gap-1">
+                                  <Globe className="w-2.5 h-2.5" />
+                                  <span>Wikimedia Commons</span>
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 rounded-full bg-slate-900/85 backdrop-blur-md text-[9px] font-mono text-slate-300 border border-slate-700">
+                                  {img.source || "Verified"}
+                                </span>
+                              )}
+
+                              {/* Place Verified Badge */}
                               {img.placeVerified && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-emerald-950/80 text-[9px] font-mono text-emerald-300 border border-emerald-500/40">
+                                <span className="px-1.5 py-0.5 rounded-full bg-emerald-950/85 text-[9px] font-mono text-emerald-300 border border-emerald-500/50">
                                   ✓ Verified Place
                                 </span>
                               )}
-                            </div>
-                          </div>
-                          <div className="p-3 bg-[#081020] flex-1 flex flex-col justify-between space-y-1">
-                            <div>
-                              <span className="text-[10px] font-mono text-cyan-400 uppercase font-bold block">
-                                {img.categoryName || img.category}
+
+                              {/* Image Type Badge */}
+                              <span className="px-1.5 py-0.5 rounded-full bg-black/75 text-[8.5px] font-mono text-slate-300 border border-slate-700">
+                                {img.imageType === 'actual_photo' ? 'Photo' : img.imageType === 'wikimedia' ? 'Wiki Archive' : 'Archive'}
                               </span>
-                              <h4 className="text-xs font-bold text-white line-clamp-1">{img.title}</h4>
                             </div>
-                            <p className="text-[10px] text-slate-400 font-mono line-clamp-1 italic">
-                              {img.attribution || "Photo via Google Places / Wikimedia"}
-                            </p>
+
+                            {/* External Link to Original File/Article if available */}
+                            {img.sourceUrl && (
+                              <a
+                                href={img.sourceUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="absolute top-2 right-2 p-1.5 rounded-full bg-black/70 hover:bg-cyan-500 hover:text-black text-slate-300 transition-colors border border-slate-700"
+                                title="Open original file or source page"
+                              >
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+
+                          <div className="p-3 bg-[#081020] flex-1 flex flex-col justify-between space-y-1.5">
+                            <div>
+                              <div className="flex items-center justify-between text-[10px] font-mono">
+                                <span className="text-cyan-400 uppercase font-bold">
+                                  {img.categoryName || img.category}
+                                </span>
+                                {img.locationAssociation && (
+                                  <span className="text-slate-400 truncate max-w-[120px]">
+                                    📍 {img.locationAssociation}
+                                  </span>
+                                )}
+                              </div>
+                              <h4 className="text-xs font-bold text-white line-clamp-1 mt-0.5">{img.title}</h4>
+                            </div>
+
+                            <div className="pt-1 border-t border-slate-800/60 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
+                              <span className="truncate max-w-[180px] italic">
+                                {img.attribution || "Photo via Google Places / Wikimedia"}
+                              </span>
+                              {img.license && (
+                                <span className="px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-[8.5px] text-slate-300 shrink-0">
+                                  {img.license}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       ))}
@@ -893,7 +1219,7 @@ export const StackedStoryCardsStudio = () => {
 
             {/* Modal Footer */}
             <div className="p-3 sm:px-6 bg-[#070e1c] border-t border-slate-800 flex items-center justify-between text-xs font-mono text-slate-400">
-              <span>Total: {locationPhotoData?.totalImages || 0} real photographs</span>
+              <span>Showing photos for <span className="text-cyan-300 font-bold">{loc.name}</span></span>
               <button
                 onClick={() => setShowCategorizedGallery(false)}
                 className="px-4 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs transition-colors cursor-pointer"

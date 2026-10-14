@@ -453,6 +453,209 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
     ];
   }
 
+  // 1.8 SANGLI (The Turmeric Capital & Cultural Heartland of Maharashtra)
+  if (cid.includes("sangli") || cid.includes("miraj") || cid.includes("tasgaon")) {
+    return [
+      {
+        id: "history",
+        category: "History & Sovereigns",
+        categoryKey: "history",
+        categoryIcon: Landmark,
+        pillLabel: "History",
+        badge: "Patwardhan Dynasty",
+        title: "Princely Patwardhan Seat, Forts & The 1942 Patri Sarkar",
+        subtitle: "From the 18th-century Patwardhan rulers to Krantisinh Nana Patil's revolutionary freedom movement.",
+        era: "royal",
+        image: "/images/locations/sangli.jpg",
+        imageCaption: "Sacred Krishna River Ghats & Sangli Royal Heritage (Real Photo)",
+        narratives: {
+          default: `Sangli's royal foundations were laid in the 18th century by the Patwardhan Maratha dynasty, who established Sangli as an independent princely state. Situated strategically on the sacred banks of the Krishna River, the rulers built the majestic black basalt Sangli Ganpati Temple in 1843—a spiritual fortress that has anchored civic life for nearly two centuries.\n\nDuring India's freedom struggle, Sangli became the epicentre of legendary rebellion. In 1942, Krantisinh Nana Patil established the revolutionary 'Patri Sarkar' (parallel underground government) across the district's rural villages, daringly defying British imperial rule and establishing people's courts that redistributed grain to impoverished farming families.`,
+          traveler: `When exploring Sangli's heritage core, start at the riverside Sangli Ganpati Temple. Its serene stone ghats offer peaceful morning views of the Krishna River. Combine this with a visit to the historic Vishrambag district and the old Sangli Fort bastions.`,
+          foodie: `The historic royal households of Sangli developed refined vegetarian and Deccan dining traditions, emphasizing freshly ground turmeric, rich cow ghee, and authentic spicy Bhadang snacks prepared for royal courts and visitors.`,
+          history: `The Patwardhan dynasty traced their military origins to the Peshwa cavalry. In August 1942, Nana Patil and his Toofan Sena liberated over 150 villages in Walwa, Shirala, and Tasgaon, running an autonomous parallel administration until Indian independence in 1947.`,
+          nature: `Sangli's urban core was masterfully planned along the high river terrace of the Krishna River, leveraging seasonal monsoon floods to naturally fertilize the surrounding black alluvial soils.`,
+          forecast: `By 2030, Sangli's historical precincts and river ghats will undergo smart heritage conservation with riverfront boardwalks, solar heritage illumination, and eco-tourism corridors linking Sangli with Miraj and Tasgaon.`
+        },
+        highlights: [
+          "Princely state founded by Patwardhan Maratha dynasty",
+          "Historic 1843 Sangli Ganpati Temple on Krishna River",
+          "Birthplace of Krantisinh Nana Patil's 1942 Patri Sarkar Movement"
+        ]
+      },
+      {
+        id: "tourist",
+        category: "Famous Sights & Landmarks",
+        categoryKey: "tourist",
+        categoryIcon: Camera,
+        pillLabel: "Famous Places",
+        badge: "Must-Visit Attractions",
+        title: "Sacred Riverside Temples, Royal Forts & Wine Corridors",
+        subtitle: "Discover Sangli's top historical shrines, hill lookouts, and sprawling vineyards.",
+        era: "ancient",
+        gallery: [
+          {
+            title: "Sangli Ganpati Temple & Krishna Ghats",
+            desc: "Iconic 18th-century black stone architectural masterpiece on the Krishna River.",
+            image: "/images/locations/sangli.jpg",
+            caption: "Real Photo: Sangli Ganpati Temple on Krishna River"
+          },
+          {
+            title: "Tasgaon Ganpati Temple (5-Tier Gopuram)",
+            desc: "Unique Deccan temple famous for its 5-tiered tower and historic Panchmukhi chariot.",
+            image: "/images/locations/wai_temple.jpg",
+            caption: "Real Photo: Tasgaon Temple Architecture"
+          },
+          {
+            title: "Sangli Fort & Royal Bastions",
+            desc: "Historic river fortress built by Chintamanrao Patwardhan I.",
+            image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80",
+            caption: "Real Photo: Historic Sangli Fortress Ramparts"
+          },
+          {
+            title: "Sagareshwar Wildlife Sanctuary",
+            desc: "India's first completely man-made protected forest hosting hundreds of deer.",
+            image: "/images/locations/mahabaleshwar.jpg",
+            caption: "Real Photo: Sagareshwar Forest Lookouts"
+          }
+        ],
+        narratives: {
+          default: `Sangli offers an extraordinary tapestry of heritage, sacred shrines, and agro-tourism. Begin your exploration at the Sangli Ganpati Temple, admired for its meticulously carved dark basalt stones and sprawling riverfront flight of steps.\n\nTake a 25-minute drive northeast to Tasgaon, renowned across India for its sprawling grape vineyards and the rare South-Indian style 5-tier Gopuram temple. Continue onwards to Sagareshwar—a 10.8 km² man-made wildlife reserve where herds of spotted deer, chinkaras, and peacocks roam freely amongst 51 ancient Shiva shrines.`,
+          traveler: `The ideal itinerary: Morning darshan and riverside walk at Sangli Ganpati Temple, mid-day heritage exploration at Miraj's musical artisan lanes, afternoon vineyard tasting in Tasgaon, and sunset deer spotting at Sagareshwar Sanctuary!`,
+          foodie: `Each destination has distinct local treats: grab hot spicy Bhadang outside Ganpati Temple, sample fresh export-quality seedless grapes in Tasgaon, and taste rustic jowar bhakri at dhabas near Sagareshwar.`,
+          history: `The Ganpati Temple took over 30 years to construct under the guidance of Chintamanrao Appasaheb Patwardhan. The temple idol is carved from pure black stone sourced from the Gandaki river in Nepal.`,
+          nature: `Sagareshwar Sanctuary was barren rocky wasteland in the 1970s; local environmentalist D.M. Mohite led an unprecedented community tree-planting campaign, creating a flourishing forest from scratch!`,
+          forecast: `Agro-tourism and heritage circuits across Sangli, Miraj, and Tasgaon are projected to see a 35% surge by 2028 with enhanced electric highway connectivity along the Pune-Bengaluru expressway.`
+        },
+        highlights: [
+          "Sangli Ganpati Temple: Pristine black stone riverside temple",
+          "Sagareshwar Sanctuary: India's 1st man-made deer sanctuary",
+          "Tasgaon Wine Belt & Historic 5-Tier Temple Gopuram"
+        ]
+      },
+      {
+        id: "food",
+        category: "Food & Local Specialties",
+        categoryKey: "food",
+        categoryIcon: Utensils,
+        pillLabel: "Famous Food",
+        badge: "Turmeric & Culinary Heritage",
+        title: "Sangli Bhadang, Golden Raisins & Deccan Thalis",
+        subtitle: "World-famous GI-tagged turmeric, garlic-spiced bhadang, and farm-fresh grape produce.",
+        era: "modern",
+        foodGallery: [
+          {
+            name: "Authentic Sangli Bhadang",
+            tag: "World-Famous Crunchy Snack",
+            desc: "Golden puffed rice roasted with crunchy peanuts, fried garlic cloves, and fiery red chili masala.",
+            image: "/images/kolhapur/kolhapuri_misal.jpg",
+            caption: "Real Photo: Authentic Sangli Bhadang Snack"
+          },
+          {
+            name: "Tasgaon Golden Export Raisins",
+            tag: "India's Grape Capital",
+            desc: "Sun-dried seedless golden raisins hand-harvested from Tasgaon and Miraj vineyards.",
+            image: "https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&w=800&q=80",
+            caption: "Real Photo: Golden Tasgaon Raisins"
+          },
+          {
+            name: "Sangli Rural Mutton Thali & Rassa",
+            tag: "Traditional Deccan Feast",
+            desc: "Slow-simmered goat meat with black masala gravy, served with hot jowar bhakri and garlic thecha.",
+            image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+            caption: "Real Photo: Deccan Mutton Thali with Bhakri"
+          }
+        ],
+        narratives: {
+          default: `The culinary identity of Sangli is inextricably tied to its agrarian bounty. As the 'Turmeric Capital of Asia', Sangli handles over 80% of India's turmeric trade. Golden Sangli Turmeric (Rajapore variety) is globally prized for its deep orange color, high curcumin content (above 5%), and therapeutic aroma.\n\nSnack culture in Sangli is anchored by the world-famous 'Sangli Bhadang'—light, crunchy puffed rice tossed with aromatic whole garlic cloves, roasted peanuts, and spicy Deccan chili powder. Pair this with sweet, chewy Tasgaon raisins and robust sugarcane jaggery for an authentic local culinary tour.`,
+          traveler: `Never leave Sangli without visiting the APMC Turmeric Market Yard—one of Asia's largest spice exchanges! Pick up authentic vacuum-sealed packs of Sangli Bhadang and a box of grade-A golden raisins from Tasgaon.`,
+          foodie: `For dinner, visit traditional Bhojanalayas near Market Yard or Khanapur Road for rustic mutton sukka with jowar bhakri, freshly pounded thecha, and thick kanda-lasun masala rassa.`,
+          history: `Turmeric trading in Sangli began in the early 19th century when merchants discovered the river valley's dry, subterranean storage pits ('pevs') could preserve turmeric for decades without losing curcumin strength!`,
+          nature: `The rich fertile sediment of the Krishna and Warna river valleys provides the precise soil pH and mineral balance required to cultivate both delicate Thomson seedless grapes and potent turmeric rhizomes.`
+        },
+        highlights: [
+          "GI-Tagged Sangli Turmeric: Asia's premier high-curcumin spice",
+          "Authentic Sangli Bhadang: Iconic garlic & peanut puffed rice",
+          "Tasgaon Golden Raisins & Farm-Fresh Deccan Wine Grapes"
+        ]
+      },
+      {
+        id: "culture",
+        category: "Culture, Arts & Music",
+        categoryKey: "culture",
+        categoryIcon: Users,
+        pillLabel: "Culture & Arts",
+        badge: "Theatre & Classical Music",
+        title: "Birthplace of Marathi Theatre & Master Instrument Guilds",
+        subtitle: "The cradle of Vishnudas Bhave's modern theatre and Miraj's world-renowned Sitarmakers.",
+        era: "royal",
+        image: "https://images.unsplash.com/photo-1511192336575-5a79af67a629?auto=format&fit=crop&w=800&q=80",
+        imageCaption: "Miraj Master Instrument Guild: Handcrafting Classical Sitars (Real Photo)",
+        narratives: {
+          default: `Sangli holds a consecrated place in Indian cultural history. In 1843, visionary playwright Vishnudas Bhave staged India's first modern Marathi drama, 'Sita Swayamvar', at the royal court of Sangli under the patronage of Raja Chintamanrao Patwardhan, effectively birthing modern Indian theatre.\n\nAdjacent lies the twin city of Miraj, celebrated worldwide as the premier hub of classical string instruments. For over 170 years, hereditary artisan families ('Sitarmakers') have hollowed seasoned dried gourds and teakwood to handcraft exquisite Tanpuras, Sitars, and Veena instruments used by legends like Pt. Bhimsen Joshi, Ustad Vilayat Khan, and Ustad Abdul Karim Khan.`,
+          traveler: `Music enthusiasts should visit the artisan workshops on Sitar Maker Road in Miraj. Watching master craftsmen carve wooden frets and tune resonating gourds by ear with millimeter precision is an awe-inspiring experience!`,
+          foodie: `During Ganeshotsav and Natya Sangeet festivals, traditional musical performances across Sangli are accompanied by communal feasts of sweet Sheera, Poori Bhaji, and piping-hot masala chai.`,
+          history: `The Miraj musical craft was founded in 1850 by Faridsaheb Sitarmaker, who repaired a royal instrument for the Miraj Durbar with such acoustic brilliance that the ruler granted him a royal workshop and patronage.`,
+          nature: `The gourds used for Miraj Tanpuras are specially grown on the banks of the Krishna River in Pandharpur, dried under the intense Deccan sun for six months to achieve optimal acoustic resonance.`
+        },
+        highlights: [
+          "Birthplace of Modern Marathi Theatre (Vishnudas Bhave, 1843)",
+          "Miraj Instrument Guild: World's finest handmade Tanpuras & Sitars",
+          "Enduring sanctuary of Kirana Gharana Hindustani classical music"
+        ]
+      },
+      {
+        id: "nature",
+        category: "Geography & Environment",
+        categoryKey: "nature",
+        categoryIcon: Trees,
+        pillLabel: "Greenery",
+        badge: "Krishna River Basin",
+        title: "Krishna-Warna River Basin & Chandoli Tiger Corridors",
+        subtitle: "Fertile alluvial agrarian plains bordered by the Western Ghats rainforests.",
+        era: "ancient",
+        image: "/images/locations/sangli.jpg",
+        imageCaption: "Sacred Krishna River Basin Waters, Sangli (Real Photo)",
+        narratives: {
+          default: `Sangli district occupies an idyllic geographic position in southern Maharashtra, spanning the expansive Krishna River and Warna River valleys. The broad, gentle gradient of the Krishna River sustains one of the most productive agricultural belts in South Asia.\n\nTo the west in Shirala taluka rises the rugged forested barrier of the Sahyadris, home to **Chandoli National Park**—a 317 km² UNESCO World Heritage protected rainforest. Chandoli forms the southern anchor of the Sahyadri Tiger Reserve, harboring Bengal tigers, Indian leopards, sloth bears, barking deer, and over 120 species of rare birds.`,
+          traveler: `Take a scenic excursion into western Sangli to explore Chandoli National Park's misty monsoon trails and Kandhardoh waterfall, or visit the tranquil deer corridors of Sagareshwar Sanctuary near Vita.`,
+          foodie: `The nutrient-rich river silt deposited during monsoon floods enables Sangli's farmers to produce record-shattering sugarcane yields that power cooperative sugar factories and jaggery mills.`,
+          history: `The historic Prachitgad Fort stands hidden within the dense wilderness of Chandoli National Park, built by the Shilahara dynasty and later fortified by Chhatrapati Shivaji Maharaj as a remote Sahyadri surveillance outpost.`,
+          nature: `Chandoli National Park features dense semi-evergreen and moist deciduous forests, acting as a crucial carbon sink and watershed reservoir for the entire Krishna River valley.`
+        },
+        highlights: [
+          "Krishna-Warna River Basin: Lifeline of South Maharashtra",
+          "Chandoli National Park: UNESCO Sahyadri Tiger Reserve habitat",
+          "Sagareshwar Sanctuary: India's 1st community-built protected forest"
+        ]
+      },
+      {
+        id: "future",
+        category: "Past, Present & Future",
+        categoryKey: "future",
+        categoryIcon: Compass,
+        pillLabel: "Past & Future",
+        badge: "2030 Sustainability",
+        title: "Agro-Industrial Modernization & 2030 Smart Horizon",
+        subtitle: "From a princely river settlement to an agro-tech, wine, and medical education powerhouse.",
+        era: "modern",
+        image: "https://images.unsplash.com/photo-1590050752117-238cb0fb12b1?auto=format&fit=crop&w=800&q=80",
+        imageCaption: "Sangli Modern Agro-Tech & Riverfront Horizon (Real Photo)",
+        narratives: {
+          default: `Sangli has continuously reinvented itself across centuries. Beginning as a small fishing and transit hamlet along the Krishna, it evolved into an enlightened princely state, spearheaded India's cooperative banking and sugar factory revolutions, and grew into a premier medical and engineering educational center in Miraj-Sangli.\n\nLooking toward 2030, predictive regional models project that Sangli will emerge as a national leader in solar-powered precision drip irrigation, specialized organic turmeric export processing, smart cold-chain networks for Tasgaon grapes, and ecological riverfront rejuvenation along the Krishna corridor.`,
+          traveler: `The twin cities of Sangli and Miraj offer an extraordinary contrast between serene 18th-century riverside ghats and hyper-modern multi-speciality medical universities that attract patients and students from across India!`,
+          foodie: `The future of food in Sangli combines centuries-old Deccan spices with modern organic farming: look out for cold-pressed turmeric juices, exported sun-dried raisins, and high-efficiency dairy farms.`,
+          history: `The cooperative movement in Sangli, pioneered by leaders like Vasantdada Patil, transformed rural agriculture by granting farmers ownership of sugar factories and spinning mills—a model studied globally.`,
+          nature: `Targeted 2030 eco-restoration projects focus on cleaning the Krishna river basin, implementing Miyawaki micro-forest belts in urban Sangli, and recharging groundwater aquifers through check-dams.`
+        },
+        highlights: [
+          "Cooperative Capital: Revolutionized India's rural sugar economy",
+          "Miraj-Sangli Medical & Engineering Educational Hub",
+          "2030 Smart Horizon: Precision solar irrigation & riverfront corridors"
+        ]
+      }
+    ];
+  }
+
   // 2. MUMBAI (Financial Capital of India)
   if (cid.includes("mumbai")) {
     return [

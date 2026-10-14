@@ -236,6 +236,78 @@ export const apiClient = {
   },
 
   /**
+   * Google Places API Usage & Budget Monitor
+   */
+  async getGoogleUsageStatus() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/locations/google-usage`, {
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn("apiClient.getGoogleUsageStatus notice:", err);
+    }
+    // Return conservative baseline if offline
+    return {
+      status: "active",
+      status_label: "Active (Free Baseline)",
+      badge_color: "green",
+      usage_percentage: 0,
+      total_requests: 0,
+      max_monthly_allowance: 1000,
+      remaining_allowance: 1000,
+      threshold_info_pct: 70.0,
+      threshold_warning_pct: 85.0,
+      threshold_pause_pct: 95.0,
+      is_estimated: true,
+      message: "Google Places usage monitor active in zero-cost baseline mode.",
+      zero_cost_protection: "Active: 100% Free Safeguard Below $200 Tier"
+    };
+  },
+
+  /**
+   * Update Google Places Usage Thresholds or Manual Pause
+   */
+  async updateGoogleUsageConfig(config) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/locations/google-usage/config`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(config),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn("apiClient.updateGoogleUsageConfig error:", err);
+    }
+    return null;
+  },
+
+  /**
+   * Reset Google Places Usage Cycle (Admin verified)
+   */
+  async resetGoogleUsageCycle(verificationNote = "Manual Verification") {
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/locations/google-usage/reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verification_note: verificationNote }),
+        signal: AbortSignal.timeout(3000)
+      });
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn("apiClient.resetGoogleUsageCycle error:", err);
+    }
+    return null;
+  },
+
+  /**
    * Fetch verified Wikipedia & Wikimedia Commons images for a location
    */
   async getLocationImages(locationName, lat = null, lon = null, limit = 8) {

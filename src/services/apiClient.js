@@ -4,7 +4,7 @@
  * Wikimedia Images, Geocoding, and Conversational Agent.
  */
 
-import { getCategorizedPhotos } from './categorizedPhotoService.js';
+import { getCategorizedPhotos, getAsyncCategorizedPhotos } from './categorizedPhotoService.js';
 
 const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -232,7 +232,7 @@ export const apiClient = {
     } catch (err) {
       console.warn("apiClient.getCategorizedLocationImages network notice, using verified local repository:", err);
     }
-    return getCategorizedPhotos(locationName);
+    return await getAsyncCategorizedPhotos(locationName);
   },
 
   /**

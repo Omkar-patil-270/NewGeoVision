@@ -20,6 +20,16 @@
 
 export const FORECASTING_PLAN_MATRIX = [
   {
+    parameter: "Demographic Population",
+    id: "population",
+    model: "SARIMA (2,1,1)(1,1,1)12",
+    modelFamily: "Seasonal Autoregressive Moving Average",
+    dataset: "World Bank / Census of India",
+    mainInput: "Historical census counts (2011–2025), birth/death rates, generational momentum",
+    architecture: "Census Time-Series → SARIMA → 2030 Population Projections",
+    justification: "Gold standard for demographic momentum and longitudinal trend with generational seasonality."
+  },
+  {
     parameter: "Urban Growth & Built-up",
     id: "urbanGrowth",
     model: "XGBoost Regression",
@@ -93,12 +103,20 @@ export const FORECASTING_PLAN_MATRIX = [
 
 export const FORECAST_METRICS = [
   { 
+    id: "population", 
+    name: "Demographic Population", 
+    unit: "Million Citizens", 
+    model: "SARIMA (ARIMA)", 
+    dataset: "Census / WorldPop",
+    defaultMetric: true 
+  },
+  { 
     id: "urbanGrowth", 
     name: "Urban Growth & Built-up", 
     unit: "% Impervious Area", 
     model: "XGBoost Regression", 
     dataset: "GHSL",
-    defaultMetric: true 
+    defaultMetric: false 
   },
   { 
     id: "vegetation", 
@@ -233,6 +251,18 @@ export const XAI_FACTORS = [
 export const FORECAST_SERIES_DATA = {
   // ==================== KOLHAPUR DISTRICT ====================
   kolhapur: {
+    population: [
+      { year: "2021", actual: 4.05, forecast: null, lower: null, upper: null },
+      { year: "2022", actual: 4.08, forecast: null, lower: null, upper: null },
+      { year: "2023", actual: 4.12, forecast: null, lower: null, upper: null },
+      { year: "2024", actual: 4.15, forecast: null, lower: null, upper: null },
+      { year: "2025", actual: 4.18, forecast: 4.18, lower: 4.18, upper: 4.18 },
+      { year: "2026", actual: null, forecast: 4.22, lower: 4.17, upper: 4.27 },
+      { year: "2027", actual: null, forecast: 4.25, lower: 4.19, upper: 4.31 },
+      { year: "2028", actual: null, forecast: 4.29, lower: 4.22, upper: 4.36 },
+      { year: "2029", actual: null, forecast: 4.33, lower: 4.25, upper: 4.41 },
+      { year: "2030", actual: null, forecast: 4.37, lower: 4.28, upper: 4.46 }
+    ],
     urbanGrowth: [
       { year: "2021", actual: 28.2, forecast: null, lower: null, upper: null },
       { year: "2022", actual: 31.0, forecast: null, lower: null, upper: null },
@@ -321,6 +351,18 @@ export const FORECAST_SERIES_DATA = {
 
   // ==================== SATARA DISTRICT (SPONSORED PARTNER) ====================
   satara: {
+    population: [
+      { year: "2021", actual: 3.01, forecast: null, lower: null, upper: null },
+      { year: "2022", actual: 3.08, forecast: null, lower: null, upper: null },
+      { year: "2023", actual: 3.16, forecast: null, lower: null, upper: null },
+      { year: "2024", actual: 3.24, forecast: null, lower: null, upper: null },
+      { year: "2025", actual: 3.32, forecast: 3.32, lower: 3.32, upper: 3.32 },
+      { year: "2026", actual: null, forecast: 3.41, lower: 3.34, upper: 3.48 },
+      { year: "2027", actual: null, forecast: 3.49, lower: 3.41, upper: 3.57 },
+      { year: "2028", actual: null, forecast: 3.58, lower: 3.48, upper: 3.68 },
+      { year: "2029", actual: null, forecast: 3.67, lower: 3.55, upper: 3.79 },
+      { year: "2030", actual: null, forecast: 3.76, lower: 3.62, upper: 3.90 }
+    ],
     urbanGrowth: [
       { year: "2021", actual: 19.8, forecast: null, lower: null, upper: null },
       { year: "2022", actual: 21.6, forecast: null, lower: null, upper: null },
@@ -849,7 +891,7 @@ export const FORECAST_SERIES_DATA = {
  * for any taluka, village, or district in Kolhapur or Satara.
  */
 export const getRegionalForecastSeries = (locationId, metricId) => {
-  if (!metricId || metricId === 'population') metricId = 'urbanGrowth';
+  if (!metricId) metricId = 'population';
   const cleanId = (locationId || '').toLowerCase().trim();
   
   if (FORECAST_SERIES_DATA[cleanId]?.[metricId]) {

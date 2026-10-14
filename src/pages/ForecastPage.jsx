@@ -23,6 +23,7 @@ import {
   Filler
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { PopulationForecastingModule } from '../components/predictions/PopulationForecastingModule';
 
 ChartJS.register(
   CategoryScale,
@@ -37,7 +38,7 @@ ChartJS.register(
 
 export const ForecastPage = () => {
   const { currentLocation, selectLocation, allLocations, activeHeatmap, setActiveHeatmap } = useApp();
-  const [selectedMetric, setSelectedMetric] = useState('urbanGrowth');
+  const [selectedMetric, setSelectedMetric] = useState('population');
   const [activeModelName, setActiveModelName] = useState('SARIMA + XGBoost Hybrid');
   const [liveData, setLiveData] = useState(null);
   const [isLoadingLive, setIsLoadingLive] = useState(false);
@@ -371,6 +372,13 @@ export const ForecastPage = () => {
             <Line data={chartData} options={chartOptions} />
           </div>
         </div>
+
+        {/* Deep Demographic Forecasting Module (ARIMA + Held-Out Validation + Moving Average) */}
+        {selectedMetric === 'population' && (
+          <div className="mb-10">
+            <PopulationForecastingModule locationId={loc.id} />
+          </div>
+        )}
 
         {/* ================= EXACT SAME 3D EARTH SATELLITE GLOBE WITH FORECASTING HEATMAP ================= */}
         <div className="mb-10 rounded-3xl border border-slate-800 bg-[#091124] overflow-hidden shadow-2xl">

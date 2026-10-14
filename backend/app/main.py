@@ -11,7 +11,7 @@ else:
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import location, predictions, story, report, clusters, ask, disasters, compare, sustainability, agentic, recommend, remotesensing, timemachine, groundwater, kolhapur, kml, location_images
+from app.routers import location, predictions, story, report, clusters, ask, disasters, compare, sustainability, agentic, recommend, remotesensing, timemachine, groundwater, kolhapur, satara, kml, location_images
 
 app = FastAPI(title="GeoVisionAI API")
 
@@ -46,6 +46,7 @@ app.include_router(remotesensing.router, prefix="/api/remotesensing", tags=["rem
 app.include_router(timemachine.router, prefix="/api/timemachine", tags=["timemachine"])
 app.include_router(groundwater.router, prefix="/api/groundwater", tags=["groundwater"])
 app.include_router(kolhapur.router, prefix="/api/kolhapur", tags=["kolhapur"])
+app.include_router(satara.router, prefix="/api/satara", tags=["satara"])
 app.include_router(kml.router, prefix="/api/kml", tags=["kml"])
 
 

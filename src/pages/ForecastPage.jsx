@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
-  FORECAST_METRICS, MODEL_BENCHMARKS, XAI_FACTORS, FORECAST_SERIES_DATA, FORECASTING_PLAN_MATRIX 
+  FORECAST_METRICS, MODEL_BENCHMARKS, XAI_FACTORS, FORECAST_SERIES_DATA, FORECASTING_PLAN_MATRIX,
+  getRegionalForecastSeries 
 } from '../data/forecasts';
 import { predictionService } from '../services/predictionService';
-import { PopulationForecastingModule } from '../components/predictions/PopulationForecastingModule';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { 
   TrendingUp, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
@@ -37,7 +37,7 @@ ChartJS.register(
 
 export const ForecastPage = () => {
   const { currentLocation, selectLocation, allLocations, activeHeatmap, setActiveHeatmap } = useApp();
-  const [selectedMetric, setSelectedMetric] = useState('population');
+  const [selectedMetric, setSelectedMetric] = useState('urbanGrowth');
   const [activeModelName, setActiveModelName] = useState('SARIMA + XGBoost Hybrid');
   const [liveData, setLiveData] = useState(null);
   const [isLoadingLive, setIsLoadingLive] = useState(false);
@@ -75,7 +75,7 @@ export const ForecastPage = () => {
   }, [loc?.id, loc?.coordinates?.lat, loc?.coordinates?.lng]);
 
   const liveSeries = liveData ? predictionService.buildChartSeries(liveData, selectedMetric) : null;
-  const seriesData = liveSeries || FORECAST_SERIES_DATA[loc.id]?.[selectedMetric] || FORECAST_SERIES_DATA.kolhapur[selectedMetric] || FORECAST_SERIES_DATA.kolhapur.population;
+  const seriesData = liveSeries || getRegionalForecastSeries(loc?.id, selectedMetric);
 
   const labels = (seriesData || []).map(d => d.year);
   const actualValues = (seriesData || []).map(d => d.actual);
@@ -221,13 +221,13 @@ export const ForecastPage = () => {
           {/* 4 Pipelines Architecture */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono mb-4">
             <div className="p-3.5 rounded-2xl bg-[#060b16] border border-sky-500/30 text-center space-y-1">
-              <span className="font-bold text-sky-400 text-[11px] uppercase">1. Population</span>
+              <span className="font-bold text-sky-400 text-[11px] uppercase">1. Urban / Built-up</span>
               <div className="text-sky-400 font-bold">↓</div>
               <span className="inline-block px-3 py-1 rounded-xl bg-sky-600/30 text-sky-300 border border-sky-500/40 font-bold text-xs shadow-xs">
-                SARIMA
+                XGBoost Regressor
               </span>
               <div className="text-sky-400 font-bold">↓</div>
-              <span className="text-white font-bold text-[11px]">Future Population</span>
+              <span className="text-white font-bold text-[11px]">Impervious Growth</span>
             </div>
 
             <div className="p-3.5 rounded-2xl bg-[#060b16] border border-purple-500/30 text-center space-y-1">
@@ -372,13 +372,6 @@ export const ForecastPage = () => {
           </div>
         </div>
 
-        {/* Dedicated Demographic SARIMA Section */}
-        {selectedMetric === 'population' && (
-          <div className="mb-10">
-            <PopulationForecastingModule locationId={loc?.id} />
-          </div>
-        )}
-
         {/* ================= EXACT SAME 3D EARTH SATELLITE GLOBE WITH FORECASTING HEATMAP ================= */}
         <div className="mb-10 rounded-3xl border border-slate-800 bg-[#091124] overflow-hidden shadow-2xl">
           <div className="p-4 sm:p-5 border-b border-slate-800 bg-[#070e1c] flex flex-wrap items-center justify-between gap-3">
@@ -405,7 +398,7 @@ export const ForecastPage = () => {
                 { id: 'aqi', label: '🌫️ AQI Heatmap' },
                 { id: 'temperature', label: '🌡️ Temperature Heatmap' },
                 { id: 'groundwater', label: '💧 Aquifer Heatmap' },
-                { id: 'population', label: '👥 Demographic Heatmap' },
+                { id: 'urbanGrowth', label: '🏙️ Built-up Impervious' },
                 { id: 'migration', label: '⚡ Migration Radiance' }
               ].map((h) => {
                 const isAct = activeHeatmap === h.id;

@@ -814,11 +814,12 @@ async def story_chat(req: StoryChatRequest):
     )
 
     system_prompt = (
-        "You are the GeoVisionAI Predictive Geospatial Agent and Storytelling Assistant. "
-        "Your role is to explain Earth observations, environmental telemetry, "
-        "CGWB groundwater reserves, Sentinel-2 NDVI canopy changes, and SARIMA/XGBoost machine-learning forecasts. "
-        "Always be concise (2-4 sentences), factual, data-grounded, and polite. "
-        "Cite sensor sources like Sentinel-2, CGWB, OpenAQ, and ERA5-Land where applicable."
+        "You are GeoBot, the official Geospatial & Regional AI Assistant on GeoVisionAI. "
+        "CRITICAL INSTRUCTIONS FOR QUALITY: "
+        "1. BE SHORT, CLEAR, AND DIRECT: Answer in 2 to 3 concise, punchy sentences maximum (under 70 words). "
+        "2. NO BLOAT OR UNWANTED TEXT: Answer the user's specific question immediately. Do NOT include preambles, disclaimers, repetitive apologies, or long essays. "
+        "3. DATA-GROUNDED: Include exact metrics (AQI, groundwater mbgl, NDVI, temperature) or specific landmarks when asked. "
+        "4. TONE: Confident, crisp, clear, and helpful."
     )
 
     messages = [{"role": "system", "content": system_prompt}]
@@ -832,30 +833,29 @@ async def story_chat(req: StoryChatRequest):
 
     messages.append({
         "role": "user",
-        "content": f"[GROUNDED TELEMETRY CONTEXT]\n{context}\n\n[USER QUERY]\n{user_query}"
+        "content": f"[LOCATION: {req.location_name} | TELEMETRY: AQI {aqi_info.get('current', '84')}, Temp {weather_info.get('current', '28.3')}°C, GW {gw_depth} mbgl ({gw_cat})]\nQuestion: {user_query}"
     })
 
     if client:
         try:
-            # Ultra-fast 8B LPU inference (< 500ms)
+            # Ultra-fast 8B LPU inference with strict token boundary to prevent rambling
             res = client.chat.completions.create(
                 model="llama-3.1-8b-instant",
                 messages=messages,
-                max_tokens=300,
-                temperature=0.4,
+                max_tokens=160,
+                temperature=0.3,
                 timeout=2.0
             )
-            ans = res.choices[0].message.content
-            return {"reply": ans, "answer": ans}
+            ans = res.choices[0].message.content.strip()
+            if ans:
+                return {"reply": ans, "answer": ans}
         except Exception as e:
             pass
 
     reply_text = (
-        f"Based on verified diagnostic telemetry for {req.location_name}, "
-        f"current population is {pop_info.get('current', '3.85 Million')}, "
-        f"ambient air quality is {aqi_info.get('current', '84')} AQI, "
-        f"and the groundwater table is monitored at {gw_depth} mbgl under the '{gw_cat}' category. "
-        f"Supervised XGBoost and SARIMA machine learning models project sustainable expansion through 2035."
+        f"For {req.location_name}: Air quality is {aqi_info.get('current', '84')} AQI, "
+        f"groundwater depth is {gw_depth} mbgl ({gw_cat}), and surface temperature is {weather_info.get('current', '28.3')}°C. "
+        f"Ask me for specific environmental indicators, heritage landmarks, or future forecasts!"
     )
     return {
         "reply": reply_text,

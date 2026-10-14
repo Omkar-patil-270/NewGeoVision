@@ -32,13 +32,16 @@ class AskRequest(BaseModel):
 @router.post("/ask")
 async def ask_anything(req: AskRequest):
     prompt = (
-        f"Location: {req.location_name}. Real data: {req.predictions}. "
+        f"You are GeoBot, an AI geospatial assistant. "
+        f"Location: {req.location_name}. Grounded Data: {req.predictions}. "
         f"User question: {req.question}. "
-        f"Answer in 2-3 sentences using ONLY this real data. "
-        f"If the data can't answer it, say so honestly."
+        f"Instructions: Give a direct, crystal-clear answer in 1 to 2 sentences (under 50 words). "
+        f"No preamble, no fluff, no repetitive disclaimers. Directly answer the question with facts."
     )
     res = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=[{"role": "user", "content": prompt}],
+        max_tokens=120,
+        temperature=0.2,
     )
-    return {"answer": res.choices[0].message.content}
+    return {"answer": res.choices[0].message.content.strip()}

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { apiClient } from '../services/apiClient';
+import { generateLocalPlaceAnswer } from '../services/placeQAService';
 import { 
   Send, Mic, MicOff, Bot, User, Sparkles, Volume2, 
   RotateCcw, Info, ArrowRight, CheckCircle2, Globe, Shield, BookOpen
@@ -24,7 +25,7 @@ export const ChatPage = () => {
       timestamp: "Just now",
       confidence: "99%",
       sources: ["Archaeological Survey of India", "Kolhapur State Royal Gazetteers"],
-      text: `Welcome! I am your GeoEchoAI intelligence assistant for ${currentLocation.name}. Ask me anything about ${currentLocation.name}'s 1,300-year history, royal Maratha governance under Shahu Maharaj, the wrestling akhadas, the sacred culinary broths, or our machine-learning demographic projections through 2050.`
+      text: `Welcome! I am your GeoEchoAI assistant for ${currentLocation.name}. Ask me about environmental metrics, historical heritage, local specialties, or 2030 ML projections.`
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
@@ -110,31 +111,9 @@ export const ChatPage = () => {
       }
 
       if (!aiResponseText) {
-        const lower = text.toLowerCase();
-        if (lower.includes("wrestling") || lower.includes("talim") || lower.includes("akhada")) {
-          aiResponseText = `In ${currentLocation.name}, wrestling is not merely an athletic contest; it is a sacred lifestyle consecrated in red earth (lal maati). Introduced and institutionalized by Rajarshi Chhatrapati Shahu Maharaj in the early 20th century, wrestling talims like Motibag and Gangavesh train athletes who maintain strict monastic discipline, sleeping on wooden boards and subsisting on pure buffalo milk, almonds, and jaggery. Athletes train barefoot in clay blessed with turmeric, neem oil, and curd.`;
-          sources = ["Maharashtra Wrestling Federation", "Kolhapur Royal Sports Gazetteers"];
-        } else if (lower.includes("broth") || lower.includes("tambda") || lower.includes("pandhra") || lower.includes("food") || lower.includes("misal")) {
-          aiResponseText = `The culinary soul of ${currentLocation.name} is anchored by its legendary dual broths:
-1. **Tambda Rassa**: A thin, fiery crimson soup extracted from slow-simmered mutton stock and a signature spice blend of roasted whole spices, dry coconut, and local Lavangi and Byadgi chilies (Kanda-Lasun masala).
-2. **Pandhra Rassa**: A soothing, creamy white broth engineered from rich coconut milk, poppy seed paste, cashew cream, and fragrant cloves that coats the stomach and cools the fiery heat of the red broth.
-In addition, Kolhapuri Misal serves sprouted moth beans in an aromatic 'kat' gravy topped with crisp farsan and hot pav.`;
-          sources = ["Culinary Terroir Archive", "Traditional Deccan Recipes Index"];
-        } else if (lower.includes("forecast") || lower.includes("2030") || lower.includes("ml") || lower.includes("aqi")) {
-          aiResponseText = `Our predictive models (benchmarking XGBoost Regressor against SARIMA and Random Forest) project the following for ${currentLocation.name}:
-- **Demographics**: Projected to reach 4.35 million citizens by 2030 (up from 3.85M in 2025) with an $R^2$ fit score of 0.984.
-- **Air Quality (AQI)**: Expected to average 87 (Moderate) by 2030, influenced by urbanization expansion and regional industrial corridors.
-- **Explainable AI (XAI)**: Feature importance analysis ranks industrial zoning expansion (38%) and regional migration flow (27%) as the dominant drivers.`;
-          sources = ["GeoEchoAI ML Pipeline", "Sentinel-5P Satellite Feed Simulation"];
-        } else if (lower.includes("shahu") || lower.includes("reform") || lower.includes("1902") || lower.includes("history")) {
-          aiResponseText = `Rajarshi Chhatrapati Shahu Maharaj (1874–1922) was a transformative visionary king who governed Kolhapur. In 1902, he signed the world's earliest affirmative action decree, reserving 50% of state administrative posts for backward and marginalized communities. He decreed compulsory, free primary education, founded student hostels across all communities, outlawed untouchability, legalized widow remarriage, and patronized classical Hindustani musicians and artists.`;
-          sources = ["Chhatrapati Shahu Central Archives", "ASI Western Circle Historical Reports"];
-        } else if (lower.includes("temple") || lower.includes("mahalaxmi") || lower.includes("architecture")) {
-          aiResponseText = `The Sri Ambabai (Mahalaxmi) Temple in ${currentLocation.name} is a 7th-century architectural masterpiece constructed in the basalt Hemadpanthi style without mortar. The temple is one of the 18 sacred Maha Shakti Peethas. A rare astronomical phenomenon called **Kiranotsav** occurs twice each year (in November and January), wherein the rays of the setting sun penetrate directly through the western Mahadwar gate to illuminate the feet, chest, and finally the face of the goddess's 40-kilogram monolithic stone idol.`;
-          sources = ["Archaeological Survey of India", "Hemadpanthi Structural Treatises"];
-        } else {
-          aiResponseText = `Regarding your inquiry about ${currentLocation.name}: The region encompasses a unique intersection of 1,300 years of recorded civilizational heritage, fertile agro-industrial economic belts along the Panchganga river basin, and an increasingly modernized urban footprint. Would you like me to detail its environmental satellite metrics, the 1900-2050 timeline milestones, or generate a customized tourist walking route?`;
-        }
+        const local = generateLocalPlaceAnswer(text, currentLocation, {});
+        aiResponseText = local.answer;
+        sources = [local.badge || "GeoVisionAI Intelligence", "Regional Gazettes"];
       }
 
       const aiMsg = {

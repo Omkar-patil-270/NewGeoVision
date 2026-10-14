@@ -203,7 +203,7 @@ export const GeoAIAssistant = () => {
     {
       id: "init",
       sender: "ai",
-      text: `Hello! I am GeoBot, your intelligent AI companion. You can ask me anything—casual chat like "Hi, what's up?", or questions about any city's climate, satellite change detection, history, or predictions!`
+      text: `Hello! I'm GeoBot, your AI companion. Ask me about satellite metrics, local heritage, or environmental forecasts for any location!`
     }
   ]);
 

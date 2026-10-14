@@ -283,10 +283,28 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
             desc: "Historic 16th-century fortress perched 3,300 feet above Satara valley.",
             image: "/images/satara/ajinkyatara_fort.jpg",
             caption: "Real Photo: Ajinkyatara Fort Bastions"
+          },
+          {
+            title: "Sajjangad Hill Citadel",
+            desc: "Sacred mountain samadhi of saint Samarth Ramdas with historic stone gates.",
+            image: "/images/satara/sajjangad_fort.jpg",
+            caption: "Real Photo: Sajjangad Historic Entrance Gate"
+          },
+          {
+            title: "Thoseghar Waterfalls",
+            desc: "Spectacular 1,000-foot waterfall cascading through misty Sahyadri ravines.",
+            image: "/images/satara/thoseghar_falls.jpg",
+            caption: "Real Photo: Thoseghar Waterfalls Cascade"
+          },
+          {
+            title: "Historic Pratapgad Fort",
+            desc: "Impregnable fort of valour built by Chhatrapati Shivaji Maharaj in 1656.",
+            image: "/images/satara/pratapgad_fort.jpg",
+            caption: "Real Photo: Pratapgad Fort Ramparts in Monsoon"
           }
         ],
         narratives: {
-          default: `Satara is packed with world-famous natural and historic attractions. The UNESCO World Natural Heritage site of Kaas Plateau (Kaas Pathar) transforms into a vibrant carpet of pink, purple, and blue wildflowers every post-monsoon season.\n\nVisit Sajjangad—the sacred hilltop samadhi of saint Samarth Ramdas—and marvel at the thunderous Thoseghar Waterfalls cascading 1,000 feet into deep gorges.`,
+          default: `Satara is packed with world-famous natural and historic attractions. The UNESCO World Natural Heritage site of Kaas Plateau (Kaas Pathar) transforms into a vibrant carpet of pink, purple, and blue wildflowers every post-monsoon season.\n\nVisit Sajjangad—the sacred hilltop samadhi of saint Samarth Ramdas—and marvel at the thunderous Thoseghar Waterfalls cascading 1,000 feet into deep gorges. Discover the mighty battle ramparts of Pratapgad Fort and the serene river ghats of Wai.`,
           traveler: `Book your Kaas Pathar visitor pass online during August–October to see the peak flower bloom, and visit Sajjangad before sunset for serene mountain views!`,
           foodie: `Pick up fresh hot Kandi Pedha directly from the historic bazaar shops near Rajwada.`,
           history: `Ajinkyatara Fort was captured by Chhatrapati Shivaji Maharaj in 1673 and later heroically defended by Queen Tarabai against Mughal forces.`,
@@ -295,7 +313,8 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         highlights: [
           "Kaas Plateau: UNESCO World Natural Heritage Valley of Flowers",
           "Sajjangad: Sacred hill citadel of Samarth Ramdas",
-          "Thoseghar Waterfalls: 1,000-foot Sahyadri waterfall cascade"
+          "Thoseghar Waterfalls: 1,000-foot Sahyadri waterfall cascade",
+          "Pratapgad Fort: Historic 1656 mountain stronghold of Shivaji Maharaj"
         ]
       },
       {
@@ -313,12 +332,19 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
             name: "Satara Kandi Pedha",
             tag: "World-Famous Sweet",
             desc: "Slow-caramelized buffalo milk mawa infused with green cardamom and pure desi ghee.",
-            image: "/images/satara/ajinkyatara_fort.jpg",
-            caption: "Real Satara Kandi Pedha Heritage"
+            image: "/images/satara/satara_kandi_pedha.jpg",
+            caption: "Real Photo: Authentic Satara Kandi Pedha"
+          },
+          {
+            name: "Mahabaleshwar Fresh Strawberries & Cream",
+            tag: "Deccan Hill Specialty",
+            desc: "Luscious hand-picked mountain strawberries served with chilled fresh dairy cream.",
+            image: "/images/satara/mahabaleshwar_point.jpg",
+            caption: "Real Photo: Mahabaleshwar Strawberry Orchards"
           }
         ],
         narratives: {
-          default: `Satara's culinary pride is its legendary Kandi Pedha, invented in the late 19th century. Made by slowly simmering pure whole milk in large iron pans until it caramelizes to a deep golden amber, it has a rich, melt-in-the-mouth texture unlike any other sweet in India.\n\nFor meals, enjoy hearty rural Maharashtrian comfort: piping hot Pithla (spiced gram flour curry), rustic Bajra Bhakri, roasted garlic thecha, and fresh onion salad.`,
+          default: `Satara's culinary pride is its legendary Kandi Pedha, invented in the late 19th century. Made by slowly simmering pure whole milk in large iron pans until it caramelizes to a deep golden amber, it has a rich, melt-in-the-mouth texture unlike any other sweet in India.\n\nFor meals, enjoy hearty rural Maharashtrian comfort: piping hot Pithla (spiced gram flour curry), rustic Bajra Bhakri, roasted garlic thecha, and fresh onion salad. Don't miss world-famous fresh strawberries in nearby Mahabaleshwar!`,
           traveler: `Must-visit sweet shops: Stop at Rajwada bazaar to sample authentic Modi Pedha and Godiwale Pedha fresh from the copper vats!`,
           foodie: `The secret of Satara Kandi Pedha is four hours of continuous low-flame stirring that caramelizes the natural milk sugars without artificial color.`,
           history: `During the royal Maratha era, Kandi Pedha was sent as royal gifts to allied kingdoms across the Deccan.`,
@@ -327,7 +353,7 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         highlights: [
           "Satara Kandi Pedha: 150-year-old slow-caramelized milk fudge",
           "Pithla Bhakri: Traditional Deccan gram flour curry with flatbread",
-          "Spicy Garlic-Chili Thecha made on traditional stone mortar"
+          "Fresh Mahabaleshwar Strawberries & pure sugarcane delicacies"
         ]
       },
       {
@@ -340,8 +366,8 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         title: "Satara Municipal Council & Heritage City Development",
         subtitle: "One of Maharashtra's oldest municipal councils, established in 1853.",
         era: "modern",
-        image: "/images/satara/ajinkyatara_fort.jpg",
-        imageCaption: "Satara Civic Administration & Historic Town (Real Photo)",
+        image: "/images/satara/wai_dholya_ganpati.jpg",
+        imageCaption: "Krishna River Heritage & Civic Conservation in Satara District (Real Photo)",
         narratives: {
           default: `Civic management in Satara is governed by the Satara Municipal Council, established in 1853—making it one of the oldest civic bodies in western India.\n\nUnder civic leadership, the council manages water supply from the Kas and Koyna reservoirs, preserves heritage Maratha rajwadas, and enforces strict eco-sensitive tourism guidelines to protect the delicate biosphere of Kaas Plateau.`,
           traveler: `The municipal council operates dedicated tourist shuttles to Kaas Plateau during peak bloom season to prevent traffic congestion.`,
@@ -361,12 +387,12 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         categoryKey: "culture",
         categoryIcon: Users,
         pillLabel: "Population",
-        badge: "3.0 Million Citizens",
+        badge: "3.3 Million Citizens",
         title: "The Land of Brave Soldiers & Patriotism",
         subtitle: "A proud heritage of military valor, discipline, and community warmth.",
         era: "royal",
-        image: "/images/satara/ajinkyatara_fort.jpg",
-        imageCaption: "Cultural Pride and Monumental Heritage of Satara",
+        image: "/images/satara/sajjangad_fort.jpg",
+        imageCaption: "Sacred Sajjangad Citadel & Cultural Valour of Satara (Real Photo)",
         narratives: {
           default: `Satara is famously celebrated across India as 'Sainikanche Shahar' (City of Soldiers). Almost every family in rural Satara has sent brave sons and daughters to serve in the Indian Armed Forces, the Maratha Light Infantry, and national defense.\n\nThis culture of discipline, physical courage, and unyielding patriotism is reflected in local wrestling talims, community gymnasium akhadas, and deeply reverent celebration of Shiv Jayanti.`,
           traveler: `Visit the Sainik School Satara—the very first Sainik School established in India in 1961 by Defense Minister V.K. Krishna Menon!`,
@@ -390,8 +416,8 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         title: "Kas Plateau Biodiversity & Thoseghar Waterfalls",
         subtitle: "A UNESCO World Natural Heritage botanical hotspot and roaring falls.",
         era: "ancient",
-        image: "/images/satara/kaas_plateau.jpg",
-        imageCaption: "Real Photo: Kaas Plateau (Valley of Flowers), Satara",
+        image: "/images/satara/thoseghar_falls.jpg",
+        imageCaption: "Real Photo: Thoseghar Waterfalls (1,000-Foot Cascade), Satara",
         narratives: {
           default: `Satara sits in the heart of the Western Ghats (Sahyadris), one of the world's eight 'hottest hotspots' of biological diversity. The Kaas Plateau alone hosts over 850 flowering plant species, including insect-eating pitcher plants and endangered ground orchids.\n\nDeep in the misty monsoon, Thoseghar Waterfalls plunge 1,000 feet into lush green ravines, while the pristine waters of Kas Lake reflect thick cloud forests.`,
           traveler: `Visit Kaas Lake for peaceful boating surrounded by misty hill peaks and emerald greenery!`,

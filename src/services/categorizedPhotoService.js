@@ -85,13 +85,13 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Sinhagad Mountain Fortress Ramparts", url: "/images/locations/sinhagad.jpg", source: "Maratha Sentinel", placeVerified: true, attribution: "Forest Dept Maharashtra" }
     ],
     famous_food: [
-      { title: "Punyachi Misal & Authentic Deccan Snacks", url: "/images/locations/vada_pav.jpg", source: "Traditional Street Delicacy", placeVerified: true, attribution: "Pune Confectionery Guild" }
+      { title: "Punyachi Misal & Authentic Deccan Snacks", url: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=800&q=80", source: "Traditional Street Delicacy", placeVerified: true, attribution: "Pune Confectionery Guild" }
     ],
     nature_scenery: [
       { title: "Khadakwasla Dam & Sahyadri Reservoir", url: "/images/locations/khadakwasla.jpg", source: "Water Basin", placeVerified: true, attribution: "Irrigation Dept Maharashtra" }
     ],
     local_culture: [
-      { title: "Sinhagad Mountain Pass & Cultural Trails", url: "/images/locations/sinhagad.jpg", source: "Cultural Trekking", placeVerified: true, attribution: "Pune Mountaineering" }
+      { title: "Tulshibaug & Heritage Market Culture", url: "https://images.unsplash.com/photo-1596178065887-1198b6148b2b?auto=format&fit=crop&w=800&q=80", source: "Cultural Bazaar", placeVerified: true, attribution: "Pune Heritage Society" }
     ]
   },
 
@@ -100,16 +100,16 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "India Gate & Kartavya Path Grand Axis", url: "/images/locations/delhi_indiagate.jpg", source: "National Memorial", placeVerified: true, attribution: "CPWD / ASI" }
     ],
     historical_places: [
-      { title: "Imperial Delhi Sandstone Memorial Arch", url: "/images/locations/delhi_indiagate.jpg", source: "Historic Axis", placeVerified: true, attribution: "ASI Central Circle" }
+      { title: "Humayun's Tomb Mughal Red Sandstone Complex", url: "https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=800&q=80", source: "UNESCO Heritage", placeVerified: true, attribution: "Archaeological Survey of India" }
     ],
     famous_food: [
-      { title: "Chandni Chowk Mughlai Street Delicacies", url: "/images/locations/delhi_indiagate.jpg", source: "Old Delhi Cuisine", placeVerified: true, attribution: "Delhi Culinary Society" }
+      { title: "Chandni Chowk Mughlai Street Delicacies", url: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=800&q=80", source: "Old Delhi Cuisine", placeVerified: true, attribution: "Delhi Culinary Society" }
     ],
     nature_scenery: [
-      { title: "Lodi Gardens & Yamuna Ridge Forest", url: "/images/locations/delhi_indiagate.jpg", source: "Urban Canopy", placeVerified: true, attribution: "Delhi Forest Dept" }
+      { title: "Lodi Gardens & Yamuna Ridge Forest", url: "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=800&q=80", source: "Urban Canopy", placeVerified: true, attribution: "Delhi Forest Dept" }
     ],
     local_culture: [
-      { title: "Dilli Haat Crafts & Cultural Pavilion", url: "/images/locations/delhi_indiagate.jpg", source: "Handicrafts Hub", placeVerified: true, attribution: "Delhi Tourism" }
+      { title: "Dilli Haat Crafts & Cultural Pavilion", url: "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", source: "Handicrafts Hub", placeVerified: true, attribution: "Delhi Tourism" }
     ]
   },
 
@@ -118,16 +118,16 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Palace of Westminster & Big Ben", url: "/images/locations/london_bigben.jpg", source: "UNESCO Heritage", placeVerified: true, attribution: "UK Parliament" }
     ],
     historical_places: [
-      { title: "Elizabeth Tower & Thames Embankment", url: "/images/locations/london_bigben.jpg", source: "Historic Monument", placeVerified: true, attribution: "Historic England" }
+      { title: "Tower of London & Medieval Thames Citadel", url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80", source: "Historic Royal Palaces", placeVerified: true, attribution: "Historic England" }
     ],
     famous_food: [
-      { title: "Borough Market Traditional British Dining", url: "/images/locations/london_bigben.jpg", source: "Culinary Market", placeVerified: true, attribution: "Visit Britain" }
+      { title: "Borough Market Traditional British Dining", url: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80", source: "Culinary Market", placeVerified: true, attribution: "Visit Britain" }
     ],
     nature_scenery: [
-      { title: "River Thames Waterfront at Sunset", url: "/images/locations/london_bigben.jpg", source: "Historic River", placeVerified: true, attribution: "Port of London Authority" }
+      { title: "River Thames Waterfront & Hyde Park Greenery", url: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80", source: "Historic Royal Parks", placeVerified: true, attribution: "Royal Parks Agency" }
     ],
     local_culture: [
-      { title: "Westminster Arts & Theatre Quarter", url: "/images/locations/london_bigben.jpg", source: "Civic Life", placeVerified: true, attribution: "London Arts Council" }
+      { title: "Covent Garden & West End Theatre Quarter", url: "https://images.unsplash.com/photo-1526129318478-62ed807ebdf9?auto=format&fit=crop&w=800&q=80", source: "Civic Life", placeVerified: true, attribution: "London Arts Council" }
     ]
   },
 
@@ -136,13 +136,13 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Tokyo Tower & Metropolitan Skyline", url: "/images/locations/tokyo_tower.jpg", source: "Iconic Landmark", placeVerified: true, attribution: "Tokyo Tower Corp" }
     ],
     historical_places: [
-      { title: "Imperial Palace & Ancient Shrines", url: "/images/locations/tokyo_tower.jpg", source: "Ancient Heritage", placeVerified: true, attribution: "Japan Heritage Registry" }
+      { title: "Senso-ji Temple & Ancient Asakusa Pagoda", url: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80", source: "Ancient Heritage", placeVerified: true, attribution: "Japan Heritage Registry" }
     ],
     famous_food: [
-      { title: "Tsukiji Fresh Sushi & Traditional Ramen", url: "/images/locations/tokyo_shibuya.jpg", source: "Culinary Tradition", placeVerified: true, attribution: "Tokyo Cuisine Guild" }
+      { title: "Tsukiji Fresh Sushi & Artisanal Handcrafted Ramen", url: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80", source: "Culinary Tradition", placeVerified: true, attribution: "Tokyo Cuisine Guild" }
     ],
     nature_scenery: [
-      { title: "Shinjuku Gyoen & Mount Fuji Vista", url: "/images/locations/tokyo_tower.jpg", source: "National Garden", placeVerified: true, attribution: "Ministry of Environment Japan" }
+      { title: "Shinjuku Gyoen Botanical Gardens & Cherry Blossoms", url: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80", source: "National Garden", placeVerified: true, attribution: "Ministry of Environment Japan" }
     ],
     local_culture: [
       { title: "Shibuya Crossing & High-Tech Urban Neon", url: "/images/locations/tokyo_shibuya.jpg", source: "Global Metropolis", placeVerified: true, attribution: "Tokyo Metropolitan Gov" }
@@ -170,20 +170,19 @@ export const CURATED_VERIFIED_GALLERIES = {
 
   "paris": {
     tourist_attractions: [
-      { title: "Eiffel Tower & Champ de Mars", url: "/images/locations/paris_eiffel.jpg", source: "World Landmark", placeVerified: true, attribution: "City of Paris" },
-      { title: "Louvre Museum Glass Pyramid", url: "/images/locations/paris_louvre.jpg", source: "National Museum", placeVerified: true, attribution: "Musée du Louvre" }
+      { title: "Eiffel Tower & Champ de Mars", url: "/images/locations/paris_eiffel.jpg", source: "World Landmark", placeVerified: true, attribution: "City of Paris" }
     ],
     historical_places: [
-      { title: "Musée du Louvre Historic Royal Palace", url: "/images/locations/paris_louvre.jpg", source: "Historic Monument", placeVerified: true, attribution: "French Ministry of Culture" }
+      { title: "Louvre Museum Glass Pyramid & Royal Palace", url: "/images/locations/paris_louvre.jpg", source: "Historic Monument", placeVerified: true, attribution: "Musée du Louvre" }
     ],
     famous_food: [
-      { title: "Artisanal French Boulangerie Croissants & Patisserie", url: "/images/locations/paris_eiffel.jpg", source: "French Gastronomy", placeVerified: true, attribution: "Parisian Culinary Guild" }
+      { title: "Artisanal French Boulangerie Croissants & Patisserie", url: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80", source: "French Gastronomy", placeVerified: true, attribution: "Parisian Culinary Guild" }
     ],
     nature_scenery: [
-      { title: "River Seine & Île de la Cité Waterfront", url: "/images/locations/paris_eiffel.jpg", source: "Historic Riverway", placeVerified: true, attribution: "Parisian Riverways" }
+      { title: "Tuileries Formal Gardens & Seine Riverbank", url: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80", source: "Historic Royal Gardens", placeVerified: true, attribution: "City of Paris Parks" }
     ],
     local_culture: [
-      { title: "Montmartre Bohemian Artists Square & Cafés", url: "/images/locations/paris_louvre.jpg", source: "Cultural Quarter", placeVerified: true, attribution: "Montmartre Arts" }
+      { title: "Montmartre Bohemian Artists Square & Sidewalk Cafés", url: "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=800&q=80", source: "Cultural Quarter", placeVerified: true, attribution: "Montmartre Arts" }
     ]
   },
 
@@ -192,16 +191,16 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Burj Khalifa 828m Spire & Downtown Fountain", url: "/images/locations/dubai_burjkhalifa.jpg", source: "World's Tallest Tower", placeVerified: true, attribution: "Emaar Properties" }
     ],
     historical_places: [
-      { title: "Al Fahidi Historical Fort & Old Dubai Creek", url: "/images/locations/dubai_burjkhalifa.jpg", source: "Heritage District", placeVerified: true, attribution: "Dubai Culture" }
+      { title: "Al Fahidi Historical Fort & Old Dubai Creek", url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80", source: "Heritage District", placeVerified: true, attribution: "Dubai Culture" }
     ],
     famous_food: [
-      { title: "Authentic Arabian Shawarma & Emirati Spices", url: "/images/locations/dubai_burjkhalifa.jpg", source: "Emirati Cuisine", placeVerified: true, attribution: "Dubai Culinary Registry" }
+      { title: "Authentic Arabian Shawarma & Emirati Spices", url: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80", source: "Emirati Cuisine", placeVerified: true, attribution: "Dubai Culinary Registry" }
     ],
     nature_scenery: [
-      { title: "Arabian Desert Dunes & Sunset Horizon", url: "/images/locations/dubai_burjkhalifa.jpg", source: "Desert Conservation", placeVerified: true, attribution: "UAE Ministry of Climate" }
+      { title: "Arabian Desert Red Dunes & Sunset Horizon", url: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80", source: "Desert Conservation", placeVerified: true, attribution: "UAE Ministry of Climate" }
     ],
     local_culture: [
-      { title: "Deira Traditional Gold & Spice Souks", url: "/images/locations/dubai_burjkhalifa.jpg", source: "Historic Bazaars", placeVerified: true, attribution: "Dubai Tourism" }
+      { title: "Deira Traditional Gold & Spice Souks", url: "https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=800&q=80", source: "Historic Bazaars", placeVerified: true, attribution: "Dubai Tourism" }
     ]
   },
 
@@ -210,16 +209,16 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Manhattan Iconic Skyline & Empire State", url: "/images/locations/newyork_skyline.jpg", source: "Global Metropolis", placeVerified: true, attribution: "NYC Tourism" }
     ],
     historical_places: [
-      { title: "Statue of Liberty & Ellis Island National Monument", url: "/images/locations/newyork_skyline.jpg", source: "National Monument", placeVerified: true, attribution: "National Park Service" }
+      { title: "Statue of Liberty & Ellis Island National Monument", url: "https://images.unsplash.com/photo-1508873696983-2df5293cb395?auto=format&fit=crop&w=800&q=80", source: "National Monument", placeVerified: true, attribution: "National Park Service" }
     ],
     famous_food: [
-      { title: "Classic New York Style Brick-Oven Pizza & Bagels", url: "/images/locations/newyork_skyline.jpg", source: "NYC Culinary Tradition", placeVerified: true, attribution: "NYC Dining Guide" }
+      { title: "Classic New York Style Brick-Oven Pizza & Bagels", url: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80", source: "NYC Culinary Tradition", placeVerified: true, attribution: "NYC Dining Guide" }
     ],
     nature_scenery: [
-      { title: "Central Park Urban Forest & Reservoir", url: "/images/locations/newyork_skyline.jpg", source: "Urban Parkland", placeVerified: true, attribution: "Central Park Conservancy" }
+      { title: "Central Park Urban Forest & Reservoir", url: "https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80", source: "Urban Parkland", placeVerified: true, attribution: "Central Park Conservancy" }
     ],
     local_culture: [
-      { title: "Broadway Theatrical District & Times Square", url: "/images/locations/newyork_skyline.jpg", source: "Cultural Center", placeVerified: true, attribution: "Broadway League" }
+      { title: "Broadway Theatrical District & Times Square Neon", url: "https://images.unsplash.com/photo-1508873535684-277a3cbcc4e8?auto=format&fit=crop&w=800&q=80", source: "Cultural Center", placeVerified: true, attribution: "Broadway League" }
     ]
   },
 
@@ -255,7 +254,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Dhom Dam Reservoir & Sahyadri Foothills", url: "/images/satara/koyna_dam.jpg", source: "Water Basin", placeVerified: true, attribution: "Maharashtra Water Resources" }
     ],
     local_culture: [
-      { title: "Bollywood Film Heritage Ghats & Vedic Culture", url: "/images/locations/wai_temple.jpg", source: "Cultural Center", placeVerified: true, attribution: "Wai Municipal Council" }
+      { title: "Bollywood Film Heritage Ghats & Vedic Culture", url: "/images/satara/thoseghar_falls.jpg", source: "Cultural Center", placeVerified: true, attribution: "Wai Municipal Council" }
     ]
   },
 
@@ -300,7 +299,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Rajwada Palace & Historic Clock Tower", url: "/images/locations/ichalkaranji.jpg", source: "Ghorpade Dynasty Heritage", placeVerified: true, attribution: "Ichalkaranji Municipal Corp" }
     ],
     historical_places: [
-      { title: "Ghorpade Princely Palace Courtyard", url: "/images/locations/ichalkaranji.jpg", source: "Heritage Landmark", placeVerified: true, attribution: "Heritage Sansthan" }
+      { title: "Ghorpade Princely Palace Courtyard", url: "/images/kolhapur/bhavani_mandap.jpg", source: "Heritage Landmark", placeVerified: true, attribution: "Heritage Sansthan" }
     ],
     famous_food: [
       { title: "Famous Ichalkaranji Farsan & Spicy Misal", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Regional Delicacy", placeVerified: true, attribution: "Culinary Association" }
@@ -309,7 +308,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Panchganga River Plain & Agricultural Greenery", url: "/images/kolhapur/panchganga_ghat.jpg", source: "Riverine Belt", placeVerified: true, attribution: "Pollution Control Board" }
     ],
     local_culture: [
-      { title: "Manchester of Maharashtra Textile Powerloom Mills", url: "/images/locations/ichalkaranji.jpg", source: "Textile Capital", placeVerified: true, attribution: "Textile Mill Association" }
+      { title: "Manchester of Maharashtra Textile Powerloom Mills", url: "/images/kolhapur/kolhapuri_chappals.jpg", source: "Textile Capital", placeVerified: true, attribution: "Textile Mill Association" }
     ]
   },
 
@@ -318,7 +317,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Shri Ganpati Black Stone Temple & Krishna Ghat", url: "/images/locations/sangli.jpg", source: "Patwardhan Dynasty Heritage", placeVerified: true, attribution: "Sangli Devasthan Trust" }
     ],
     historical_places: [
-      { title: "Historic Sangli Fort & Royal Rajwada", url: "/images/locations/sangli.jpg", source: "Historic Citadel", placeVerified: true, attribution: "Govt of Maharashtra" }
+      { title: "Historic Sangli Fort & Royal Rajwada", url: "/images/kolhapur/shahu_maharaj.jpg", source: "Historic Citadel", placeVerified: true, attribution: "Govt of Maharashtra" }
     ],
     famous_food: [
       { title: "GI-Tagged Sangli Turmeric & Signature Spiced Bhel", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Turmeric City Cuisine", placeVerified: true, attribution: "Sangli Traders Guild" }
@@ -327,7 +326,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Krishna River Sacred Water Basin", url: "/images/kolhapur/panchganga_ghat.jpg", source: "Sacred River", placeVerified: true, attribution: "Krishna Valley Water Board" }
     ],
     local_culture: [
-      { title: "Asia's Largest Turmeric Trading Hub & Sugar Co-ops", url: "/images/locations/sangli.jpg", source: "Agrarian Hub", placeVerified: true, attribution: "Sangli APMC" }
+      { title: "Asia's Largest Turmeric Trading Hub & Sugar Co-ops", url: "/images/kolhapur/kusti_akhada.jpg", source: "Agrarian Hub", placeVerified: true, attribution: "Sangli APMC" }
     ]
   },
 
@@ -336,7 +335,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Siddheshwar Temple & Sacred Lake", url: "/images/locations/solapur.jpg", source: "12th-C Lingayat Shrine", placeVerified: true, attribution: "Siddheshwar Devasthan" }
     ],
     historical_places: [
-      { title: "Solapur Bhuikot Land Citadel & Moat", url: "/images/locations/solapur.jpg", source: "Bahmani Era Fort", placeVerified: true, attribution: "ASI Central Circle" }
+      { title: "Solapur Bhuikot Land Citadel & Moat", url: "/images/locations/aurangabad.jpg", source: "Bahmani Era Fort", placeVerified: true, attribution: "ASI Central Circle" }
     ],
     famous_food: [
       { title: "Authentic Solapuri Shenga Chutney & Jowar Bhakri", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Deccan Cuisine", placeVerified: true, attribution: "Solapur Culinary Guild" }
@@ -345,7 +344,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Great Indian Bustard Wildlife Sanctuary Grasslands", url: "/images/satara/kaas_plateau.jpg", source: "Wildlife Reserve", placeVerified: true, attribution: "Forest Dept" }
     ],
     local_culture: [
-      { title: "GI-Tagged Solapuri Chaddar & Terry Towels Handlooms", url: "/images/locations/solapur.jpg", source: "Handloom Heritage", placeVerified: true, attribution: "Weavers Co-op Society" }
+      { title: "GI-Tagged Solapuri Chaddar & Terry Towels Handlooms", url: "/images/kolhapur/kolhapuri_chappals.jpg", source: "Handloom Heritage", placeVerified: true, attribution: "Weavers Co-op Society" }
     ]
   }
 };

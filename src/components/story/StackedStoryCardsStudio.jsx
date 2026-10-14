@@ -542,8 +542,8 @@ export const StackedStoryCardsStudio = () => {
                       <div className="flex-1 flex flex-col justify-between space-y-2">
                         <div className="w-full aspect-[16/11] rounded-2xl overflow-hidden bg-black relative group shadow-md border border-slate-800">
                           <img
-                            src={card.gallery[activeGalleryIndex].image}
-                            alt={card.gallery[activeGalleryIndex].title}
+                            src={(card.gallery[activeGalleryIndex] || card.gallery[0])?.image}
+                            alt={(card.gallery[activeGalleryIndex] || card.gallery[0])?.title}
                             loading="eager"
                             decoding="async"
                             onError={(e) => {
@@ -553,8 +553,8 @@ export const StackedStoryCardsStudio = () => {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
                           <div className="absolute bottom-2.5 left-3 right-3 text-white">
-                            <span className="font-bold text-xs block">{card.gallery[activeGalleryIndex].title}</span>
-                            <span className="text-[10px] text-slate-300 line-clamp-1">{card.gallery[activeGalleryIndex].caption}</span>
+                            <span className="font-bold text-xs block">{(card.gallery[activeGalleryIndex] || card.gallery[0])?.title}</span>
+                            <span className="text-[10px] text-slate-300 line-clamp-1">{(card.gallery[activeGalleryIndex] || card.gallery[0])?.caption}</span>
                           </div>
                         </div>
 
@@ -569,7 +569,7 @@ export const StackedStoryCardsStudio = () => {
                               }}
                               className={`p-1 rounded-xl border text-[9px] font-mono text-center truncate transition-all cursor-pointer ${
                                 activeGalleryIndex === gIdx
-                                  ? "bg-cyan-500/20 text-cyan-300 border-cyan-400 font-bold shadow-md shadow-cyan-500/20"
+                                   ? "bg-cyan-500/20 text-cyan-300 border-cyan-400 font-bold shadow-md shadow-cyan-500/20"
                                   : "bg-[#060b16] text-slate-400 border-slate-800 hover:text-white"
                               }`}
                             >
@@ -583,8 +583,8 @@ export const StackedStoryCardsStudio = () => {
                       <div className="flex-1 flex flex-col justify-between space-y-2">
                         <div className="w-full aspect-[16/11] rounded-2xl overflow-hidden bg-black relative group shadow-md border border-slate-800">
                           <img
-                            src={card.foodGallery[activeFoodIndex].image}
-                            alt={card.foodGallery[activeFoodIndex].name}
+                            src={(card.foodGallery[activeFoodIndex] || card.foodGallery[0])?.image}
+                            alt={(card.foodGallery[activeFoodIndex] || card.foodGallery[0])?.name}
                             loading="eager"
                             decoding="async"
                             onError={(e) => {
@@ -594,8 +594,8 @@ export const StackedStoryCardsStudio = () => {
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none" />
                           <div className="absolute bottom-2.5 left-3 right-3 text-white">
-                            <span className="font-bold text-xs block">{card.foodGallery[activeFoodIndex].name}</span>
-                            <span className="text-[10px] text-amber-300 line-clamp-1">{card.foodGallery[activeFoodIndex].desc}</span>
+                            <span className="font-bold text-xs block">{(card.foodGallery[activeFoodIndex] || card.foodGallery[0])?.name}</span>
+                            <span className="text-[10px] text-amber-300 line-clamp-1">{(card.foodGallery[activeFoodIndex] || card.foodGallery[0])?.desc}</span>
                           </div>
                         </div>
 

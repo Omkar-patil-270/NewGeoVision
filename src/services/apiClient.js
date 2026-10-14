@@ -4,6 +4,8 @@
  * Wikimedia Images, Geocoding, and Conversational Agent.
  */
 
+import { getCategorizedPhotos } from './categorizedPhotoService.js';
+
 const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://127.0.0.1:8000";
 
 // In-memory request cache to minimize redundant network roundtrips
@@ -215,7 +217,7 @@ export const apiClient = {
    * (Google Places, Wikimedia Commons, Unsplash, Pexels)
    */
   async getCategorizedLocationImages(locationName, category = null, lat = null, lon = null, limit = 6) {
-    if (!locationName) return null;
+    if (!locationName) return getCategorizedPhotos("Satara");
     try {
       const params = new URLSearchParams({ location: locationName, limit: String(limit) });
       if (category && category !== "all") params.append("category", category);
@@ -228,9 +230,9 @@ export const apiClient = {
         return res;
       }
     } catch (err) {
-      console.warn("apiClient.getCategorizedLocationImages error:", err);
+      console.warn("apiClient.getCategorizedLocationImages network notice, using verified local repository:", err);
     }
-    return null;
+    return getCategorizedPhotos(locationName);
   },
 
   /**

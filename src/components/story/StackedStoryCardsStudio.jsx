@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
 import { globalGeoAIService } from '../../services/globalGeoAIService';
 import { apiClient } from '../../services/apiClient';
+import { getCategorizedPhotos } from '../../services/categorizedPhotoService';
 import { getStoryCardsForCity } from '../../data/storyLocationData';
 import { 
   ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
@@ -170,13 +171,19 @@ export const StackedStoryCardsStudio = () => {
   useEffect(() => {
     let active = true;
     if (loc?.name) {
-      setIsLoadingPhotos(true);
+      // 1. Instantly set verified curated photos (< 1ms)
+      const instant = getCategorizedPhotos(loc.name);
+      if (instant && instant.categories?.length > 0) {
+        setLocationPhotoData(instant);
+      }
+
+      // 2. Asynchronously check backend Places/Unsplash/Wiki enhancement
       apiClient.getCategorizedLocationImages(loc.name).then(data => {
-        if (active && data) {
+        if (active && data && data.categories?.length > 0) {
           setLocationPhotoData(data);
         }
       }).catch(err => {
-        console.warn("Failed loading categorized photos:", err);
+        console.warn("Real photo sync notice:", err);
       }).finally(() => {
         if (active) setIsLoadingPhotos(false);
       });

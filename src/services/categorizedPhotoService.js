@@ -16,49 +16,37 @@ export const CURATED_VERIFIED_GALLERIES = {
   "satara": {
     tourist_attractions: [
       { title: "Ajinkyatara Fort (3,300-ft Hill Citadel)", url: "/images/satara/ajinkyatara_fort.jpg", source: "Verified Heritage", placeVerified: true, attribution: "Maharashtra Tourism / ASI" },
-      { title: "Sajjangad Fort & Saint Ramdas Samadhi", url: "/images/satara/sajjangad_fort.jpg", source: "Verified Sanctuary", placeVerified: true, attribution: "ASI Heritage Register" },
-      { title: "Thoseghar Waterfalls (1,000-ft Cascade)", url: "/images/satara/thoseghar_falls.jpg", source: "Natural Wonder", placeVerified: true, attribution: "Maharashtra Forest Dept" },
-      { title: "Historic Pratapgad Fort Ramparts", url: "/images/satara/pratapgad_fort.jpg", source: "Verified Citadel", placeVerified: true, attribution: "Archaeological Survey of India" },
+      { title: "Thoseghar Waterfalls (1,000-ft Sahyadri Chasm)", url: "/images/satara/thoseghar_falls.jpg", source: "Natural Wonder", placeVerified: true, attribution: "Maharashtra Forest Dept" },
       { title: "Mahabaleshwar Valley & Viewpoints", url: "/images/satara/mahabaleshwar_point.jpg", source: "Regional Heritage", placeVerified: true, attribution: "Maharashtra Tourism" }
     ],
     historical_places: [
-      { title: "Ajinkyatara Ancient Ramparts & Maratha Bastions", url: "/images/satara/ajinkyatara_fort.jpg", source: "Maratha Capital", placeVerified: true, attribution: "ASI Heritage Register" },
       { title: "Sajjangad Citadel Ancient Entrance Gates", url: "/images/satara/sajjangad_fort.jpg", source: "Historic Sanctuary", placeVerified: true, attribution: "Ramdas Swami Sansthan" },
-      { title: "Pratapgad 1656 Mountain Battle Fortress", url: "/images/satara/pratapgad_fort.jpg", source: "Chhatrapati Shivaji Citadel", placeVerified: true, attribution: "ASI Heritage Register" },
-      { title: "Wai Dholya Ganpati & Krishna River Ghats", url: "/images/satara/wai_dholya_ganpati.jpg", source: "Heritage Temple (1762)", placeVerified: true, attribution: "Wai Heritage Trust" }
+      { title: "Pratapgad 1656 Mountain Battle Fortress", url: "/images/satara/pratapgad_fort.jpg", source: "Chhatrapati Shivaji Citadel", placeVerified: true, attribution: "ASI Heritage Register" }
     ],
     famous_food: [
-      { title: "Authentic Satara Kandi Pedha (150-Year Heritage)", url: "/images/satara/satara_kandi_pedha.jpg", source: "GI Tagged Specialty", placeVerified: true, attribution: "Satara Sweetmakers Guild" },
-      { title: "Mahabaleshwar Fresh Strawberries & Cream", url: "/images/satara/mahabaleshwar_point.jpg", source: "Hill Specialty", placeVerified: true, attribution: "Mahabaleshwar Strawberry Farmers" }
+      { title: "Authentic Satara Kandi Pedha (150-Year Heritage)", url: "/images/satara/satara_kandi_pedha.jpg", source: "GI Tagged Specialty", placeVerified: true, attribution: "Satara Sweetmakers Guild" }
     ],
     nature_scenery: [
       { title: "Kaas Plateau UNESCO Biodiversity Reserve (Valley of Flowers)", url: "/images/satara/kaas_plateau.jpg", source: "UNESCO World Heritage", placeVerified: true, attribution: "UNESCO World Heritage Site" },
-      { title: "Thoseghar Waterfalls (1,000-Foot Sahyadri Chasm)", url: "/images/satara/thoseghar_falls.jpg", source: "Natural Wonder", placeVerified: true, attribution: "Maharashtra Forest Dept" },
-      { title: "Koyna Hydroelectric Dam & Shivsagar Lake", url: "/images/satara/koyna_dam.jpg", source: "Hydro Landmark", placeVerified: true, attribution: "Maharashtra Water Resources" },
-      { title: "Mahabaleshwar Venna & Highland Mist", url: "/images/satara/mahabaleshwar_point.jpg", source: "Western Ghats", placeVerified: true, attribution: "Sahyadri Buffer Reserve" }
+      { title: "Koyna Hydroelectric Dam & Shivsagar Lake", url: "/images/satara/koyna_dam.jpg", source: "Hydro Landmark", placeVerified: true, attribution: "Maharashtra Water Resources" }
     ],
     local_culture: [
-      { title: "Wai Sacred Krishna River Heritage Ghats", url: "/images/satara/wai_dholya_ganpati.jpg", source: "Dakshin Kashi Heritage", placeVerified: true, attribution: "Wai Heritage Trust" },
-      { title: "Ajinkyatara Flagstaff & Maratha Citadel Courts", url: "/images/satara/ajinkyatara_fort.jpg", source: "Maratha Imperial Heritage", placeVerified: true, attribution: "Chhatrapati Shahu Trust" },
-      { title: "Sajjangad Daily Community Mahaprasad Sansthan", url: "/images/satara/sajjangad_fort.jpg", source: "Spiritual Culture", placeVerified: true, attribution: "Sajjangad Sansthan" }
+      { title: "Wai Sacred Krishna River Heritage Temple & Ghats", url: "/images/satara/wai_dholya_ganpati.jpg", source: "Dakshin Kashi Heritage", placeVerified: true, attribution: "Wai Heritage Trust" }
     ]
   },
 
   "kolhapur": {
     tourist_attractions: [
       { title: "Shri Mahalaxmi (Ambabai) Basalt Temple", url: "/images/kolhapur/mahalaxmi_temple.jpg", source: "7th-C Shakti Peetha", placeVerified: true, attribution: "Shahu Chhatrapati Trust / ASI" },
-      { title: "Historic Bhavani Mandap Royal Courtyard", url: "/images/kolhapur/bhavani_mandap.jpg", source: "Royal Heritage", placeVerified: true, attribution: "Kolhapur Municipal Corporation" },
       { title: "Chhatrapati Shahu New Palace Museum", url: "/images/kolhapur/new_palace.jpg", source: "Indo-Saracenic Palace", placeVerified: true, attribution: "Shahu Heritage Sansthan" },
-      { title: "Scenic Rankala Lake & Sunset Chowpatty", url: "/images/kolhapur/rankala_lake.jpg", source: "9th-C Historic Lake", placeVerified: true, attribution: "Maharashtra Tourism" }
+      { title: "Panhala Fort (Teen Darwaza & Bastions)", url: "/images/kolhapur/panhala_fort.jpg", source: "Maratha Stronghold", placeVerified: true, attribution: "Archaeological Survey of India" }
     ],
     historical_places: [
-      { title: "Panhala Fort (Teen Darwaza & Bastions)", url: "/images/kolhapur/panhala_fort.jpg", source: "Maratha Stronghold", placeVerified: true, attribution: "Archaeological Survey of India" },
-      { title: "New Palace Royal Durbar Hall & Weaponry", url: "/images/kolhapur/new_palace.jpg", source: "Royal Durbar", placeVerified: true, attribution: "Chhatrapati Shahu Museum" },
-      { title: "Bhavani Mandap Durbar & Historic Square", url: "/images/kolhapur/bhavani_mandap.jpg", source: "Historic Palace", placeVerified: true, attribution: "Kolhapur Royal Trust" }
+      { title: "Historic Bhavani Mandap Royal Courtyard", url: "/images/kolhapur/bhavani_mandap.jpg", source: "Royal Heritage", placeVerified: true, attribution: "Kolhapur Municipal Corporation" },
+      { title: "Panhala Sahyadri Escarpment View", url: "/images/kolhapur/panhala_view.jpg", source: "Fortress Ramparts", placeVerified: true, attribution: "Deccan History Archive" }
     ],
     famous_food: [
-      { title: "Authentic Kolhapuri Misal Pav & Kat Gravy", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Signature Delicacy", placeVerified: true, attribution: "Kolhapur Culinary Guild" },
-      { title: "Tambda & Pandhra Rassa Artisanal Broths", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Royal Broths", placeVerified: true, attribution: "Deccan Culinary Archive" }
+      { title: "Authentic Kolhapuri Misal Pav & Tambda-Pandhra Rassa", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Signature Delicacy", placeVerified: true, attribution: "Kolhapur Culinary Guild" }
     ],
     nature_scenery: [
       { title: "Scenic Rankala Lake Waters at Sunset", url: "/images/kolhapur/rankala_lake.jpg", source: "Historic Lake", placeVerified: true, attribution: "Maharashtra Tourism Development" },
@@ -72,39 +60,38 @@ export const CURATED_VERIFIED_GALLERIES = {
 
   "mumbai": {
     tourist_attractions: [
-      { title: "Chhatrapati Shivaji Maharaj Terminus (CST)", url: "/images/locations/mumbai_cst.jpg", source: "UNESCO World Heritage", placeVerified: true, attribution: "Central Railway / UNESCO" },
-      { title: "Bandra-Worli Sea Link & Promenade", url: "/images/locations/bandra.jpg", source: "Modern Landmark", placeVerified: true, attribution: "MMRDA" }
+      { title: "Chhatrapati Shivaji Maharaj Terminus (CST)", url: "/images/locations/mumbai_cst.jpg", source: "UNESCO World Heritage", placeVerified: true, attribution: "Central Railway / UNESCO" }
     ],
     historical_places: [
-      { title: "CST Victorian Gothic Architecture", url: "/images/locations/mumbai_cst.jpg", source: "Heritage Architecture", placeVerified: true, attribution: "Archaeological Survey of India" }
+      { title: "Gateway of India Monumental Arch", url: "/images/locations/gateway_of_india.jpg", source: "Deccan Seaboard Gateway", placeVerified: true, attribution: "Archaeological Survey of India" },
+      { title: "Kanheri Rock-Cut Buddhist Cave Sanctuaries", url: "/images/locations/kanheri.jpg", source: "Ancient Heritage (1st-C BCE)", placeVerified: true, attribution: "ASI Western Circle" }
     ],
     famous_food: [
-      { title: "Mumbai Vada Pav & Coastal Street Gastronomy", url: "/images/locations/marine_drive.jpg", source: "Street Food Capital", placeVerified: true, attribution: "Mumbai Culinary Guild" }
+      { title: "Iconic Mumbai Vada Pav & Coastal Street Gastronomy", url: "/images/locations/vada_pav.jpg", source: "Street Food Capital", placeVerified: true, attribution: "Mumbai Culinary Guild" }
     ],
     nature_scenery: [
       { title: "Marine Drive Queen's Necklace at Dusk", url: "/images/locations/marine_drive.jpg", source: "Arabian Sea Coast", placeVerified: true, attribution: "Maharashtra Tourism" }
     ],
     local_culture: [
-      { title: "Bandra Promenade & Coastal Lifestyle", url: "/images/locations/bandra.jpg", source: "Metropolitan Life", placeVerified: true, attribution: "City of Mumbai" }
+      { title: "Bandra Promenade & Coastal Heritage", url: "/images/locations/bandra.jpg", source: "Metropolitan Life", placeVerified: true, attribution: "City of Mumbai" }
     ]
   },
 
   "pune": {
     tourist_attractions: [
-      { title: "Historic Shaniwar Wada Citadel Gates", url: "/images/locations/pune_shaniwarwada.jpg", source: "Peshwa Capital", placeVerified: true, attribution: "ASI Western Circle" },
-      { title: "Sinhagad Hill Fortress Ramparts", url: "/images/locations/sinhagad.jpg", source: "Maratha Sentinel", placeVerified: true, attribution: "Forest Dept Maharashtra" }
+      { title: "Historic Shaniwar Wada Citadel Gates", url: "/images/locations/pune_shaniwarwada.jpg", source: "Peshwa Capital", placeVerified: true, attribution: "ASI Western Circle" }
     ],
     historical_places: [
-      { title: "Shaniwar Wada 1732 Stone Ramparts", url: "/images/locations/pune_shaniwarwada.jpg", source: "Peshwa Dynasty", placeVerified: true, attribution: "ASI Heritage" }
+      { title: "Sinhagad Mountain Fortress Ramparts", url: "/images/locations/sinhagad.jpg", source: "Maratha Sentinel", placeVerified: true, attribution: "Forest Dept Maharashtra" }
     ],
     famous_food: [
-      { title: "Punyachi Misal & Authentic Bakarwadi", url: "/images/locations/pune_shaniwarwada.jpg", source: "Traditional Snack", placeVerified: true, attribution: "Pune Confectionery Guild" }
+      { title: "Punyachi Misal & Authentic Deccan Snacks", url: "/images/locations/vada_pav.jpg", source: "Traditional Street Delicacy", placeVerified: true, attribution: "Pune Confectionery Guild" }
     ],
     nature_scenery: [
       { title: "Khadakwasla Dam & Sahyadri Reservoir", url: "/images/locations/khadakwasla.jpg", source: "Water Basin", placeVerified: true, attribution: "Irrigation Dept Maharashtra" }
     ],
     local_culture: [
-      { title: "Sinhagad Trekking Trails & Village Heritage", url: "/images/locations/sinhagad.jpg", source: "Cultural Trekking", placeVerified: true, attribution: "Pune Mountaineering" }
+      { title: "Sinhagad Mountain Pass & Cultural Trails", url: "/images/locations/sinhagad.jpg", source: "Cultural Trekking", placeVerified: true, attribution: "Pune Mountaineering" }
     ]
   },
 
@@ -146,11 +133,10 @@ export const CURATED_VERIFIED_GALLERIES = {
 
   "tokyo": {
     tourist_attractions: [
-      { title: "Tokyo Tower & Metropolitan Skyline", url: "/images/locations/tokyo_tower.jpg", source: "Iconic Landmark", placeVerified: true, attribution: "Tokyo Tower Corp" },
-      { title: "Shibuya Crossing & Kinetic Cityscape", url: "/images/locations/tokyo_shibuya.jpg", source: "Global Metropolis", placeVerified: true, attribution: "Tokyo Metropolitan Gov" }
+      { title: "Tokyo Tower & Metropolitan Skyline", url: "/images/locations/tokyo_tower.jpg", source: "Iconic Landmark", placeVerified: true, attribution: "Tokyo Tower Corp" }
     ],
     historical_places: [
-      { title: "Senso-ji & Ancient Asakusa Shrines", url: "/images/locations/tokyo_tower.jpg", source: "Ancient Heritage", placeVerified: true, attribution: "Japan Heritage Registry" }
+      { title: "Imperial Palace & Ancient Shrines", url: "/images/locations/tokyo_tower.jpg", source: "Ancient Heritage", placeVerified: true, attribution: "Japan Heritage Registry" }
     ],
     famous_food: [
       { title: "Tsukiji Fresh Sushi & Traditional Ramen", url: "/images/locations/tokyo_shibuya.jpg", source: "Culinary Tradition", placeVerified: true, attribution: "Tokyo Cuisine Guild" }
@@ -159,7 +145,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Shinjuku Gyoen & Mount Fuji Vista", url: "/images/locations/tokyo_tower.jpg", source: "National Garden", placeVerified: true, attribution: "Ministry of Environment Japan" }
     ],
     local_culture: [
-      { title: "Shibuya Fashion & High-Tech Urban Neon", url: "/images/locations/tokyo_shibuya.jpg", source: "Contemporary Culture", placeVerified: true, attribution: "Shibuya City Council" }
+      { title: "Shibuya Crossing & High-Tech Urban Neon", url: "/images/locations/tokyo_shibuya.jpg", source: "Global Metropolis", placeVerified: true, attribution: "Tokyo Metropolitan Gov" }
     ]
   },
 
@@ -168,16 +154,17 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Basílica de la Sagrada Família", url: "/images/locations/barcelona_sagrada.jpg", source: "UNESCO Heritage", placeVerified: true, attribution: "Antoni Gaudí Foundation" }
     ],
     historical_places: [
-      { title: "Sagrada Família Nativity Facade", url: "/images/locations/barcelona_sagrada.jpg", source: "Modernisme Architecture", placeVerified: true, attribution: "Gaudí Heritage" }
+      { title: "Plaça de Sant Jaume & Barcelona City Hall", url: "/images/locations/barcelona_cityhall.jpg", source: "Historic Centre", placeVerified: true, attribution: "Ajuntament de Barcelona" }
     ],
     famous_food: [
-      { title: "La Boqueria Authentic Tapas & Paella", url: "/images/locations/barcelona_sagrada.jpg", source: "Catalan Cuisine", placeVerified: true, attribution: "Mercat de la Boqueria" }
+      { title: "La Boqueria Authentic Tapas & Paella", url: "/images/locations/barcelona_paella.jpg", source: "Catalan Cuisine", placeVerified: true, attribution: "Mercat de la Boqueria" }
     ],
     nature_scenery: [
-      { title: "Montjuïc Hill & Mediterranean Seaboard", url: "/images/locations/barcelona_sagrada.jpg", source: "Coastal Skyline", placeVerified: true, attribution: "Barcelona Turisme" }
+      { title: "Park Güell Architectural Park & Skyline", url: "/images/locations/barcelona_parkguell.jpg", source: "Gaudí Parkland", placeVerified: true, attribution: "Park Güell Heritage" },
+      { title: "Mediterranean Seaboard & Coastal Panorama", url: "/images/locations/barcelona_skyline.jpg", source: "Coastal Skyline", placeVerified: true, attribution: "Barcelona Turisme" }
     ],
     local_culture: [
-      { title: "Gothic Quarter & Gràcia Street Traditions", url: "/images/locations/barcelona_sagrada.jpg", source: "Catalan Culture", placeVerified: true, attribution: "Ajuntament de Barcelona" }
+      { title: "Traditional Castellers Human Towers & Street Festival", url: "/images/locations/barcelona_castellers.jpg", source: "UNESCO Intangible Heritage", placeVerified: true, attribution: "Castellers de Barcelona" }
     ]
   }
 };

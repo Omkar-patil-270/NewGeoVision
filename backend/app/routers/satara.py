@@ -105,7 +105,7 @@ Keep the tone inspiring, historically accurate, and rich in local pride.
 
     try:
         completion = _groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.8-27b",
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
             max_tokens=1000,

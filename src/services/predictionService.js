@@ -1,4 +1,4 @@
-import { apiClient } from './apiClient';
+import { apiClient } from './apiClient.js';
 
 /**
  * GeoVisionAI - Multi-Scenario Predictive ML Service

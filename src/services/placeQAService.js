@@ -68,16 +68,53 @@ export function generateLocalPlaceAnswer(question = "", location = {}, telemetry
   }
 
   // Specialized Regional Recognition for Satara & Kolhapur
-  if (/pedha|peda|sweet/.test(q)) {
+  // Food, Cuisine, Dishes, Sweets & Delicacies (Handles "famous food", "what to eat", "food in satara", "food in kolhapur", etc.)
+  if (/food|dish|dishes|cuisine|eat|delicac|sweet|sweets|pedha|peda|rassa|tambda|pandhra|misal|bhakri|pithla|thali|chappal/.test(q)) {
+    const isSatara = /satara/i.test(name) || /satara/i.test(q);
+    const isKolhapur = /kolhapur/i.test(name) || /kolhapur/i.test(q);
+    if (/chappal/.test(q)) {
+      return {
+        topic: "Kolhapuri Chappals",
+        icon: "👡",
+        badge: "GI Craft Heritage",
+        answer: `👡 **Kolhapuri Chappals** are handcrafted buffalo-leather sandals tanned using natural babool bark extracts, celebrated worldwide for their durability, intricate braiding, and GI-tag status.`,
+        metrics: [
+          { label: "Status", value: "GI Tagged Craft", status: "good" },
+          { label: "Origin", value: "Kolhapur Shivaji Market", status: "good" }
+        ]
+      };
+    }
+    if (isSatara) {
+      return {
+        topic: "Famous Food of Satara",
+        icon: "🍲",
+        badge: "GI Specialty",
+        answer: `🍲 Famous food in **Satara** includes the 150-year-old **Satara Kandi Pedha** (slow-caramelized milk sweet), rustic **Pithla Bhakri with roasted garlic thecha**, and fresh **Mahabaleshwar strawberries & cream**.`,
+        metrics: [
+          { label: "Signature Sweet", value: "Kandi Pedha (GI Tag)", status: "good" },
+          { label: "Traditional Meal", value: "Pithla Bhakri & Thecha", status: "good" }
+        ]
+      };
+    }
+    if (isKolhapur) {
+      return {
+        topic: "Famous Food of Kolhapur",
+        icon: "🍲",
+        badge: "Legendary Flavors",
+        answer: `🍲 Famous food in **Kolhapur** includes fiery **Tambda Rassa** (spiced mutton broth), soothing **Pandhra Rassa** (coconut-almond broth), authentic spicy **Kolhapuri Misal Pav**, and rustic mutton thali.`,
+        metrics: [
+          { label: "Signature Broths", value: "Tambda & Pandhra", status: "good" },
+          { label: "Breakfast Classic", value: "Kolhapuri Misal", status: "good" }
+        ]
+      };
+    }
     return {
-      topic: "Satara Kandi Pedha",
-      icon: "🍬",
-      badge: "GI Specialty",
-      answer: `🍬 **Satara Kandi Pedha** is a 150-year-old GI-tagged delicacy made by slow-caramelizing pure buffalo milk mawa with green cardamom and pure desi ghee.`,
+      topic: `Famous Food of ${name}`,
+      icon: "🍲",
+      badge: "Regional Cuisine",
+      answer: `🍲 **${name}** offers authentic regional specialties and traditional dishes freshly prepared in local markets and eateries.`,
       metrics: [
-        { label: "Origin", value: "Satara Rajwada", status: "good" },
-        { label: "Heritage Age", value: "150+ Years", status: "good" },
-        { label: "Status", value: "GI Tagged", status: "good" }
+        { label: "Cuisine", value: "Authentic Regional", status: "good" }
       ]
     };
   }
@@ -275,20 +312,20 @@ export function generateLocalPlaceAnswer(question = "", location = {}, telemetry
     };
   }
 
-  // Famous for, Attractions, Sightseeing, Places to visit
-  if (/famous|special|known for|attraction|tourist|sightseeing|visit|place to visit|places to visit/.test(q)) {
+  // Famous Tourist Attractions & Sightseeing (Excludes food)
+  if (/attraction|tourist|sightseeing|place to visit|places to visit|where to visit/.test(q) || (/famous|special|known for|visit/.test(q) && !/food|eat|dish|cuisine|sweet|pedha|rassa|misal/.test(q))) {
     const isSatara = /satara/i.test(name) || /satara/i.test(q);
     const highlights = isSatara
-      ? "the UNESCO Kaas Plateau (Valley of Flowers), 150-year-old Kandi Pedha, Ajinkyatara & Pratapgad Forts, 1,000-ft Thoseghar Waterfalls, and Koyna Dam"
-      : "the 7th-century Mahalaxmi Temple, traditional Kushti wrestling akhadas, fiery Tambda-Pandhra Rassa, Kolhapuri Chappals, and Panhala Fort";
+      ? "the UNESCO Kaas Plateau (Valley of Flowers), Ajinkyatara Fort, Sajjangad Citadel, 1,000-ft Thoseghar Waterfalls, and Pratapgad Fort"
+      : "the 7th-century Mahalaxmi Temple, traditional Kushti wrestling akhadas, Panhala Fort, Rankala Lake, and New Palace Museum";
     return {
-      topic: `Highlights of ${name}`,
+      topic: `Famous Attractions of ${name}`,
       icon: "🌟",
       badge: "Regional Highlights",
-      answer: `🌟 **${name}** is celebrated worldwide for **${highlights}**.`,
+      answer: `🌟 Famous attractions to explore in **${name}** include **${highlights}**.`,
       metrics: [
         { label: "Must-Visit", value: isSatara ? "Kaas & Sajjangad" : "Mahalaxmi & Panhala", status: "good" },
-        { label: "Signature Delicacy", value: isSatara ? "Kandi Pedha" : "Misal & Rassa", status: "good" }
+        { label: "Citadel", value: isSatara ? "Ajinkyatara Fort" : "Panhala Fort", status: "good" }
       ]
     };
   }
@@ -490,7 +527,7 @@ export async function askPlaceQuestion({ query, location, telemetry = {}, histor
       return {
         topic: local.topic,
         icon: local.icon,
-        badge: "Groq LLaMA-3.1 Verified Telemetry",
+        badge: "GeoVision AI Intelligence",
         answer: text,
         metrics: local.metrics
       };

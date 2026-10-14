@@ -39,7 +39,7 @@ async def ask_anything(req: AskRequest):
         f"No preamble, no fluff, no repetitive disclaimers. Directly answer the question with facts."
     )
     res = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="qwen/qwen3.8-27b",
         messages=[{"role": "user", "content": prompt}],
         max_tokens=120,
         temperature=0.2,

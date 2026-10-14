@@ -54,7 +54,7 @@ async def recommend(req: RecommendRequest):
     )
     try:
         res = _groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.8-27b",
             messages=[{"role": "user", "content": prompt}],
         )
         text = res.choices[0].message.content

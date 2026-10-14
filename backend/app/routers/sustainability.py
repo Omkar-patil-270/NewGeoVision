@@ -118,7 +118,7 @@ async def get_sustainability(lat: float, lon: float, location_name: str = "this 
     waste_label, waste_reason, renewable_label, renewable_reason = None, None, None, None
     try:
         res = _groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.8-27b",
             messages=[{"role": "user", "content": qualitative_prompt}],
         )
         text = res.choices[0].message.content
@@ -145,7 +145,7 @@ async def get_sustainability(lat: float, lon: float, location_name: str = "this 
     recommendations = None
     try:
         res = _groq_client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
+            model="qwen/qwen3.8-27b",
             messages=[{"role": "user", "content": recommendation_prompt}],
         )
         recommendations = res.choices[0].message.content

@@ -126,18 +126,27 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
     { name: "Tokyo", id: "tokyo", badge: "East Asia" }
   ];
 
-  // Select location and navigate directly to the second page (Explore Earth / 3D Globe)
-  const handleSelectLocation = (locOrId) => {
+  // Select location and display its interactive dossier while preserving place name in searchbox
+  const handleSelectLocation = (locOrId, navigateTo = 'dossier') => {
     let targetId = locOrId;
+    let targetName = "";
     if (typeof locOrId === 'object' && locOrId !== null) {
       const registered = locationService.registerCustomLocation(locOrId);
       targetId = registered.id;
+      targetName = registered.name;
+    } else {
+      const loc = locationService.getLocationById(locOrId);
+      targetName = loc?.name || locOrId;
     }
     selectLocation(targetId);
     setIsDropdownOpen(false);
-    setSearchQuery("");
-    setIsDossierOpen(false);
-    setCurrentPage('explore');
+    setSearchQuery(targetName);
+    if (navigateTo === 'explore') {
+      setIsDossierOpen(false);
+      setCurrentPage('explore');
+    } else {
+      setIsDossierOpen(true);
+    }
   };
 
   // Fetch real Wikipedia / Wikimedia Commons photos from backend
@@ -766,8 +775,32 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
 
             </div>
 
-            {/* Bottom Footer Actions (Image 2: Full Story Studio & Forecast Lab) */}
-            <div className="p-4 border-t border-stone-200 bg-stone-50 flex items-center justify-between gap-3 shrink-0">
+            {/* Bottom Footer Actions (Full Story Studio, Forecast Lab, Explore Earth, Full Dossier) */}
+            <div className="p-4 border-t border-stone-200 bg-stone-50 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDossierOpen(false);
+                  setCurrentPage('explore');
+                }}
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>Explore 3D Earth</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setIsDossierOpen(false);
+                  setCurrentPage('location');
+                }}
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-[#f95721] text-stone-800 hover:text-[#f95721] font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+              >
+                <Landmark className="w-3.5 h-3.5 text-[#f95721]" />
+                <span>Location Dossier</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => {
@@ -775,10 +808,10 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   if (onOpenStoryStudio) onOpenStoryStudio();
                   else setCurrentPage('story');
                 }}
-                className="flex-1 py-3 px-4 rounded-2xl bg-white border border-stone-300 hover:border-[#f95721] text-stone-800 hover:text-[#f95721] font-bold text-xs flex items-center justify-center gap-2 shadow-2xs transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-cyan-500 text-stone-800 hover:text-cyan-600 font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
               >
-                <Sparkles className="w-4 h-4 text-[#f95721]" />
-                <span>Full Story Studio</span>
+                <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+                <span>Story Studio</span>
               </button>
 
               <button
@@ -788,9 +821,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   if (onOpenForecastLab) onOpenForecastLab();
                   else setCurrentPage('predictions');
                 }}
-                className="flex-1 py-3 px-4 rounded-2xl bg-stone-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
               >
-                <TrendingUp className="w-4 h-4 text-cyan-400" />
+                <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Forecast Lab</span>
               </button>
             </div>

@@ -29,6 +29,29 @@ export const airQualityService = {
           { hour: "00:00", aqi: 68 }
         ]
       },
+      satara: {
+        score: 48,
+        status: "Good",
+        tierColor: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
+        advisory: "Air quality is clean and satisfactory with minimal risk, bolstered by Sahyadri Western Ghat mountain breezes.",
+        dominantPollutant: "O3",
+        pollutants: {
+          pm25: { value: 12.1, unit: "µg/m³", standard: 15, status: "Good", percent: 35 },
+          pm10: { value: 28.4, unit: "µg/m³", standard: 45, status: "Good", percent: 32 },
+          no2: { value: 11.2, unit: "ppb", standard: 40, status: "Good", percent: 18 },
+          so2: { value: 4.1, unit: "ppb", standard: 20, status: "Good", percent: 14 },
+          co: { value: 0.3, unit: "ppm", standard: 4.0, status: "Good", percent: 8 },
+          o3: { value: 24.0, unit: "ppb", standard: 50, status: "Good", percent: 35 }
+        },
+        hourlyTrend: [
+          { hour: "04:00", aqi: 38 },
+          { hour: "08:00", aqi: 52 },
+          { hour: "12:00", aqi: 48 },
+          { hour: "16:00", aqi: 44 },
+          { hour: "20:00", aqi: 54 },
+          { hour: "00:00", aqi: 42 }
+        ]
+      },
       mumbai: {
         score: 142,
         status: "Unhealthy for Sensitive Groups",

@@ -38,6 +38,37 @@ export const weatherService = {
           { day: "Sat", high: 32, low: 23, condition: "Sunny", rain: "5%" }
         ]
       },
+      satara: {
+        temp: 25,
+        feelsLike: 26,
+        condition: "Pleasant / Sahyadri Breeze",
+        icon: "CloudSun",
+        humidity: 54,
+        windSpeed: "12 km/h",
+        windDirection: "SW",
+        pressure: "1014 hPa",
+        uvIndex: "5 (Moderate)",
+        cloudCover: "30%",
+        precipitation: "10%",
+        hourly: [
+          { time: "06:00", temp: 19, rain: "0%", wind: "8 km/h" },
+          { time: "09:00", temp: 22, rain: "5%", wind: "10 km/h" },
+          { time: "12:00", temp: 26, rain: "10%", wind: "14 km/h" },
+          { time: "15:00", temp: 27, rain: "10%", wind: "15 km/h" },
+          { time: "18:00", temp: 24, rain: "5%", wind: "12 km/h" },
+          { time: "21:00", temp: 21, rain: "0%", wind: "9 km/h" },
+          { time: "00:00", temp: 20, rain: "0%", wind: "7 km/h" }
+        ],
+        daily: [
+          { day: "Today", high: 27, low: 19, condition: "Pleasant Breeze", rain: "10%" },
+          { day: "Mon", high: 28, low: 20, condition: "Sunny", rain: "5%" },
+          { day: "Tue", high: 26, low: 19, condition: "Partly Cloudy", rain: "15%" },
+          { day: "Wed", high: 25, low: 18, condition: "Passing Showers", rain: "35%" },
+          { day: "Thu", high: 26, low: 19, condition: "Sunny", rain: "10%" },
+          { day: "Fri", high: 27, low: 20, condition: "Sunny", rain: "5%" },
+          { day: "Sat", high: 28, low: 20, condition: "Sunny", rain: "0%" }
+        ]
+      },
       mumbai: {
         temp: 31,
         feelsLike: 36,

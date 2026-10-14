@@ -22,7 +22,7 @@ export const ExplorePage = () => {
     setGeoAIChatOpen
   } = useApp();
 
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(() => currentLocation?.name || "");
   const [panelOpen, setPanelOpen] = useState(true); // Right-hand intelligence drawer
   const [isSearchingOnline, setIsSearchingOnline] = useState(false);
   const [evidenceModalData, setEvidenceModalData] = useState(null);
@@ -50,7 +50,7 @@ export const ExplorePage = () => {
       const found = locationService.searchLocations(q);
       if (found.length > 0) {
         selectLocation(found[0].id);
-        setSearchQuery("");
+        setSearchQuery(found[0].name);
         return;
       }
 
@@ -89,7 +89,7 @@ export const ExplorePage = () => {
 
           if (newLoc?.id) {
             selectLocation(newLoc.id);
-            setSearchQuery("");
+            setSearchQuery(newLoc.name);
             return;
           }
         }
@@ -105,6 +105,7 @@ export const ExplorePage = () => {
     const loc = allLocations.find(l => l.name.toLowerCase() === cityName.toLowerCase());
     if (loc) {
       selectLocation(loc.id);
+      setSearchQuery(loc.name);
     }
   };
 

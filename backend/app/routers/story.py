@@ -550,7 +550,7 @@ async def _generate_llm_text(prompt: str) -> Optional[str]:
         try:
             headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.1-8b-instant",
+                "model": "qwen/qwen3.8-27b",
                 "messages": [{"role": "user", "content": prompt}],
                 "temperature": 0.5,
                 "max_tokens": 300,
@@ -814,12 +814,11 @@ async def story_chat(req: StoryChatRequest):
     )
 
     system_prompt = (
-        "You are GeoBot, the official Geospatial & Regional AI Assistant on GeoVisionAI. "
-        "CRITICAL INSTRUCTIONS FOR QUALITY: "
-        "1. BE SHORT, CLEAR, AND DIRECT: Answer in 2 to 3 concise, punchy sentences maximum (under 70 words). "
-        "2. NO BLOAT OR UNWANTED TEXT: Answer the user's specific question immediately. Do NOT include preambles, disclaimers, repetitive apologies, or long essays. "
-        "3. DATA-GROUNDED: Include exact metrics (AQI, groundwater mbgl, NDVI, temperature) or specific landmarks when asked. "
-        "4. TONE: Confident, crisp, clear, and helpful."
+        "You are GeoVision AI, a smart concise geographic intelligence assistant. "
+        "CRITICAL INSTRUCTIONS: "
+        "1. Answer ONLY what the user asked directly in 1 to 2 crisp, factual sentences (under 50 words). "
+        "2. Do NOT include preambles, disclaimers, or unsolicited environmental metrics unless the user explicitly asks for them. "
+        "3. If asked about food in Satara, highlight 150-year-old Satara Kandi Pedha and rustic Maharashtrian dishes like Misal Pav and Pithla Bhakri with thecha."
     )
 
     messages = [{"role": "system", "content": system_prompt}]
@@ -833,17 +832,17 @@ async def story_chat(req: StoryChatRequest):
 
     messages.append({
         "role": "user",
-        "content": f"[LOCATION: {req.location_name} | TELEMETRY: AQI {aqi_info.get('current', '84')}, Temp {weather_info.get('current', '28.3')}°C, GW {gw_depth} mbgl ({gw_cat})]\nQuestion: {user_query}"
+        "content": f"Location: {req.location_name}\nQuestion: {user_query}"
     })
 
     if client:
         try:
-            # Ultra-fast 8B LPU inference with strict token boundary to prevent rambling
+            # Ultra-fast Groq LPU inference with Qwen 27B
             res = client.chat.completions.create(
-                model="llama-3.1-8b-instant",
+                model="qwen/qwen3.8-27b",
                 messages=messages,
-                max_tokens=160,
-                temperature=0.3,
+                max_tokens=140,
+                temperature=0.2,
                 timeout=2.0
             )
             ans = res.choices[0].message.content.strip()
@@ -853,22 +852,31 @@ async def story_chat(req: StoryChatRequest):
             pass
 
     q_low = user_query.lower()
-    if any(k in q_low for k in ["population", "people", "citizen", "how many"]):
+    is_satara = "satara" in req.location_name.lower() or "satara" in q_low
+
+    if any(k in q_low for k in ["food", "dish", "dishes", "cuisine", "eat", "sweet", "sweets", "pedha", "peda", "rassa", "misal", "bhakri", "pithla"]):
+        if is_satara:
+            reply_text = "Famous food in Satara includes the 150-year-old Satara Kandi Pedha (slow-caramelized milk sweet), rustic Pithla Bhakri with roasted garlic thecha, and fresh Mahabaleshwar strawberries & cream."
+        else:
+            reply_text = f"Famous food in {req.location_name} includes fiery Tambda-Pandhra Rassa, spicy Kolhapuri Misal Pav, and authentic mutton thalis."
+    elif any(k in q_low for k in ["population", "people", "citizen", "how many"]):
         curr_pop = pop_info.get('current', '3.85 Million')
-        reply_text = f"The population of {req.location_name} is currently estimated at {curr_pop} with ~82.9% literacy, projected by demographic models to steadily expand through 2030."
+        reply_text = f"The population of {req.location_name} is currently estimated at {curr_pop} with ~82.9% literacy, projected to steadily expand through 2030."
     elif any(k in q_low for k in ["crop", "agriculture", "farm", "sugarcane", "jaggery", "turmeric"]):
-        reply_text = f"Agriculture in {req.location_name} is driven by fertile black basalt soils and perennial river irrigation, producing top yields in sugarcane, organic jaggery, and horticulture."
-    elif any(k in q_low for k in ["food", "rassa", "misal", "pedha", "sweet"]):
-        reply_text = f"{req.location_name} is world-famous for its culinary heritage, including fiery Tambda-Pandhra Rassa and Misal in Kolhapur, and 150-year-old caramelized Kandi Pedha in Satara."
+        reply_text = f"Agriculture in {req.location_name} is driven by fertile black basalt soils and perennial river irrigation, producing top yields in sugarcane and horticulture."
     elif any(k in q_low for k in ["wrestling", "kushti", "akhada", "talim"]):
-        reply_text = f"Wrestling (Kushti) in {req.location_name} is a sacred athletic heritage nurtured by Rajarshi Shahu Maharaj in traditional red-clay (lal maati) talims like Motibag."
+        reply_text = f"Wrestling (Kushti) in {req.location_name} is a sacred athletic heritage nurtured in traditional red-clay (lal maati) talims."
     elif any(k in q_low for k in ["famous", "attraction", "tourist", "visit"]):
-        reply_text = f"{req.location_name} is renowned for UNESCO World Heritage sites, Maratha hill citadels (Panhala, Ajinkyatara, Sajjangad), sacred temples, and roaring waterfalls."
+        if is_satara:
+            reply_text = "Satara is famous for the UNESCO Kaas Plateau (Valley of Flowers), 3,300-ft Ajinkyatara Fort, Sajjangad Citadel, Thoseghar Waterfalls, and Pratapgad Fort."
+        else:
+            reply_text = f"{req.location_name} is renowned for the 7th-century Mahalaxmi Temple, Panhala Fort, Rankala Lake, New Palace, and historic wrestling akhadas."
+    elif any(k in q_low for k in ["aqi", "air quality", "pollution", "pm2.5"]):
+        reply_text = f"The air quality in {req.location_name} is currently {aqi_info.get('current', '48')} AQI ({aqi_info.get('status', 'Good')})."
+    elif any(k in q_low for k in ["groundwater", "water table", "aquifer"]):
+        reply_text = f"The groundwater depth in {req.location_name} is currently {gw_depth} mbgl, categorized as {gw_cat}."
     else:
-        reply_text = (
-            f"For {req.location_name}: Air quality is {aqi_info.get('current', '84')} AQI, "
-            f"groundwater depth is {gw_depth} mbgl ({gw_cat}), and surface temperature is {weather_info.get('current', '28.3')}°C."
-        )
+        reply_text = f"Regarding {req.location_name}: It is a major regional center in Maharashtra. Feel free to ask about its famous food, attractions, population, weather, or future forecasts."
     return {
         "reply": reply_text,
         "answer": reply_text
@@ -1193,7 +1201,7 @@ async def generate_story_plan(req: StoryPlanRequest):
         try:
             headers = {"Authorization": f"Bearer {groq_key}", "Content-Type": "application/json"}
             payload = {
-                "model": "llama-3.1-8b-instant",
+                "model": "qwen/qwen3.8-27b",
                 "messages": [
                     {"role": "system", "content": system_instruction},
                     {"role": "user", "content": user_content},

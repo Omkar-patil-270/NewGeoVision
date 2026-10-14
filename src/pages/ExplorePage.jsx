@@ -78,7 +78,7 @@ export const ExplorePage = () => {
             country: countryName,
             region: regionName,
             coordinates: { lat, lng },
-            bannerImage: intel?.image || "/images/kolhapur/panchganga_ghat.jpg",
+            bannerImage: intel?.image || "/images/kolhapur/mahalaxmi_temple.jpg",
             description: intel?.extract || displayName,
             highlights: [cityName, "Real Satellite Telemetry", "Historical Timeline", "Territorial Frontier"],
             population: "1.2M",

@@ -259,7 +259,7 @@ export const ComparePage = () => {
 
             <div className="flex items-center gap-3.5">
               <img
-                src={cityA.bannerImage || "/images/kolhapur/panchganga_ghat.jpg"}
+                src={cityA.bannerImage || "/images/kolhapur/mahalaxmi_temple.jpg"}
                 alt={cityA.name}
                 className="w-16 h-16 rounded-2xl object-cover border border-cyan-500/30 shadow-md shrink-0"
               />
@@ -365,7 +365,7 @@ export const ComparePage = () => {
 
             <div className="flex items-center gap-3.5">
               <img
-                src={cityB.bannerImage || "/images/kolhapur/panchganga_ghat.jpg"}
+                src={cityB.bannerImage || "/images/kolhapur/mahalaxmi_temple.jpg"}
                 alt={cityB.name}
                 className="w-16 h-16 rounded-2xl object-cover border border-blue-500/30 shadow-md shrink-0"
               />

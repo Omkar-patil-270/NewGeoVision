@@ -18,7 +18,7 @@ export const GLOBAL_LOCATIONS = [
     aqi: 74,
     temperature: 28,
     weatherCondition: "Pleasant / Part-Cloud",
-    bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
+    bannerImage: "/images/kolhapur/mahalaxmi_temple.jpg",
     description: "An ancient Deccan jewel at the foothills of the Sahyadris, renowned for 1,300 years of recorded history, the Hemadpanthi Mahalaxmi Temple, royal social reforms under Rajarshi Chhatrapati Shahu Maharaj, sacred red-soil wrestling akhadas, and iconic dual culinary broths.",
     highlights: ["Mahalaxmi Temple (Ambabai)", "Panhala Fort", "New Palace Museum", "Motibag Talim Akhada", "Rankala Lake", "Tambda & Pandhra Rassa"],
     gallery: [
@@ -373,7 +373,7 @@ export const ADMINISTRATIVE_REGISTRY = [
     aqi: 65,
     temperature: 29,
     weatherCondition: "Warm / River Mist",
-    bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
+    bannerImage: "/images/kolhapur/mahalaxmi_temple.jpg",
     description: "Located at the auspicious confluence of the Krishna and Panchganga rivers at Narsobawadi, renowned as a premier Dattatreya spiritual pilgrimage center and fertile farmland.",
     highlights: ["Nrusinhawadi (Narsobawadi)", "Krishna-Panchganga Sangam", "Kopeshwar Khidrapur Temple", "Jaggery Mills"]
   },
@@ -1468,11 +1468,11 @@ export const locationService = {
       aqi: estAqi,
       temperature: estTemp,
       weatherCondition: estTemp < 5 ? "Sub-Zero / Crisp" : estTemp > 30 ? "Warm / Sunny" : "Mild & Clear",
-      bannerImage: "/images/kolhapur/panchganga_ghat.jpg",
+      bannerImage: "/images/kolhapur/mahalaxmi_temple.jpg",
       description: `Planetary coordinate locked at latitude ${normLat}°, longitude ${normLng}° within the ${geo.name} sector (${geo.region}, ${geo.country}). GeoVision provides full environmental telemetry, multi-scenario predictions, and synthesized narratives for this geographic point.`,
       highlights: [`Geodesic Point [${normLat}, ${normLng}]`, `${geo.region} Continental Shelf`, "Atmospheric Sensor Interpolation", "2030-2050 ML Trajectory"],
       gallery: [
-        { category: "Satellite", url: "/images/kolhapur/panchganga_ghat.jpg", caption: "Orbital View of Target Sector" },
+        { category: "Satellite", url: "/images/kolhapur/mahalaxmi_temple.jpg", caption: "Orbital View of Target Sector" },
         { category: "Terrain", url: "/images/talukas/radhanagari.jpg", caption: "Geographic Surface Topology" }
       ]
     };
@@ -1508,7 +1508,7 @@ export const locationService = {
       aqi: data.aqi || 58,
       temperature: data.temperature || 24,
       weatherCondition: "Telemetry Active",
-      bannerImage: data.bannerImage || "/images/kolhapur/panchganga_ghat.jpg",
+      bannerImage: data.bannerImage || "/images/kolhapur/mahalaxmi_temple.jpg",
       description: data.description || `${safeName} (${data.country || 'Global'}) is an active geographic node monitored by GeoVisionAI for real-time environmental telemetry, AI-generated cultural stories, and predictive modeling up to 2030.`,
       highlights: [safeName, data.country, `Lat ${lat.toFixed(2)}°, Lon ${lng.toFixed(2)}°`, "2030 Environmental Trajectory"],
       gallery: []

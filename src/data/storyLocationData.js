@@ -1506,7 +1506,7 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
 
   const historyImg = pickUniqueImage(
     [locationMeta.bannerImage, gal[0]?.url],
-    isMaharashtra ? "/images/kolhapur/panchganga_ghat.jpg" : (isIndia ? "/images/satara/pratapgad_fort.jpg" : "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80")
+    isMaharashtra ? "/images/kolhapur/mahalaxmi_temple.jpg" : (isIndia ? "/images/satara/pratapgad_fort.jpg" : "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80")
   );
 
   const touristSpot0 = pickUniqueImage(

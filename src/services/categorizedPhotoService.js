@@ -50,7 +50,7 @@ export const CURATED_VERIFIED_GALLERIES = {
     ],
     nature_scenery: [
       { title: "Scenic Rankala Lake Waters at Sunset", url: "/images/kolhapur/rankala_lake.jpg", source: "Historic Lake", placeVerified: true, attribution: "Maharashtra Tourism Development" },
-      { title: "Panchganga River Sacred Ghats", url: "/images/kolhapur/panchganga_ghat.jpg", source: "Sacred River Basin", placeVerified: true, attribution: "Panchganga Conservation Board" }
+      { title: "Chhatrapati Shahu New Palace Grounds", url: "/images/kolhapur/new_palace.jpg", source: "Royal Gardens", placeVerified: true, attribution: "Shahu Trust Archive" }
     ],
     local_culture: [
       { title: "Motibag & Gangavesh Traditional Wrestling Akhadas", url: "/images/kolhapur/kusti_akhada.jpg", source: "Kushti Red Soil Arena", placeVerified: true, attribution: "Maharashtra Wrestling Federation" },
@@ -330,7 +330,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "Famous Ichalkaranji Farsan & Spicy Misal", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Regional Delicacy", placeVerified: true, attribution: "Culinary Association" }
     ],
     nature_scenery: [
-      { title: "Panchganga River Plain & Agricultural Greenery", url: "/images/kolhapur/panchganga_ghat.jpg", source: "Riverine Belt", placeVerified: true, attribution: "Pollution Control Board" }
+      { title: "Panchganga River Plain & Agricultural Greenery", url: "/images/kolhapur/rankala_lake.jpg", source: "Riverine Belt", placeVerified: true, attribution: "Pollution Control Board" }
     ],
     local_culture: [
       { title: "Manchester of Maharashtra Textile Powerloom Mills", url: "/images/kolhapur/kolhapuri_chappals.jpg", source: "Textile Capital", placeVerified: true, attribution: "Textile Mill Association" }
@@ -348,7 +348,7 @@ export const CURATED_VERIFIED_GALLERIES = {
       { title: "GI-Tagged Sangli Turmeric & Signature Spiced Bhel", url: "/images/kolhapur/kolhapuri_misal.jpg", source: "Turmeric City Cuisine", placeVerified: true, attribution: "Sangli Traders Guild" }
     ],
     nature_scenery: [
-      { title: "Krishna River Sacred Water Basin", url: "/images/kolhapur/panchganga_ghat.jpg", source: "Sacred River", placeVerified: true, attribution: "Krishna Valley Water Board" }
+      { title: "Krishna River Sacred Water Basin", url: "/images/locations/sangli.jpg", source: "Sacred River", placeVerified: true, attribution: "Krishna Valley Water Board" }
     ],
     local_culture: [
       { title: "Asia's Largest Turmeric Trading Hub & Sugar Co-ops", url: "/images/kolhapur/kusti_akhada.jpg", source: "Agrarian Hub", placeVerified: true, attribution: "Sangli APMC" }

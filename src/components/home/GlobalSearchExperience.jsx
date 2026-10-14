@@ -501,9 +501,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
       {/* STAGE 2: QUICK STORY & AUDIO DOSSIER MODAL (IMAGE 2)                      */}
       {/* ========================================================================= */}
       {isDossierOpen && currentLocation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-3 sm:p-6 animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-6 animate-in fade-in duration-200">
           <div 
-            className={`w-full ${isDossierExpanded ? 'max-w-4xl h-[92vh]' : 'max-w-xl max-h-[90vh]'} bg-white text-stone-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-stone-200 transition-all duration-300 relative`}
+            className={`w-full ${isDossierExpanded ? 'max-w-4xl h-[92vh]' : 'max-w-xl max-h-[90vh]'} bg-[#0a0f1d] text-slate-100 rounded-3xl shadow-2xl overflow-hidden flex flex-col border border-slate-700/60 transition-all duration-300 relative`}
           >
             {/* Top Cover Banner with Real Wikipedia / Wikimedia Image */}
             <div className="relative h-44 sm:h-52 w-full overflow-hidden shrink-0 bg-stone-900">
@@ -512,11 +512,11 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                 alt={currentLocation.name}
                 className="w-full h-full object-cover transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0f1d] via-[#0a0f1d]/50 to-transparent" />
 
               {/* Photo Source Badge */}
               {realPhotos.length > 0 && (
-                <div className="absolute top-3.5 left-3.5 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/20 text-[10px] text-white flex items-center gap-1">
+                <div className="absolute top-3.5 left-3.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-cyan-500/30 text-[10px] text-cyan-300 flex items-center gap-1">
                   <ImageIcon className="w-3 h-3 text-cyan-400" />
                   <span>Real Photo: {realPhotos[0].credit}</span>
                 </div>
@@ -527,7 +527,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                 <button
                   type="button"
                   onClick={() => setIsDossierExpanded(!isDossierExpanded)}
-                  className="w-8 h-8 rounded-full bg-black/40 hover:bg-black/70 text-white backdrop-blur-md flex items-center justify-center border border-white/20 transition-all"
+                  className="w-8 h-8 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md flex items-center justify-center border border-slate-700 transition-all cursor-pointer"
                   title={isDossierExpanded ? "Collapse view" : "Expand view"}
                 >
                   {isDossierExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
@@ -540,7 +540,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                     stopAudio();
                     setIsNarrating(false);
                   }}
-                  className="w-8 h-8 rounded-full bg-black/40 hover:bg-red-600 text-white backdrop-blur-md flex items-center justify-center border border-white/20 transition-all"
+                  className="w-8 h-8 rounded-full bg-black/60 hover:bg-red-600 text-white backdrop-blur-md flex items-center justify-center border border-slate-700 transition-all cursor-pointer"
                   title="Close dossier"
                 >
                   <X className="w-4 h-4" />
@@ -549,84 +549,84 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
 
               {/* Location Title & Badges in Cover Bottom */}
               <div className="absolute bottom-4 left-4 right-4 text-white">
-                <div className="inline-block px-3 py-1 rounded-full bg-[#f95721] text-white text-[10px] font-mono font-bold tracking-wider uppercase mb-1.5 shadow-md">
+                <div className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-black text-[10px] font-mono font-bold tracking-wider uppercase mb-1.5 shadow-md">
                   {currentLocation.badge || `${currentLocation.type || 'Flagship'} Location`}
                 </div>
                 <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white tracking-tight drop-shadow-md">
                   {currentLocation.name}
                 </h2>
-                <p className="text-xs text-stone-200 drop-shadow-sm font-sans">
+                <p className="text-xs text-slate-300 drop-shadow-sm font-sans">
                   {currentLocation.parent || `${currentLocation.region}, ${currentLocation.country}`} • [{currentLocation.coordinates?.lat?.toFixed(4)}°N, {currentLocation.coordinates?.lng?.toFixed(4)}°E]
                 </p>
               </div>
             </div>
 
-            {/* Navigation Tabs (Image 2: Story & Audio, Forecasting, Telemetry) */}
-            <div className="flex border-b border-stone-200 bg-stone-50/80 px-4 py-2 gap-2 shrink-0">
+            {/* Navigation Tabs */}
+            <div className="flex border-b border-slate-800 bg-[#070c1a] px-4 py-2 gap-2 shrink-0">
               <button
                 type="button"
                 onClick={() => setDossierTab("story")}
-                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   dossierTab === "story"
-                    ? "bg-white text-[#f95721] shadow-xs border border-stone-200"
-                    : "text-stone-600 hover:text-stone-900"
+                    ? "bg-cyan-500/15 text-cyan-300 shadow-xs border border-cyan-500/40"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-[#f95721]" />
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Story &amp; Audio</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setDossierTab("forecast")}
-                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   dossierTab === "forecast"
-                    ? "bg-white text-violet-700 shadow-xs border border-stone-200"
-                    : "text-stone-600 hover:text-stone-900"
+                    ? "bg-violet-500/15 text-violet-300 shadow-xs border border-violet-500/40"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <TrendingUp className="w-3.5 h-3.5 text-violet-600" />
+                <TrendingUp className="w-3.5 h-3.5 text-violet-400" />
                 <span>Forecasting</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setDossierTab("telemetry")}
-                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all ${
+                className={`flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   dossierTab === "telemetry"
-                    ? "bg-white text-sky-700 shadow-xs border border-stone-200"
-                    : "text-stone-600 hover:text-stone-900"
+                    ? "bg-sky-500/15 text-sky-300 shadow-xs border border-sky-500/40"
+                    : "text-slate-400 hover:text-white"
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-sky-600" />
+                <Layers className="w-3.5 h-3.5 text-sky-400" />
                 <span>Telemetry</span>
               </button>
             </div>
 
             {/* Scrollable Body Content */}
-            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 bg-[#0a0f1d]">
               
-              {/* TAB 1: STORY & AUDIO (EXACT MATCH FOR IMAGE 2) */}
+              {/* TAB 1: STORY & AUDIO */}
               {dossierTab === "story" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
                   
-                  {/* Top Audio Player Card (Image 2: Spoken Story Audio) */}
-                  <div className="p-3.5 bg-orange-50/90 rounded-2xl border border-orange-200 flex items-center justify-between shadow-2xs">
+                  {/* Top Audio Player Card */}
+                  <div className="p-3.5 bg-slate-900/90 rounded-2xl border border-cyan-500/30 flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#f95721] text-white flex items-center justify-center shadow-sm">
+                      <div className="w-10 h-10 rounded-2xl bg-cyan-500 text-black flex items-center justify-center shadow-sm">
                         <Volume2 className={`w-5 h-5 ${isNarrating ? 'animate-bounce' : ''}`} />
                       </div>
                       <div>
-                        <div className="text-xs font-bold text-stone-900 flex items-center gap-1.5">
+                        <div className="text-xs font-bold text-white flex items-center gap-1.5">
                           <span>Spoken Story Audio</span>
                           {isNarrating && (
                             <span className="flex h-2 w-2 relative">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#f95721] opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#f95721]"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400"></span>
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-stone-500 font-sans">
+                        <div className="text-[11px] text-slate-400 font-sans">
                           {activeStory.audioDuration} • Natural voice narration
                         </div>
                       </div>
@@ -637,8 +637,8 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                       onClick={toggleAudioNarration}
                       className={`px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer ${
                         isNarrating
-                          ? "bg-stone-900 hover:bg-stone-800 text-white"
-                          : "bg-[#f95721] hover:bg-[#e04512] text-white active:scale-95"
+                          ? "bg-slate-800 hover:bg-slate-700 text-white border border-slate-600"
+                          : "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black active:scale-95"
                       }`}
                     >
                       {isNarrating ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
@@ -646,9 +646,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                     </button>
                   </div>
 
-                  {/* 9 Story Modalities Chips (Image 2) */}
+                  {/* 9 Story Modalities Chips */}
                   <div>
-                    <span className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-2 tracking-wider">
+                    <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-2 tracking-wider">
                       SELECT STORY PERSPECTIVE (9 MODALITIES)
                     </span>
                     <div className="flex flex-wrap gap-1.5">
@@ -661,8 +661,8 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                             onClick={() => setActiveStoryMode(mode.id)}
                             className={`px-3 py-1.5 rounded-xl text-[11px] font-medium border transition-all flex items-center gap-1.5 cursor-pointer ${
                               isSelected
-                                ? "bg-[#f95721] text-white border-[#f95721] font-bold shadow-xs scale-[1.02]"
-                                : "bg-stone-50 border-stone-200 text-stone-700 hover:bg-stone-100 hover:border-stone-300"
+                                ? "bg-cyan-500 text-black border-cyan-400 font-bold shadow-xs scale-[1.02]"
+                                : "bg-slate-900/80 border-slate-800 text-slate-300 hover:bg-slate-800 hover:border-cyan-500/40 hover:text-white"
                             }`}
                           >
                             {getModalityIcon(mode.id)}
@@ -673,21 +673,21 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                     </div>
                   </div>
 
-                  {/* Real NLP Generated Story Card (Image 2) */}
-                  <div className="p-4 sm:p-5 bg-white rounded-2xl border border-stone-200 shadow-2xs relative">
+                  {/* Real NLP Generated Story Card */}
+                  <div className="p-4 sm:p-5 bg-[#0b1329] rounded-2xl border border-slate-800 shadow-sm relative">
                     {isLoadingStory && (
-                      <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs text-[#f95721] font-mono">
+                      <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs text-cyan-400 font-mono">
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         <span>Groq AI Generating...</span>
                       </div>
                     )}
-                    <h3 className="text-base sm:text-lg font-serif font-bold text-stone-900 mb-1">
+                    <h3 className="text-base sm:text-lg font-serif font-bold text-white mb-1">
                       {activeStory.title}
                     </h3>
-                    <p className="text-xs text-stone-500 italic mb-3 font-serif">
+                    <p className="text-xs text-slate-400 italic mb-3 font-serif">
                       {activeStory.subtitle}
                     </p>
-                    <div className="text-xs sm:text-sm text-stone-700 leading-relaxed font-serif whitespace-pre-line border-t border-stone-100 pt-3">
+                    <div className="text-xs sm:text-sm text-slate-300 leading-relaxed font-serif whitespace-pre-line border-t border-slate-800/80 pt-3">
                       {activeStory.narrative}
                     </div>
                   </div>
@@ -695,12 +695,12 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   {/* Signature Sights Chips */}
                   {currentLocation.highlights && currentLocation.highlights.length > 0 && (
                     <div>
-                      <span className="text-[10px] font-mono font-bold uppercase text-stone-500 block mb-1.5 tracking-wider">
+                      <span className="text-[10px] font-mono font-bold uppercase text-slate-400 block mb-1.5 tracking-wider">
                         Signature Heritage &amp; Sights
                       </span>
                       <div className="flex flex-wrap gap-1.5">
                         {currentLocation.highlights.map((h, i) => (
-                          <span key={i} className="px-2.5 py-1 rounded-xl text-[11px] bg-stone-100 text-stone-700 border border-stone-200 font-medium">
+                          <span key={i} className="px-2.5 py-1 rounded-xl text-[11px] bg-slate-900 text-cyan-300 border border-slate-800 font-medium">
                             {h}
                           </span>
                         ))}
@@ -714,33 +714,33 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
               {/* TAB 2: LIVE FORECASTING PREVIEW */}
               {dossierTab === "forecast" && (
                 <div className="space-y-3 animate-in fade-in duration-200">
-                  <div className="p-4 bg-violet-50/70 rounded-2xl border border-violet-200">
-                    <div className="text-xs font-bold text-violet-900 mb-1">Live Backend Telemetry &amp; ML Models</div>
-                    <p className="text-[11px] text-violet-700 mb-3 font-mono">
+                  <div className="p-4 bg-slate-900/80 rounded-2xl border border-violet-900/40">
+                    <div className="text-xs font-bold text-violet-300 mb-1">Live Backend Telemetry &amp; ML Models</div>
+                    <p className="text-[11px] text-violet-400 mb-3 font-mono">
                       Connected to OpenAQ, Open-Meteo, CGWB &amp; World Bank API
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
-                      <div className="p-2.5 bg-white rounded-xl border border-violet-100 shadow-2xs">
-                        <div className="text-[10px] text-stone-500 font-mono">Air Quality</div>
-                        <div className="text-base font-bold text-stone-900">
+                      <div className="p-2.5 bg-[#0b1329] rounded-xl border border-slate-800 shadow-2xs">
+                        <div className="text-[10px] text-slate-400 font-mono">Air Quality</div>
+                        <div className="text-base font-bold text-white">
                           {liveTelemetry?.aqi?.current ? Math.round(liveTelemetry.aqi.current) : (currentLocation.aqi || 74)} AQI
                         </div>
                       </div>
-                      <div className="p-2.5 bg-white rounded-xl border border-violet-100 shadow-2xs">
-                        <div className="text-[10px] text-stone-500 font-mono">Population</div>
-                        <div className="text-base font-bold text-stone-900 truncate">
+                      <div className="p-2.5 bg-[#0b1329] rounded-xl border border-slate-800 shadow-2xs">
+                        <div className="text-[10px] text-slate-400 font-mono">Population</div>
+                        <div className="text-base font-bold text-white truncate">
                           {liveTelemetry?.population?.current ? `${(liveTelemetry.population.current / 1000000).toFixed(2)}M` : (currentLocation.population || "3.85M")}
                         </div>
                       </div>
-                      <div className="p-2.5 bg-white rounded-xl border border-violet-100 shadow-2xs">
-                        <div className="text-[10px] text-stone-500 font-mono">Temperature</div>
-                        <div className="text-base font-bold text-stone-900">
+                      <div className="p-2.5 bg-[#0b1329] rounded-xl border border-slate-800 shadow-2xs">
+                        <div className="text-[10px] text-slate-400 font-mono">Temperature</div>
+                        <div className="text-base font-bold text-white">
                           {liveTelemetry?.weather?.current ? `${Math.round(liveTelemetry.weather.current)}°C` : `${currentLocation.temperature || 28}°C`}
                         </div>
                       </div>
-                      <div className="p-2.5 bg-white rounded-xl border border-violet-100 shadow-2xs">
-                        <div className="text-[10px] text-stone-500 font-mono">Water Table</div>
-                        <div className="text-base font-bold text-stone-900">
+                      <div className="p-2.5 bg-[#0b1329] rounded-xl border border-slate-800 shadow-2xs">
+                        <div className="text-[10px] text-slate-400 font-mono">Water Table</div>
+                        <div className="text-base font-bold text-white">
                           {liveTelemetry?.groundwater?.current_depth_mbgl ? `${liveTelemetry.groundwater.current_depth_mbgl} m` : "14.2 m bgl"}
                         </div>
                       </div>
@@ -752,22 +752,22 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
               {/* TAB 3: TELEMETRY */}
               {dossierTab === "telemetry" && (
                 <div className="space-y-3 animate-in fade-in duration-200">
-                  <div className="p-4 bg-sky-50/60 rounded-2xl border border-sky-200 text-xs space-y-2">
-                    <div className="flex justify-between py-1 border-b border-sky-100">
-                      <span className="text-stone-500 font-medium">Elevation:</span>
-                      <span className="font-semibold text-stone-900">{currentLocation.elevation || "569 m"}</span>
+                  <div className="p-4 bg-slate-900/80 rounded-2xl border border-sky-900/40 text-xs space-y-2">
+                    <div className="flex justify-between py-1 border-b border-slate-800">
+                      <span className="text-slate-400 font-medium">Elevation:</span>
+                      <span className="font-semibold text-white">{currentLocation.elevation || "569 m"}</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-sky-100">
-                      <span className="text-stone-500 font-medium">Coordinates:</span>
-                      <span className="font-mono text-stone-900">{currentLocation.coordinates?.lat?.toFixed(4)}°N, {currentLocation.coordinates?.lng?.toFixed(4)}°E</span>
+                    <div className="flex justify-between py-1 border-b border-slate-800">
+                      <span className="text-slate-400 font-medium">Coordinates:</span>
+                      <span className="font-mono text-cyan-300">{currentLocation.coordinates?.lat?.toFixed(4)}°N, {currentLocation.coordinates?.lng?.toFixed(4)}°E</span>
                     </div>
-                    <div className="flex justify-between py-1 border-b border-sky-100">
-                      <span className="text-stone-500 font-medium">Administrative Level:</span>
-                      <span className="font-semibold text-stone-900 capitalize">{currentLocation.type || "District"}</span>
+                    <div className="flex justify-between py-1 border-b border-slate-800">
+                      <span className="text-slate-400 font-medium">Administrative Level:</span>
+                      <span className="font-semibold text-white capitalize">{currentLocation.type || "District"}</span>
                     </div>
                     <div className="flex justify-between py-1">
-                      <span className="text-stone-500 font-medium">Weather Condition:</span>
-                      <span className="font-semibold text-stone-900">{currentLocation.weatherCondition || "Pleasant"}</span>
+                      <span className="text-slate-400 font-medium">Weather Condition:</span>
+                      <span className="font-semibold text-white">{currentLocation.weatherCondition || "Pleasant"}</span>
                     </div>
                   </div>
                 </div>
@@ -776,14 +776,14 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
             </div>
 
             {/* Bottom Footer Actions (Full Story Studio, Forecast Lab, Explore Earth, Full Dossier) */}
-            <div className="p-4 border-t border-stone-200 bg-stone-50 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+            <div className="p-4 border-t border-slate-800 bg-[#070c1a] flex flex-wrap items-center justify-between gap-2.5 shrink-0">
               <button
                 type="button"
                 onClick={() => {
                   setIsDossierOpen(false);
                   setCurrentPage('explore');
                 }}
-                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>Explore 3D Earth</span>
@@ -795,9 +795,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   setIsDossierOpen(false);
                   setCurrentPage('location');
                 }}
-                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-[#f95721] text-stone-800 hover:text-[#f95721] font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
-                <Landmark className="w-3.5 h-3.5 text-[#f95721]" />
+                <Landmark className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Location Dossier</span>
               </button>
 
@@ -808,9 +808,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   if (onOpenStoryStudio) onOpenStoryStudio();
                   else setCurrentPage('story');
                 }}
-                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-white border border-stone-300 hover:border-cyan-500 text-stone-800 hover:text-cyan-600 font-bold text-xs flex items-center justify-center gap-1.5 shadow-2xs transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
               >
-                <Sparkles className="w-3.5 h-3.5 text-cyan-500" />
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Story Studio</span>
               </button>
 
@@ -821,9 +821,9 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                   if (onOpenForecastLab) onOpenForecastLab();
                   else setCurrentPage('predictions');
                 }}
-                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-stone-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
+                className="flex-1 min-w-[130px] py-2.5 px-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
               >
-                <TrendingUp className="w-3.5 h-3.5 text-cyan-400" />
+                <TrendingUp className="w-3.5 h-3.5 text-cyan-300" />
                 <span>Forecast Lab</span>
               </button>
             </div>

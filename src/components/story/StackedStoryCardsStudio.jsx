@@ -5,7 +5,6 @@ import { globalGeoAIService } from '../../services/globalGeoAIService';
 import { apiClient } from '../../services/apiClient';
 import { getCategorizedPhotos } from '../../services/categorizedPhotoService';
 import { getStoryCardsForCity } from '../../data/storyLocationData';
-import { MaharashtraHeritageDashboard } from './MaharashtraHeritageDashboard';
 import { 
   ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
   Search, MapPin, Navigation, Sparkles, Globe, Loader2, X,
@@ -18,7 +17,6 @@ export const StackedStoryCardsStudio = () => {
   const allLocations = locationService.getAllLocations();
 
   const [selectedLocId, setSelectedLocId] = useState(currentLocation?.id || "kolhapur");
-  const [showHeritageDashboard, setShowHeritageDashboard] = useState(false);
   const [activeCardIndex, setActiveCardIndex] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
@@ -406,15 +404,6 @@ export const StackedStoryCardsStudio = () => {
 
   const activeCategoryList = categorizedLocations[activeCategoryTab] || categorizedLocations.districts;
 
-  // Render Dedicated 3-District Heritage Dashboard if activated
-  if (showHeritageDashboard) {
-    return (
-      <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between select-none overflow-x-hidden font-sans">
-        <MaharashtraHeritageDashboard onExitToGlobal={() => setShowHeritageDashboard(false)} />
-      </div>
-    );
-  }
-
   return (
     <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between p-3 sm:p-6 select-none overflow-x-hidden font-sans">
       
@@ -516,33 +505,6 @@ export const StackedStoryCardsStudio = () => {
               <span>Forecast</span>
             </button>
           </div>
-        </div>
-
-        {/* Maharashtra Heritage Districts Callout Banner */}
-        <div className="w-full p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/70 via-[#070e1c] to-blue-950/70 border border-cyan-500/40 flex flex-wrap items-center justify-between gap-3 shadow-lg">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-            </div>
-            <div>
-              <h3 className="text-xs sm:text-sm font-bold text-white flex items-center gap-2">
-                <span>Discover Maharashtra's Heritage</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                  Sangli • Satara • Kolhapur
-                </span>
-              </h3>
-              <p className="text-[11px] text-slate-300 font-mono">
-                Explore 7 deep interactive chapters, historical sovereigns, taluka breakdowns, and telemetry forecasts.
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowHeritageDashboard(true)}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-cyan-500/20 cursor-pointer"
-          >
-            <span>Open Heritage Dashboard →</span>
-          </button>
         </div>
 
       </div>

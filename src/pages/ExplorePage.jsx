@@ -108,7 +108,7 @@ export const ExplorePage = () => {
     }
   };
 
-  const quickFlyList = ["Kolhapur", "Mumbai", "Pune", "Delhi", "Tokyo", "Paris", "London", "Cairo"];
+  const quickFlyList = ["Kolhapur", "Satara", "Mumbai", "Pune", "Delhi", "Tokyo", "Paris", "London", "Cairo"];
 
   return (
     <div className="h-[calc(100vh-65px)] w-full relative overflow-hidden bg-[#030712] select-none text-white font-sans flex flex-col">

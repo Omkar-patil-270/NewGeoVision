@@ -31,6 +31,33 @@ export const GLOBAL_LOCATIONS = [
     ]
   },
   {
+    id: "satara",
+    name: "Satara",
+    country: "India",
+    region: "Maharashtra",
+    badge: "Official Sponsored Partner",
+    type: "district",
+    coordinates: { lat: 17.6805, lng: 73.9972 },
+    elevation: "742 m",
+    timezone: "IST (UTC+5:30)",
+    population: "3.32 Million",
+    area: "10,480 km²",
+    aqi: 48,
+    temperature: 25,
+    weatherCondition: "Pleasant / Sahyadri Breeze",
+    bannerImage: "/images/satara/ajinkyatara_fort.jpg",
+    description: "Official Sponsored District Partner. The sovereign capital of the Maratha Empire under Chhatrapati Shahu Maharaj I (1708), crowned by the 3,300-ft Ajinkyatara Fort, the UNESCO World Natural Heritage site of Kaas Plateau (Valley of Flowers), and roaring Thoseghar Waterfalls.",
+    highlights: ["Kaas Plateau UNESCO Biodiversity", "Ajinkyatara Fort (3,300 ft)", "Satara Kandi Pedha (GI Tag)", "Thoseghar Waterfalls (1,000 ft)", "Koyna Hydroelectric Dam", "Sajjangad Citadel"],
+    gallery: [
+      { category: "Historical", url: "/images/satara/ajinkyatara_fort.jpg", caption: "Ajinkyatara Fort Maratha Ramparts" },
+      { category: "Nature", url: "/images/satara/kaas_plateau.jpg", caption: "Kaas Plateau UNESCO Wildflower Bloom" },
+      { category: "Waterfalls", url: "/images/satara/thoseghar_falls.jpg", caption: "Thoseghar Falls 1,000-Foot Sahyadri Chasm" },
+      { category: "Heritage", url: "/images/satara/sajjangad_fort.jpg", caption: "Sajjangad Hill Citadel of Samarth Ramdas" },
+      { category: "Food", url: "/images/satara/satara_kandi_pedha.jpg", caption: "Authentic Satara Kandi Pedha (GI Tagged)" },
+      { category: "Forts", url: "/images/satara/pratapgad_fort.jpg", caption: "Pratapgad Mountain Fortress" }
+    ]
+  },
+  {
     id: "mumbai",
     name: "Mumbai",
     country: "India",
@@ -1345,16 +1372,48 @@ export const locationService = {
     }
 
     const lowerQ = q.toLowerCase();
-    return all.filter(loc => {
+    const matched = all.filter(loc => {
       if (typeFilter && typeFilter !== 'all' && loc.type !== typeFilter) return false;
       return (
         loc.name.toLowerCase().includes(lowerQ) ||
+        (loc.id && loc.id.toLowerCase() === lowerQ) ||
         (loc.parent && loc.parent.toLowerCase().includes(lowerQ)) ||
         (loc.country && loc.country.toLowerCase().includes(lowerQ)) ||
         (loc.region && loc.region.toLowerCase().includes(lowerQ)) ||
         (loc.badge && loc.badge.toLowerCase().includes(lowerQ)) ||
         (loc.highlights && loc.highlights.some(h => h.toLowerCase().includes(lowerQ)))
       );
+    });
+
+    return matched.sort((a, b) => {
+      const aName = a.name.toLowerCase();
+      const bName = b.name.toLowerCase();
+
+      // 1. Exact match on name
+      const aExact = aName === lowerQ;
+      const bExact = bName === lowerQ;
+      if (aExact && !bExact) return -1;
+      if (!aExact && bExact) return 1;
+
+      // 2. Starts with query
+      const aStarts = aName.startsWith(lowerQ);
+      const bStarts = bName.startsWith(lowerQ);
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+
+      // 3. Name contains query vs only description/parent contains
+      const aInName = aName.includes(lowerQ);
+      const bInName = bName.includes(lowerQ);
+      if (aInName && !bInName) return -1;
+      if (!aInName && bInName) return 1;
+
+      // 4. Priority by administrative weight (flagship/district first)
+      const typeRank = { flagship: 1, district: 2, state: 3, city: 4, taluka: 5, village: 6 };
+      const aRank = typeRank[a.type] || 5;
+      const bRank = typeRank[b.type] || 5;
+      if (aRank !== bRank) return aRank - bRank;
+
+      return 0;
     });
   },
 

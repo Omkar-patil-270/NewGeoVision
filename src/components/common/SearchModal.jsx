@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { apiClient } from '../../services/apiClient';
+import { locationService } from '../../services/locationService';
 import { Search, MapPin, X, ArrowRight, Sparkles, Globe, TrendingUp, Navigation } from 'lucide-react';
 
 export const SearchModal = () => {
@@ -56,15 +57,7 @@ export const SearchModal = () => {
 
   if (!searchModalOpen) return null;
 
-  const filtered = allLocations.filter(loc => {
-    const q = query.toLowerCase();
-    return (
-      loc.name.toLowerCase().includes(q) ||
-      loc.country.toLowerCase().includes(q) ||
-      (loc.region && loc.region.toLowerCase().includes(q)) ||
-      (loc.description && loc.description.toLowerCase().includes(q))
-    );
-  });
+  const filtered = locationService.searchLocations(query);
 
   const handleSelect = (id, page = 'location') => {
     selectLocation(id, page);

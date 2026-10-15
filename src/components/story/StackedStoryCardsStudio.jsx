@@ -660,42 +660,10 @@ export const StackedStoryCardsStudio = () => {
           </div>
         </div>
 
-        {/* Global Search & Location Preset Strip */}
-        <div className="flex flex-wrap items-center justify-between gap-3 text-xs">
-          
-          {/* Quick Preset Buttons for Exhibition */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-            <span className="text-[10px] font-mono text-slate-400 uppercase font-bold mr-1 shrink-0">Featured:</span>
-            {[
-              { id: 'kolhapur', name: 'Kolhapur', badge: 'Flagship' },
-              { id: 'satara', name: 'Satara', badge: 'UNESCO Kaas' },
-              { id: 'sangli', name: 'Sangli', badge: 'Turmeric & Krishna' },
-              { id: 'pune', name: 'Pune', badge: 'Maratha Core' },
-              { id: 'mumbai', name: 'Mumbai', badge: 'Financial Metro' },
-              { id: 'delhi', name: 'Delhi', badge: 'National Capital' },
-              { id: 'tokyo', name: 'Tokyo', badge: 'Global Metro' }
-            ].map(p => (
-              <button
-                key={p.id}
-                onClick={() => handleSelectLocation(p.id)}
-                className={`px-2.5 py-1 rounded-xl font-mono text-[11px] font-bold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
-                  selectedLocId.toLowerCase().includes(p.id)
-                    ? "bg-cyan-500 text-black shadow-md shadow-cyan-500/25 border border-cyan-400"
-                    : "bg-[#091122] text-slate-300 hover:text-white border border-slate-800 hover:border-slate-700"
-                }`}
-              >
-                <span>{p.name}</span>
-                <span className={`text-[9px] px-1.5 py-0.2 rounded-md ${
-                  selectedLocId.toLowerCase().includes(p.id) ? "bg-black/30 text-black font-black" : "bg-cyan-950/60 text-cyan-300"
-                }`}>
-                  {p.badge}
-                </span>
-              </button>
-            ))}
-          </div>
-
+        {/* Global Search Strip */}
+        <div className="flex items-center justify-end gap-3 text-xs">
           {/* Search Box with Dropdown */}
-          <div className="relative shrink-0 w-full sm:w-72" ref={searchRef}>
+          <div className="relative shrink-0 w-full sm:w-80 ml-auto" ref={searchRef}>
             <div className="relative flex items-center">
               <Search className="w-3.5 h-3.5 text-cyan-400 absolute left-3 pointer-events-none" />
               <input

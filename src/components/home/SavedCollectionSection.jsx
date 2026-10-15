@@ -4,7 +4,8 @@ import { locationService } from '../../services/locationService';
 import { ShareModal } from '../modals/ShareModal';
 import { 
   Bookmark, Share2, Globe, ExternalLink, Trash2, 
-  Sparkles, ArrowRight, MapPin, Compass 
+  Sparkles, ArrowRight, MapPin, Compass,
+  ChevronDown, ChevronUp, Minimize2, Maximize2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -12,6 +13,24 @@ export const SavedCollectionSection = () => {
   const { savedLocations, toggleSaveLocation, selectLocation, setCurrentPage } = useApp();
   const [selectedShareLoc, setSelectedShareLoc] = useState(null);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(() => {
+    try {
+      const saved = localStorage.getItem('geovision_saved_collection_minimized');
+      return saved !== null ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  const toggleMinimize = () => {
+    setIsMinimized(prev => {
+      const next = !prev;
+      try {
+        localStorage.setItem('geovision_saved_collection_minimized', JSON.stringify(next));
+      } catch {}
+      return next;
+    });
+  };
 
   const locationsList = (savedLocations || [])
     .map(id => locationService.getLocationById(id))
@@ -34,84 +53,114 @@ export const SavedCollectionSection = () => {
   };
 
   return (
-    <section className="relative z-20 w-full max-w-5xl mx-auto mt-6 mb-8 px-2 pointer-events-auto">
+    <section className="relative z-20 w-full max-w-5xl mx-auto mt-4 mb-6 px-2 pointer-events-auto transition-all duration-300">
       {/* Container with Cosmic Glassmorphism */}
-      <div className="bg-[#040817]/90 border border-cyan-500/30 rounded-3xl p-5 sm:p-6 backdrop-blur-xl shadow-2xl shadow-black/80">
+      <div className={`bg-[#040817]/90 border border-cyan-500/30 rounded-3xl backdrop-blur-xl shadow-2xl shadow-black/80 transition-all duration-300 ${
+        isMinimized ? 'p-3 sm:px-5' : 'p-4 sm:p-5'
+      }`}>
         
         {/* Section Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3.5 border-b border-slate-800/80">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-2xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-md shadow-cyan-500/10">
+        <div className={`flex flex-wrap items-center justify-between gap-3 ${
+          isMinimized ? '' : 'mb-3.5 pb-3 border-b border-slate-800/80'
+        }`}>
+          <div 
+            onClick={isMinimized ? toggleMinimize : undefined}
+            className={`flex items-center gap-3 ${isMinimized ? 'cursor-pointer select-none hover:opacity-90' : ''}`}
+          >
+            <div className="w-8 h-8 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center text-cyan-400 shadow-md shadow-cyan-500/10 shrink-0">
               <Bookmark className="w-4 h-4 fill-cyan-400/30" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base sm:text-lg font-bold font-sans text-white tracking-wide">
+                <h3 className="text-sm sm:text-base font-bold font-sans text-white tracking-wide">
                   My Saved Collection
                 </h3>
-                <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-[11px] font-bold border border-cyan-500/40">
+                <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 font-mono text-[10px] font-bold border border-cyan-500/40">
                   {locationsList.length} Bookmarked
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 font-mono">
-                Pin your favorite cities &amp; citadels to access dossiers or share with friends
-              </p>
+              {!isMinimized && (
+                <p className="text-[11px] text-slate-400 font-mono mt-0.5 hidden sm:block">
+                  Pin your favorite cities &amp; citadels to access dossiers or share with friends
+                </p>
+              )}
             </div>
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions & Minimize Button */}
           <div className="flex items-center gap-2">
-            {locationsList.length > 0 && (
+            {locationsList.length > 0 && !isMinimized && (
               <button
                 onClick={(e) => handleShareClick(locationsList[0], e)}
-                className="px-3 py-1.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-500 hover:text-black text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 border border-cyan-500/40 transition-all cursor-pointer shadow-sm group"
+                className="px-2.5 py-1.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-500 hover:text-black text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 border border-cyan-500/40 transition-all cursor-pointer shadow-sm group"
                 title="Share this collection"
               >
                 <Share2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
-                <span>Share Collection</span>
+                <span className="hidden sm:inline">Share Collection</span>
               </button>
             )}
             <button
               onClick={() => setCurrentPage('saved')}
-              className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white font-mono text-xs flex items-center gap-1 border border-slate-700 transition-all cursor-pointer"
+              className="px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white font-mono text-xs flex items-center gap-1 border border-slate-700 transition-all cursor-pointer"
             >
               <span>View Full Library</span>
               <ArrowRight className="w-3 h-3" />
             </button>
+
+            {/* Minimize / Expand Toggle Button */}
+            <button
+              onClick={toggleMinimize}
+              className="px-2.5 py-1.5 rounded-xl bg-slate-900/90 hover:bg-cyan-500/20 text-slate-300 hover:text-cyan-300 font-mono text-xs flex items-center gap-1.5 border border-slate-700 hover:border-cyan-500/40 transition-all cursor-pointer shadow-sm"
+              title={isMinimized ? "Expand Saved Collection" : "Minimize Saved Collection"}
+              aria-label={isMinimized ? "Expand Saved Collection" : "Minimize Saved Collection"}
+            >
+              {isMinimized ? (
+                <>
+                  <ChevronDown className="w-3.5 h-3.5 text-cyan-400" />
+                  <span className="text-[11px] font-bold text-cyan-300">Expand</span>
+                </>
+              ) : (
+                <>
+                  <ChevronUp className="w-3.5 h-3.5 text-slate-400" />
+                  <span className="text-[11px] font-bold">Minimize</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Location Cards Carousel / Grid */}
-        {locationsList.length === 0 ? (
-          <div className="py-8 text-center rounded-2xl bg-[#02050f]/60 border border-dashed border-slate-800 px-4">
-            <Bookmark className="w-8 h-8 text-slate-600 mx-auto mb-2" />
-            <h4 className="text-sm font-bold text-slate-300 mb-1">Your Saved Collection is Empty</h4>
-            <p className="text-xs text-slate-500 max-w-md mx-auto mb-4">
-              Click the bookmark icon on any location to save it here for fast access and sharing.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-[11px] font-mono text-slate-400">Quick add:</span>
-              <button
-                onClick={() => handleQuickAdd('kolhapur')}
-                className="px-3 py-1 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition-all cursor-pointer"
-              >
-                + Kolhapur
-              </button>
-              <button
-                onClick={() => handleQuickAdd('satara')}
-                className="px-3 py-1 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition-all cursor-pointer"
-              >
-                + Satara
-              </button>
-              <button
-                onClick={() => handleQuickAdd('mumbai')}
-                className="px-3 py-1 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-xs font-mono font-bold transition-all cursor-pointer"
-              >
-                + Mumbai
-              </button>
+        {/* Location Cards Carousel / Grid (Hidden when minimized) */}
+        {!isMinimized && (
+          locationsList.length === 0 ? (
+            <div className="py-5 text-center rounded-2xl bg-[#02050f]/60 border border-dashed border-slate-800 px-4">
+              <Bookmark className="w-6 h-6 text-slate-600 mx-auto mb-1.5" />
+              <h4 className="text-xs sm:text-sm font-bold text-slate-300 mb-0.5">Your Saved Collection is Empty</h4>
+              <p className="text-[11px] text-slate-500 max-w-md mx-auto mb-3">
+                Click the bookmark icon on any location to save it here for fast access and sharing.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <span className="text-[10px] font-mono text-slate-400">Quick add:</span>
+                <button
+                  onClick={() => handleQuickAdd('kolhapur')}
+                  className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-[11px] font-mono font-bold transition-all cursor-pointer"
+                >
+                  + Kolhapur
+                </button>
+                <button
+                  onClick={() => handleQuickAdd('satara')}
+                  className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-[11px] font-mono font-bold transition-all cursor-pointer"
+                >
+                  + Satara
+                </button>
+                <button
+                  onClick={() => handleQuickAdd('mumbai')}
+                  className="px-2.5 py-0.5 rounded-full bg-cyan-500/10 hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 text-[11px] font-mono font-bold transition-all cursor-pointer"
+                >
+                  + Mumbai
+                </button>
+              </div>
             </div>
-          </div>
-        ) : (
+          ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
             {locationsList.map((loc) => {
               const heroImg = loc.bannerImage || (loc.id === 'kolhapur' ? '/images/kolhapur/mahalaxmi_temple.jpg' : '/images/satara/ajinkyatara_fort.jpg');
@@ -187,7 +236,7 @@ export const SavedCollectionSection = () => {
               );
             })}
           </div>
-        )}
+        ))}
       </div>
 
       {/* Share Modal Trigger */}

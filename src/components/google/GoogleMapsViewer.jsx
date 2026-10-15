@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { 
   Compass, Layers, Search, MapPin, Eye, ExternalLink, 
   Sparkles, X, Check, ZoomIn, ZoomOut, RotateCcw, 
-  Navigation, Car, Building2, Trees, ArrowRight, MousePointerClick
+  Navigation, Car, Building2, Trees, ArrowRight, ArrowUp, ArrowDown, ArrowLeft,
+  RotateCw, Volume2, VolumeX, Footprints, Maximize2, Minimize2, MousePointerClick
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
@@ -83,8 +84,187 @@ export const GoogleMapsViewer = ({
       heading,
       pitch
     });
+    setTotalWalkedDistance(0);
     setStreetViewOpen(true);
   };
+
+  // 360° Smooth Walking & Direction Navigation State
+  const [stepDistance, setStepDistance] = useState(25); // 10m, 25m, 50m
+  const [isWalking, setIsWalking] = useState(false);
+  const [walkingFeedback, setWalkingFeedback] = useState('');
+  const [totalWalkedDistance, setTotalWalkedDistance] = useState(0);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isControlsMinimized, setIsControlsMinimized] = useState(false);
+
+  // Soft tactile footstep audio synthesizer (Web Audio API, 0 latency, no external assets)
+  const playFootstepSound = () => {
+    if (!soundEnabled || typeof window === 'undefined') return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(120, ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(32, ctx.currentTime + 0.08);
+      gain.gain.setValueAtTime(0.08, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.09);
+    } catch {
+      // Audio autoplay policy fallback
+    }
+  };
+
+  // Geodesic Great Circle forward projection (calculates exact new lat/lng given bearing and distance in meters)
+  const calculateNewCoordinates = (lat, lng, bearingDeg, distanceMeters) => {
+    const R = 6378137; // Earth's mean radius in meters
+    const rad = Math.PI / 180;
+    const deg = 180 / Math.PI;
+
+    const latRad = lat * rad;
+    const lngRad = lng * rad;
+    const bearingRad = bearingDeg * rad;
+    const angularDist = distanceMeters / R;
+
+    const newLatRad = Math.asin(
+      Math.sin(latRad) * Math.cos(angularDist) +
+      Math.cos(latRad) * Math.sin(angularDist) * Math.cos(bearingRad)
+    );
+
+    const newLngRad = lngRad + Math.atan2(
+      Math.sin(bearingRad) * Math.sin(angularDist) * Math.cos(latRad),
+      Math.cos(angularDist) - Math.sin(latRad) * Math.sin(newLatRad)
+    );
+
+    return {
+      lat: Number((newLatRad * deg).toFixed(6)),
+      lng: Number((newLngRad * deg).toFixed(6))
+    };
+  };
+
+  // Walk in cardinal direction (N, E, S, W) or along view heading (Forward / Backward)
+  const walkInDirection = (direction) => {
+    if (!activeStreetView) return;
+
+    let bearing = activeStreetView.heading || 0;
+    let newHeading = activeStreetView.heading || 0;
+    let label = 'Forward';
+
+    if (direction === 'forward') {
+      bearing = activeStreetView.heading || 0;
+      label = 'Forward';
+    } else if (direction === 'backward') {
+      bearing = (activeStreetView.heading + 180) % 360;
+      label = 'Backward';
+    } else if (direction === 'north') {
+      bearing = 0;
+      newHeading = 0;
+      label = 'North [N]';
+    } else if (direction === 'east') {
+      bearing = 90;
+      newHeading = 90;
+      label = 'East [E]';
+    } else if (direction === 'south') {
+      bearing = 180;
+      newHeading = 180;
+      label = 'South [S]';
+    } else if (direction === 'west') {
+      bearing = 270;
+      newHeading = 270;
+      label = 'West [W]';
+    }
+
+    const { lat: newLat, lng: newLng } = calculateNewCoordinates(
+      activeStreetView.lat,
+      activeStreetView.lng,
+      bearing,
+      stepDistance
+    );
+
+    setIsWalking(true);
+    setWalkingFeedback(`Walking ${label} (${stepDistance}m)...`);
+    playFootstepSound();
+    setTotalWalkedDistance(prev => prev + stepDistance);
+
+    setActiveStreetView(prev => ({
+      ...prev,
+      lat: newLat,
+      lng: newLng,
+      heading: (direction === 'north' || direction === 'east' || direction === 'south' || direction === 'west') ? newHeading : prev.heading
+    }));
+
+    // Keep Leaflet map and marker in sync underneath
+    if (leafletMapRef.current) {
+      leafletMapRef.current.panTo([newLat, newLng]);
+      if (clickedMarkerRef.current) {
+        clickedMarkerRef.current.setLatLng([newLat, newLng]);
+      }
+    }
+
+    setTimeout(() => {
+      setIsWalking(false);
+    }, 450);
+  };
+
+  // Turn Camera view (heading delta)
+  const turnCamera = (deltaDeg) => {
+    if (!activeStreetView) return;
+    const currentHeading = activeStreetView.heading || 0;
+    const newHeading = (currentHeading + deltaDeg + 360) % 360;
+    setActiveStreetView(prev => ({
+      ...prev,
+      heading: Math.round(newHeading)
+    }));
+  };
+
+  // Tilt Camera (pitch delta)
+  const tiltCamera = (deltaPitch) => {
+    if (!activeStreetView) return;
+    const currentPitch = activeStreetView.pitch || 0;
+    const newPitch = Math.max(-85, Math.min(85, currentPitch + deltaPitch));
+    setActiveStreetView(prev => ({
+      ...prev,
+      pitch: newPitch
+    }));
+  };
+
+  // Keyboard navigation listener (Arrow keys, WASD, NESW)
+  useEffect(() => {
+    if (!streetViewOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
+        e.preventDefault();
+        walkInDirection('forward');
+      } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
+        e.preventDefault();
+        walkInDirection('backward');
+      } else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+        e.preventDefault();
+        turnCamera(-30);
+      } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+        e.preventDefault();
+        turnCamera(30);
+      } else if (e.key === 'n' || e.key === 'N') {
+        e.preventDefault();
+        walkInDirection('north');
+      } else if (e.key === 'e' || e.key === 'E') {
+        e.preventDefault();
+        walkInDirection('east');
+      } else if (e.key === 'Escape') {
+        setStreetViewOpen(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [streetViewOpen, activeStreetView, stepDistance, soundEnabled]);
 
   // Initialize Map
   useEffect(() => {
@@ -649,8 +829,215 @@ export const GoogleMapsViewer = ({
             })}
           </div>
 
-          {/* 360° Interactive Canvas Iframe */}
+          {/* 360° Interactive Canvas Iframe + Directional Walking HUD */}
           <div className="flex-1 w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 relative shadow-2xl">
+            
+            {/* Realtime Walking Feedback Overlay */}
+            {isWalking && (
+              <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 pointer-events-none transition-all duration-300">
+                <div className="px-5 py-2.5 rounded-2xl bg-black/85 backdrop-blur-xl border border-cyan-400 text-cyan-300 font-mono text-xs font-bold flex items-center gap-2.5 shadow-2xl shadow-cyan-500/30 animate-pulse">
+                  <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping" />
+                  <Footprints className="w-4 h-4 text-cyan-300 animate-bounce" />
+                  <span>{walkingFeedback}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Floating E - W - N - S Compass & Walking Navigation Controller */}
+            {isControlsMinimized ? (
+              <button
+                onClick={() => setIsControlsMinimized(false)}
+                className="absolute bottom-4 left-4 z-20 px-3.5 py-2.5 rounded-2xl bg-black/85 hover:bg-black/95 text-cyan-300 border border-cyan-400/50 shadow-2xl backdrop-blur-xl flex items-center gap-2.5 font-mono text-xs font-bold transition-all hover:scale-105 cursor-pointer hover:border-cyan-400"
+                title="Open Walking & Directional Navigation HUD"
+              >
+                <Compass className="w-4 h-4 text-cyan-400 animate-spin" style={{ animationDuration: '10s' }} />
+                <span>E-W-N-S Walking HUD</span>
+                <span className="px-1.5 py-0.5 rounded bg-cyan-500/20 text-[10px] text-cyan-300">
+                  {Math.round(activeStreetView.heading || 0)}°
+                </span>
+                <Maximize2 className="w-3.5 h-3.5 text-slate-400" />
+              </button>
+            ) : (
+              <div className="absolute bottom-4 left-4 z-20 w-76 sm:w-80 rounded-3xl bg-slate-950/92 backdrop-blur-2xl border border-cyan-500/40 p-3.5 shadow-2xl shadow-black/80 flex flex-col gap-2.5 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                
+                {/* HUD Header */}
+                <div className="flex items-center justify-between pb-1.5 border-b border-slate-800/80">
+                  <div className="flex items-center gap-2">
+                    <Compass className="w-4 h-4 text-cyan-400" />
+                    <span className="font-mono font-bold text-xs text-white tracking-wide">WALK &amp; EXPLORE</span>
+                    <span className="px-2 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] font-bold">
+                      {Math.round(activeStreetView.heading || 0)}°
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-1.5">
+                    {/* Audio Toggle */}
+                    <button
+                      onClick={() => setSoundEnabled(!soundEnabled)}
+                      className={`p-1.5 rounded-xl border text-xs cursor-pointer transition-colors ${
+                        soundEnabled 
+                          ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30' 
+                          : 'bg-slate-900 text-slate-500 border-slate-800'
+                      }`}
+                      title={soundEnabled ? 'Mute footsteps sound' : 'Enable footsteps audio'}
+                    >
+                      {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+                    </button>
+
+                    {/* Minimize */}
+                    <button
+                      onClick={() => setIsControlsMinimized(true)}
+                      className="p-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white border border-slate-800 transition-colors cursor-pointer"
+                      title="Minimize Walking HUD"
+                    >
+                      <Minimize2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Cardinal Compass D-Pad: North, East, South, West & Forward */}
+                <div className="grid grid-cols-3 gap-1.5 items-center justify-items-center py-1">
+                  
+                  {/* Top Row: Turn Left, NORTH [N], Turn Right */}
+                  <button
+                    onClick={() => turnCamera(-45)}
+                    className="w-full py-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                    title="Turn Camera Left 45° (A or Left Arrow)"
+                  >
+                    <RotateCcw className="w-3 h-3 text-cyan-400" />
+                    <span>-45°</span>
+                  </button>
+
+                  <button
+                    onClick={() => walkInDirection('north')}
+                    className="group w-full py-1.5 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-black border border-cyan-400/40 font-mono font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md hover:shadow-cyan-500/30"
+                    title="Walk North [N] (0°)"
+                  >
+                    <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+                    <span className="text-[11px] leading-tight">N</span>
+                  </button>
+
+                  <button
+                    onClick={() => turnCamera(45)}
+                    className="w-full py-1.5 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                    title="Turn Camera Right 45° (D or Right Arrow)"
+                  >
+                    <span>+45°</span>
+                    <RotateCw className="w-3 h-3 text-cyan-400" />
+                  </button>
+
+                  {/* Middle Row: WEST [W], FORWARD, EAST [E] */}
+                  <button
+                    onClick={() => walkInDirection('west')}
+                    className="group w-full py-2 px-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-black border border-cyan-400/40 font-mono font-black text-xs flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md hover:shadow-cyan-500/30"
+                    title="Walk West [W] (270°)"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                    <span className="text-[11px]">W</span>
+                  </button>
+
+                  <button
+                    onClick={() => walkInDirection('forward')}
+                    className="w-full h-full py-2.5 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-black text-[11px] font-mono flex flex-col items-center justify-center shadow-lg shadow-cyan-500/30 transition-transform active:scale-95 cursor-pointer border border-cyan-300/40"
+                    title="Walk Forward in current direction (W or Up Arrow key)"
+                  >
+                    <ArrowUp className="w-4 h-4 animate-bounce" />
+                    <span className="leading-tight">FORWARD</span>
+                  </button>
+
+                  <button
+                    onClick={() => walkInDirection('east')}
+                    className="group w-full py-2 px-2.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-black border border-cyan-400/40 font-mono font-black text-xs flex items-center justify-center gap-1 transition-all cursor-pointer shadow-md hover:shadow-cyan-500/30"
+                    title="Walk East [E] (90°)"
+                  >
+                    <span className="text-[11px]">E</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  </button>
+
+                  {/* Bottom Row: Look Up, SOUTH [S], Look Down */}
+                  <button
+                    onClick={() => tiltCamera(10)}
+                    className="w-full py-1 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                    title="Tilt Camera Up"
+                  >
+                    <span>▲ Tilt</span>
+                  </button>
+
+                  <button
+                    onClick={() => walkInDirection('south')}
+                    className="group w-full py-1.5 px-3 rounded-xl bg-cyan-500/15 hover:bg-cyan-500 text-cyan-300 hover:text-black border border-cyan-400/40 font-mono font-black text-xs flex flex-col items-center justify-center transition-all cursor-pointer shadow-md hover:shadow-cyan-500/30"
+                    title="Walk South [S] (180°)"
+                  >
+                    <span className="text-[11px] leading-tight">S</span>
+                    <ArrowDown className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
+                  </button>
+
+                  <button
+                    onClick={() => tiltCamera(-10)}
+                    className="w-full py-1 px-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800 text-[10px] font-mono font-bold flex items-center justify-center gap-1 transition-all cursor-pointer"
+                    title="Tilt Camera Down"
+                  >
+                    <span>▼ Tilt</span>
+                  </button>
+
+                </div>
+
+                {/* Step Back & Stride Distance Selector */}
+                <div className="flex items-center gap-1.5 pt-1">
+                  <button
+                    onClick={() => walkInDirection('backward')}
+                    className="flex-1 py-1.5 px-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-amber-300 border border-slate-800 hover:border-amber-500/40 text-xs font-mono font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    title="Step Backward (S or Down Arrow key)"
+                  >
+                    <ArrowDown className="w-3.5 h-3.5" />
+                    <span>Step Back</span>
+                  </button>
+
+                  <div className="flex items-center gap-1 p-0.5 rounded-xl bg-slate-900 border border-slate-800">
+                    <button
+                      onClick={() => setStepDistance(10)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold cursor-pointer transition-all ${
+                        stepDistance === 10 ? 'bg-cyan-500 text-black' : 'text-slate-400 hover:text-white'
+                      }`}
+                      title="10m fine stroll"
+                    >
+                      10m
+                    </button>
+                    <button
+                      onClick={() => setStepDistance(25)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold cursor-pointer transition-all ${
+                        stepDistance === 25 ? 'bg-cyan-500 text-black' : 'text-slate-400 hover:text-white'
+                      }`}
+                      title="25m standard walk"
+                    >
+                      25m
+                    </button>
+                    <button
+                      onClick={() => setStepDistance(50)}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-mono font-bold cursor-pointer transition-all ${
+                        stepDistance === 50 ? 'bg-cyan-500 text-black' : 'text-slate-400 hover:text-white'
+                      }`}
+                      title="50m brisk sprint"
+                    >
+                      50m
+                    </button>
+                  </div>
+                </div>
+
+                {/* Footnotes & Telemetry */}
+                <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                  <span className="flex items-center gap-1 text-cyan-300">
+                    <Footprints className="w-3 h-3 text-cyan-400" />
+                    <span>Walked: {totalWalkedDistance}m</span>
+                  </span>
+                  <span className="text-slate-500 hidden sm:inline">
+                    Keys: [W/S/A/D] or [N/E/S/W]
+                  </span>
+                </div>
+
+              </div>
+            )}
+
             <iframe
               title={`Google Street View: ${activeStreetView.name}`}
               src={getStreetViewEmbedUrl(activeStreetView.lat, activeStreetView.lng, activeStreetView.heading, activeStreetView.pitch)}

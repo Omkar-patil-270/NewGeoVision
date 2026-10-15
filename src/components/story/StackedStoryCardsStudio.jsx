@@ -9,7 +9,7 @@ import {
   ChevronRight, ChevronLeft, Check, Play, Pause, TrendingUp,
   Search, MapPin, Navigation, Sparkles, Globe, Loader2, X,
   Camera, Eye, ExternalLink, Image as ImageIcon,
-  ShieldCheck, ShieldAlert, AlertTriangle, Info, Filter
+  ShieldCheck, ShieldAlert, AlertTriangle, Info, Filter, Calendar
 } from 'lucide-react';
 
 export const StackedStoryCardsStudio = () => {
@@ -880,7 +880,7 @@ export const StackedStoryCardsStudio = () => {
                   </h2>
                 </div>
                 <p className="text-xs text-slate-400 mt-0.5">
-                  Primary: Google Places Photos • Automatic Backup: Wikimedia Commons & Verified Curated Archives
+                  Live Multi-Source Photography • Wikimedia Commons, Unsplash, Pexels & Regional Archives
                 </p>
               </div>
               <button
@@ -1100,17 +1100,27 @@ export const StackedStoryCardsStudio = () => {
                               loading="lazy"
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                             />
-                            <div className="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap">
+                            <div className="absolute top-2 left-2 flex items-center gap-1.5 flex-wrap max-w-[85%]">
                               {/* Source Provider Badge */}
-                              {img.sourceProvider === 'google_places' || (img.source && img.source.toLowerCase().includes('google')) ? (
-                                <span className="px-2 py-0.5 rounded-full bg-cyan-950/85 backdrop-blur-md text-[9px] font-mono text-cyan-300 border border-cyan-500/50 flex items-center gap-1">
-                                  <Camera className="w-2.5 h-2.5" />
-                                  <span>Google Places Photo</span>
-                                </span>
-                              ) : img.sourceProvider === 'wikimedia' || (img.source && img.source.toLowerCase().includes('wiki')) ? (
+                              {img.sourceProvider === 'wikimedia' || (img.source && img.source.toLowerCase().includes('wiki')) ? (
                                 <span className="px-2 py-0.5 rounded-full bg-blue-950/85 backdrop-blur-md text-[9px] font-mono text-blue-300 border border-blue-500/50 flex items-center gap-1">
                                   <Globe className="w-2.5 h-2.5" />
                                   <span>Wikimedia Commons</span>
+                                </span>
+                              ) : img.sourceProvider === 'unsplash' || (img.source && img.source.toLowerCase().includes('unsplash')) ? (
+                                <span className="px-2 py-0.5 rounded-full bg-purple-950/85 backdrop-blur-md text-[9px] font-mono text-purple-300 border border-purple-500/50 flex items-center gap-1">
+                                  <Camera className="w-2.5 h-2.5" />
+                                  <span>Unsplash Photo</span>
+                                </span>
+                              ) : img.sourceProvider === 'pexels' || (img.source && img.source.toLowerCase().includes('pexels')) ? (
+                                <span className="px-2 py-0.5 rounded-full bg-emerald-950/85 backdrop-blur-md text-[9px] font-mono text-emerald-300 border border-emerald-500/50 flex items-center gap-1">
+                                  <Camera className="w-2.5 h-2.5" />
+                                  <span>Pexels Photo</span>
+                                </span>
+                              ) : img.sourceProvider === 'local_curated' ? (
+                                <span className="px-2 py-0.5 rounded-full bg-cyan-950/85 backdrop-blur-md text-[9px] font-mono text-cyan-300 border border-cyan-500/50 flex items-center gap-1">
+                                  <Camera className="w-2.5 h-2.5" />
+                                  <span>Verified Archive</span>
                                 </span>
                               ) : (
                                 <span className="px-2 py-0.5 rounded-full bg-slate-900/85 backdrop-blur-md text-[9px] font-mono text-slate-300 border border-slate-700">
@@ -1118,17 +1128,33 @@ export const StackedStoryCardsStudio = () => {
                                 </span>
                               )}
 
-                              {/* Place Verified Badge */}
-                              {img.placeVerified && (
-                                <span className="px-1.5 py-0.5 rounded-full bg-emerald-950/85 text-[9px] font-mono text-emerald-300 border border-emerald-500/50">
-                                  ✓ Verified Place
+                              {/* Recency / Date Badge */}
+                              {img.recencyBadge ? (
+                                <span className={`px-1.5 py-0.5 rounded-full text-[8.5px] font-mono flex items-center gap-1 border ${
+                                  img.isRecent
+                                    ? "bg-emerald-950/90 text-emerald-300 border-emerald-500/50 font-bold"
+                                    : "bg-slate-900/85 text-slate-400 border-slate-700"
+                                }`}>
+                                  <Calendar className="w-2.5 h-2.5" />
+                                  <span>{img.recencyBadge}</span>
+                                </span>
+                              ) : img.captureDate && img.captureDate !== 'Unknown' ? (
+                                <span className="px-1.5 py-0.5 rounded-full bg-slate-900/85 text-[8.5px] font-mono text-slate-300 border border-slate-700 flex items-center gap-1">
+                                  <Calendar className="w-2.5 h-2.5" />
+                                  <span>{img.captureDate}</span>
+                                </span>
+                              ) : (
+                                <span className="px-1.5 py-0.5 rounded-full bg-black/75 text-[8.5px] font-mono text-slate-400 border border-slate-800">
+                                  Date: Unknown
                                 </span>
                               )}
 
-                              {/* Image Type Badge */}
-                              <span className="px-1.5 py-0.5 rounded-full bg-black/75 text-[8.5px] font-mono text-slate-300 border border-slate-700">
-                                {img.imageType === 'actual_photo' ? 'Photo' : img.imageType === 'wikimedia' ? 'Wiki Archive' : 'Archive'}
-                              </span>
+                              {/* Place Verified Badge */}
+                              {img.placeVerified && (
+                                <span className="px-1.5 py-0.5 rounded-full bg-cyan-950/85 text-[8.5px] font-mono text-cyan-300 border border-cyan-500/50">
+                                  ✓ Verified Place
+                                </span>
+                              )}
                             </div>
 
                             {/* External Link to Original File/Article if available */}
@@ -1160,12 +1186,12 @@ export const StackedStoryCardsStudio = () => {
                               <h4 className="text-xs font-bold text-white line-clamp-1 mt-0.5">{img.title}</h4>
                             </div>
 
-                            <div className="pt-1 border-t border-slate-800/60 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
-                              <span className="truncate max-w-[180px] italic">
-                                {img.attribution || "Photo via Google Places / Wikimedia"}
+                            <div className="pt-1.5 border-t border-slate-800/60 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
+                              <span className="truncate max-w-[200px] italic">
+                                {img.photographer || img.attribution || "Live Web Verified Contributor"}
                               </span>
                               {img.license && (
-                                <span className="px-1.5 py-0.2 rounded bg-slate-900 border border-slate-800 text-[8.5px] text-slate-300 shrink-0">
+                                <span className="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800 text-[8.5px] text-slate-300 shrink-0">
                                   {img.license}
                                 </span>
                               )}

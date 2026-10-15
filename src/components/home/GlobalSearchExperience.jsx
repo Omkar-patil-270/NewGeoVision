@@ -317,7 +317,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
   // Active cover image (Real Wikipedia image first, then fallback)
   const activeCoverImage = realPhotos.length > 0 
     ? realPhotos[0].url 
-    : (currentLocation?.bannerImage || "/images/kolhapur/panchganga_ghat.jpg");
+    : (currentLocation?.bannerImage || "/images/kolhapur/mahalaxmi_temple.jpg");
 
   return (
     <div className="w-full max-w-3xl mx-auto relative z-30" ref={searchContainerRef}>

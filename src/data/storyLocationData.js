@@ -190,8 +190,8 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
         title: "Panchganga River Basin & Sahyadri Forest Canopies",
         subtitle: "Lush biodiversity, fertile sugarcane corridors, and the Radhanagari wildlife sanctuary.",
         era: "ancient",
-        image: "/images/kolhapur/panchganga_ghat.jpg",
-        imageCaption: "Historic Panchganga River Ghats & Water Corridor, Kolhapur (Real Photo)",
+        image: "/images/kolhapur/rankala_lake.jpg",
+        imageCaption: "Historic Rankala Lake & Lush Water Catchments, Kolhapur (Real Photo)",
         narratives: {
           default: `Situated in the fertile rain shadow of the Western Ghats (Sahyadris), Kolhapur enjoys a rich natural landscape. The Panchganga river—formed by the confluence of five sacred streams (Kumbhi, Kasari, Bhogavati, Tulsi, and Saraswati)—winds gracefully through the city.\n\nJust 45 km to the southwest lies the Radhanagari Wildlife Sanctuary, a UNESCO World Heritage biodiversity hotspot home to the majestic Indian Bison (Gaur), leopards, hornbills, and dense semi-evergreen monsoon rainforests.`,
           traveler: `Nature lovers should take day trips to Radhanagari Wildlife Sanctuary to see Indian Gaurs grazing in misty meadows, or drive up to Panhala Fort during the monsoon to see cascading seasonal waterfalls along the hills.`,

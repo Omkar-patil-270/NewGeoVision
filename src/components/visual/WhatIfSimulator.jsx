@@ -106,7 +106,7 @@ export const WhatIfSimulator = ({
               viewMode === "scenario" ? "bg-emerald-500 text-black font-bold" : "text-slate-400 hover:text-white"
             }`}
           >
-            2035 Scenario Earth
+            Predictive Scenario Earth
           </button>
         </div>
       </div>

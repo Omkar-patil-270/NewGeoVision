@@ -36,7 +36,6 @@ export const LocationPage = () => {
     { year: "1902", title: "Shahu Maharaj Affirmative Action", desc: "First 50% reservation policy enacted; free compulsory education decreed." },
     { year: "1950", title: "Cooperative Agro Revolution", desc: "Asia's largest sugar cooperatives and foundry manufacturing clusters established." },
     { year: "2025", title: "Modern Industrial Balance", desc: "3.85M citizens, Olympic wrestling hub, precision foundries supplying global auto." },
-    { year: "2035", title: "Smart Autonomous Agro-Hub", desc: "Induction electric foundries, circular bio-energy, digital-twin temple preservation." },
     { year: "2050", title: "Carbon-Neutral Heritage City", desc: "5.15M population steady state, Western Ghats buffer zones, zero-effluent grids." }
   ];
 

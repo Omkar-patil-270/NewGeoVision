@@ -23,22 +23,49 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
   const [mapStyle, setMapStyle] = useState(initialStyle); // 'satellite', 'streets', 'dark'
   const [selectedPopupLoc, setSelectedPopupLoc] = useState(null);
 
-  // Map Tile Providers (High-Resolution Satellite & OpenStreetMaps)
+  // Map Tile Providers (High-Resolution Satellite, OpenStreetMaps & Google Maps)
   const TILE_LAYERS = {
+    google_hybrid: {
+      url: 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}',
+      attribution: '&copy; Google Maps Satellite &amp; POIs',
+      hasLabels: false,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      maxZoom: 20
+    },
+    google_streets: {
+      url: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+      attribution: '&copy; Google Maps Roads',
+      hasLabels: false,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      maxZoom: 20
+    },
+    google_terrain: {
+      url: 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
+      attribution: '&copy; Google Maps Terrain',
+      hasLabels: false,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      maxZoom: 20
+    },
     satellite: {
       url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
       attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-      hasLabels: true
+      hasLabels: true,
+      subdomains: ['a', 'b', 'c'],
+      maxZoom: 19
     },
     streets: {
       url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      hasLabels: false
+      hasLabels: false,
+      subdomains: ['a', 'b', 'c'],
+      maxZoom: 19
     },
     dark: {
       url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
       attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
-      hasLabels: false
+      hasLabels: false,
+      subdomains: ['a', 'b', 'c'],
+      maxZoom: 19
     }
   };
 
@@ -218,13 +245,15 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
       labelLayerRef.current = null;
     }
 
-    const newBase = L.tileLayer(TILE_LAYERS[styleKey].url, {
-      maxZoom: 19,
-      subdomains: ['a', 'b', 'c']
+    const config = TILE_LAYERS[styleKey] || TILE_LAYERS.satellite;
+    const newBase = L.tileLayer(config.url, {
+      maxZoom: config.maxZoom || 19,
+      subdomains: config.subdomains || ['a', 'b', 'c'],
+      attribution: config.attribution
     }).addTo(map);
     activeTileLayerRef.current = newBase;
 
-    if (TILE_LAYERS[styleKey].hasLabels) {
+    if (config.hasLabels) {
       const labels = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
         maxZoom: 19
       }).addTo(map);
@@ -252,16 +281,19 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
       </div>
 
       {/* Floating Style Picker */}
-      <div className="absolute top-4 left-4 z-10 flex items-center gap-1.5 p-1 rounded-2xl bg-white/90 backdrop-blur-md border border-stone-200 shadow-lg pointer-events-auto">
+      <div className="absolute top-4 left-4 z-10 flex flex-wrap items-center gap-1.5 p-1 rounded-2xl bg-white/95 backdrop-blur-md border border-stone-200 shadow-lg pointer-events-auto max-w-[90vw]">
         {[
+          { key: "google_hybrid", label: "🌍 Google Hybrid" },
+          { key: "google_streets", label: "🗺️ Google Roads" },
+          { key: "google_terrain", label: "⛰️ Google Terrain" },
           { key: "satellite", label: "🛰️ Satellite" },
-          { key: "streets", label: "🗺️ Streets" },
+          { key: "streets", label: "📍 OSM" },
           { key: "dark", label: "🌙 Dark" }
         ].map((s) => (
           <button
             key={s.key}
             onClick={() => handleStyleChange(s.key)}
-            className={`px-3 py-1 rounded-xl text-xs font-semibold transition-all ${
+            className={`px-2.5 py-1 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
               mapStyle === s.key
                 ? "bg-primary text-white shadow-xs font-bold"
                 : "text-stone-600 hover:text-stone-900 hover:bg-stone-100"

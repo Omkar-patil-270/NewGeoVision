@@ -24,6 +24,26 @@ export const AppProvider = ({ children }) => {
       return "home";
     }
   }); 
+  const [previousPage, setPreviousPage] = useState("home");
+
+  const navigateToPage = (newPageOrFn) => {
+    setCurrentPage(prev => {
+      const next = typeof newPageOrFn === 'function' ? newPageOrFn(prev) : newPageOrFn;
+      if (prev !== next) {
+        setPreviousPage(prev);
+      }
+      return next;
+    });
+  };
+
+  const goBack = () => {
+    setCurrentPage(prev => {
+      const target = (previousPage && previousPage !== prev) ? previousPage : 'home';
+      setPreviousPage('home');
+      return target;
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   // 'home', 'explore', 'location', 'story', 'intelligence', 'predictions', 'tourism', 'compare', 'saved', 'photo', 'about'
 
   // 3D Earth GIS Layers
@@ -166,7 +186,9 @@ export const AppProvider = ({ children }) => {
       activeMode,
       setActiveMode,
       currentPage,
-      setCurrentPage,
+      setCurrentPage: navigateToPage,
+      previousPage,
+      goBack,
       activeLayers,
       toggleLayer,
       layerOpacity,

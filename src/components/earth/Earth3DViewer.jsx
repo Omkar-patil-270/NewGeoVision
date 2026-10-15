@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { useApp } from '../../context/AppContext';
 import { RealEarthMap } from './RealEarthMap';
 import { CesiumEarthViewer } from './CesiumEarthViewer';
+import { GoogleMapsViewer } from '../google/GoogleMapsViewer';
 import { locationService } from '../../services/locationService';
 import { 
   Globe, Layers, MapPin, TrendingUp, BookOpen, 
@@ -514,6 +515,17 @@ export const Earth3DViewer = ({
         {/* Switcher */}
         <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-[#040816]/95 backdrop-blur-md border border-slate-800 shadow-xl pointer-events-auto">
           <button
+            onClick={() => setViewMode("google")}
+            className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
+              viewMode === "google"
+                ? "bg-amber-400 text-black font-bold shadow-md shadow-amber-400/30"
+                : "text-slate-300 hover:text-white"
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block animate-pulse"></span>
+            <span>🗺️ Google Maps</span>
+          </button>
+          <button
             onClick={() => setViewMode("cesium")}
             className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 ${
               viewMode === "cesium"
@@ -532,7 +544,7 @@ export const Earth3DViewer = ({
             }`}
           >
             <Compass className="w-3.5 h-3.5" />
-            <span>🛣️ Street View of Earth Globe</span>
+            <span>🛣️ OSM Streets</span>
           </button>
           <button
             onClick={() => setViewMode("satellite")}
@@ -550,7 +562,9 @@ export const Earth3DViewer = ({
         <div className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#040816]/95 backdrop-blur-md border border-cyan-500/40 text-cyan-300 text-xs font-mono shadow-md pointer-events-auto">
           <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
           <span>
-            {viewMode === "street" 
+            {viewMode === "google"
+              ? <strong>Google Maps Mode: Google Hybrid Satellite, Live Traffic &amp; 360° Street View</strong>
+              : viewMode === "street" 
               ? <strong>Street View Mode: OpenStreetMap road networks, street names &amp; POIs</strong>
               : viewMode === "satellite"
               ? <strong>Satellite Mode: Esri high-res earth imagery &amp; territorial boundaries</strong>
@@ -605,7 +619,18 @@ export const Earth3DViewer = ({
       )}
 
       {/* Main Canvas Area */}
-      {viewMode === "cesium" ? (
+      {viewMode === "google" ? (
+        <div className="w-full h-full flex-1 relative select-none">
+          <GoogleMapsViewer
+            height="100%"
+            initialMode="hybrid"
+            onLocationSelect={(loc) => {
+              if (onLocationSelect) onLocationSelect(loc);
+              setSelectedPin(prev => ({ ...(prev || {}), ...loc }));
+            }}
+          />
+        </div>
+      ) : viewMode === "cesium" ? (
         <div className="w-full h-full flex-1 relative select-none">
           <CesiumEarthViewer
             currentLocation={selectedPin || currentLocation}

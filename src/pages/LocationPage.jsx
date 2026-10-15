@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { 
   Globe, Sparkles, Clock, MapPin, 
-  Thermometer, Wind, Bookmark, Share2, Volume2
+  Thermometer, Wind, Bookmark, Share2, Volume2, ArrowLeft
 } from 'lucide-react';
 import { storyService } from '../services/storyService';
 import { weatherService } from '../services/weatherService';
 import { airQualityService } from '../services/airQualityService';
+import { GoogleMapsViewer } from '../components/google/GoogleMapsViewer';
 
 export const LocationPage = () => {
   const { 
@@ -16,7 +17,10 @@ export const LocationPage = () => {
     setActiveMode,
     playNarration,
     savedLocations,
-    toggleSaveLocation
+    toggleSaveLocation,
+    setCurrentPage,
+    previousPage,
+    goBack
   } = useApp();
 
   const [activeTab, setActiveTab] = useState("story"); // 'story', 'history', 'telemetry', 'gallery'
@@ -58,8 +62,36 @@ export const LocationPage = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/60 to-transparent"></div>
 
         {/* Hero Overlay Content */}
-        <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-end pb-8 z-10">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="absolute inset-0 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col justify-between pt-6 pb-8 z-10 pointer-events-none">
+          {/* Top Row: Back to Dashboard & Dossier Breadcrumb */}
+          <div className="flex items-center justify-between gap-3 pointer-events-auto">
+            <button
+              onClick={() => {
+                if (typeof goBack === 'function') {
+                  goBack();
+                } else if (previousPage && previousPage !== 'location') {
+                  setCurrentPage(previousPage);
+                } else {
+                  setCurrentPage('home');
+                }
+              }}
+              className="px-4 py-2 rounded-2xl bg-black/80 hover:bg-cyan-500 hover:text-black text-cyan-300 font-mono text-xs font-bold flex items-center gap-2 border border-cyan-500/50 hover:border-cyan-300 backdrop-blur-xl shadow-2xl shadow-black transition-all cursor-pointer group"
+              title="Return to previous dashboard"
+            >
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span>← BACK TO DASHBOARD</span>
+            </button>
+
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-slate-800 text-[11px] font-mono text-slate-300">
+              <span className="text-cyan-400 font-bold">GEOVISION</span>
+              <span>/</span>
+              <span>PLANETARY DOSSIER</span>
+              <span>/</span>
+              <span className="text-white font-bold">{currentLocation.name}</span>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 pointer-events-auto">
             <div className="max-w-3xl">
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-2 mb-3">
@@ -85,8 +117,9 @@ export const LocationPage = () => {
               {/* Core Exploration Buttons */}
               <div className="flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => setActiveTab('story')}
+                  onClick={() => setCurrentPage('story')}
                   className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-black font-bold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md shadow-cyan-500/20 transition-all cursor-pointer"
+                  title="Open in High-Graphics Chapter Slideshow Studio"
                 >
                   <Sparkles className="w-4 h-4" />
                   <span>EXPLORE STORY</span>
@@ -137,26 +170,65 @@ export const LocationPage = () => {
 
       {/* Main Content Sections Nav Tabs */}
       <div className="sticky top-16 z-30 border-b border-slate-800/80 bg-[#070d1e]/95 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 overflow-x-auto py-2.5">
-          {[
-            { id: "story", label: "9 Story Modalities", icon: Sparkles },
-            { id: "history", label: "1900-2050 Timeline", icon: Clock },
-            { id: "telemetry", label: "Sensors & Weather", icon: Thermometer },
-            { id: "gallery", label: "Visual Gallery", icon: MapPin }
-          ].map((tab) => (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3 overflow-x-auto py-2.5">
+          <div className="flex items-center gap-2">
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
-                activeTab === tab.id
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-black shadow-md shadow-cyan-500/20 font-bold'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
-              }`}
+              onClick={() => {
+                if (typeof goBack === 'function') {
+                  goBack();
+                } else if (previousPage && previousPage !== 'location') {
+                  setCurrentPage(previousPage);
+                } else {
+                  setCurrentPage('home');
+                }
+              }}
+              className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer mr-2 shrink-0 shadow-md"
+              title="Return to previous dashboard"
             >
-              <tab.icon className="w-3.5 h-3.5" />
-              <span>{tab.label}</span>
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back</span>
             </button>
-          ))}
+            {[
+              { id: "story", label: "9 Story Modalities", icon: Sparkles },
+              { id: "google", label: "🗺️ Google Maps 360°", icon: Globe },
+              { id: "history", label: "1900-2050 Timeline", icon: Clock },
+              { id: "telemetry", label: "Sensors & Weather", icon: Thermometer },
+              { id: "gallery", label: "Visual Gallery", icon: MapPin }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-2 cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-md shadow-amber-500/20 font-bold'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <tab.icon className="w-3.5 h-3.5" />
+                <span>{tab.label}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={() => setActiveTab('google')}
+              className="hidden md:flex px-3 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/40 text-xs font-mono font-bold items-center gap-1.5 transition-all cursor-pointer"
+              title="Launch Google Maps with 360° Street View"
+            >
+              <Globe className="w-3.5 h-3.5 text-amber-400" />
+              <span>Google Maps 360°</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentPage('story')}
+              className="hidden md:flex px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/40 text-xs font-mono font-bold items-center gap-1.5 transition-all cursor-pointer"
+              title="Open high-graphics Chapter Slideshow Studio"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Story Studio Slideshow</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -354,6 +426,48 @@ export const LocationPage = () => {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 5: GOOGLE MAPS 360° */}
+        {activeTab === "google" && (
+          <div className="space-y-4 animate-in fade-in duration-200">
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-[#080E1C] p-4 rounded-3xl border border-amber-500/30">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40">
+                    Google Maps Platform
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">
+                    Target: {currentLocation.name} [{currentLocation.coordinates.lat.toFixed(4)}°N, {currentLocation.coordinates.lng.toFixed(4)}°E]
+                  </span>
+                </div>
+                <h2 className="text-xl font-bold text-white tracking-tight">
+                  High-Resolution Google Hybrid &amp; Street View 360°
+                </h2>
+                <p className="text-xs text-slate-300 mt-1">
+                  Explore full Google road networks, local markets, live traffic, and interactive 360° Street View panoramas for {currentLocation.name}.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(currentLocation.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-slate-200 border border-slate-700 hover:border-amber-400 transition-colors"
+                >
+                  Open in Google Maps App ↗
+                </a>
+              </div>
+            </div>
+
+            <div className="h-[650px] w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl relative">
+              <GoogleMapsViewer
+                height="100%"
+                initialMode="hybrid"
+              />
             </div>
           </div>
         )}

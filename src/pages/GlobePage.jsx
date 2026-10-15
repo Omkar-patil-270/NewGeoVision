@@ -2,10 +2,10 @@ import React from 'react';
 import { useApp } from '../context/AppContext';
 import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { locationService } from '../services/locationService';
-import { Globe, Compass, ArrowRight, Sparkles, MapPin } from 'lucide-react';
+import { Globe, Compass, ArrowRight, Sparkles, MapPin, ArrowLeft } from 'lucide-react';
 
 export const GlobePage = () => {
-  const { currentLocation, selectLocation, setCurrentPage } = useApp();
+  const { currentLocation, selectLocation, setCurrentPage, goBack } = useApp();
   const allLocations = locationService.getAllLocations();
 
   return (
@@ -13,6 +13,15 @@ export const GlobePage = () => {
       {/* Top Controls Bar */}
       <div className="bg-white border-b border-[#E7E2DA] px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3">
+          <button
+            onClick={goBack}
+            className="px-3 py-1.5 rounded-xl bg-white border border-[#E7E2DA] hover:border-orange-500 text-stone-700 hover:text-orange-600 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <span>← Back</span>
+          </button>
+
           <div className="w-9 h-9 rounded-2xl bg-orange-50 border border-orange-200 flex items-center justify-center text-primary shadow-xs">
             <Globe className="w-5 h-5" />
           </div>

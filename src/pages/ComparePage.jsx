@@ -10,11 +10,11 @@ import {
   SlidersHorizontal, Globe, ArrowRight, Shield, Check, 
   Wind, Thermometer, Users, Droplets, Sparkles, MapPin,
   Search, X, TrendingUp, Landmark, Building, ArrowLeftRight,
-  ExternalLink
+  ExternalLink, ArrowLeft
 } from 'lucide-react';
 
 export const ComparePage = () => {
-  const { compareLocations, setCompareLocations, selectLocation, setCurrentPage } = useApp();
+  const { compareLocations, setCompareLocations, selectLocation, setCurrentPage, goBack } = useApp();
   const allLocations = locationService.getAllLocations();
 
   const [cityAId, setCityAId] = useState(compareLocations[0] || "kolhapur");
@@ -196,6 +196,18 @@ export const ComparePage = () => {
     <div className="w-full min-h-[calc(100vh-65px)] bg-[#030712] text-slate-100 flex flex-col justify-between p-3 sm:p-6 lg:p-8 font-sans">
       <div className="max-w-7xl mx-auto w-full space-y-6">
         
+        {/* Back Button */}
+        <div>
+          <button
+            onClick={goBack}
+            className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md inline-flex group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>← Back to Previous View</span>
+          </button>
+        </div>
+
         {/* ================= 1. PAGE HEADER ================= */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800/80 pb-5">
           <div>

@@ -173,7 +173,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
           const modeObj = STORY_MODES.find(m => m.id === activeStoryMode) || STORY_MODES[0];
           setRealStory({
             title: res.title || `${currentLocation.name} — ${modeObj.name} Exploration`,
-            subtitle: `Real AI Synthesized Story via Groq LLM • Mode: ${res.mode || "verified"}`,
+            subtitle: `Real-Time AI Synthesized Story • Mode: ${res.mode || "verified"}`,
             narrative: res.text,
             audioDuration: "3m 15s"
           });
@@ -651,7 +651,7 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
                     {isLoadingStory && (
                       <div className="absolute top-4 right-4 flex items-center gap-1.5 text-xs text-cyan-400 font-mono">
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                        <span>Groq AI Generating...</span>
+                        <span>Generating Location Story...</span>
                       </div>
                     )}
                     <h3 className="text-base sm:text-lg font-serif font-bold text-white mb-1">

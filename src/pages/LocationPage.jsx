@@ -79,7 +79,7 @@ export const LocationPage = () => {
               title="Return to previous dashboard"
             >
               <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-              <span>← BACK TO DASHBOARD</span>
+              <span>← BACK</span>
             </button>
 
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/70 backdrop-blur-md border border-slate-800 text-[11px] font-mono text-slate-300">
@@ -208,17 +208,6 @@ export const LocationPage = () => {
                 <span>{tab.label}</span>
               </button>
             ))}
-          </div>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setCurrentPage('story')}
-              className="hidden md:flex px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/40 text-xs font-mono font-bold items-center gap-1.5 transition-all cursor-pointer"
-              title="Open high-graphics Chapter Slideshow Studio"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Story Studio Slideshow</span>
-            </button>
           </div>
         </div>
       </div>

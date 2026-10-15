@@ -16,34 +16,78 @@ export const AppProvider = ({ children }) => {
   const [activeMode, setActiveMode] = useState("story"); 
   // 'story', 'historical', 'guide', 'legend', 'culture', 'tourism', 'environment', 'economy', 'future'
 
-  // Navigation Route
-  const [currentPage, setCurrentPage] = useState(() => {
+  // Navigation Route with Complete Internal History Stack
+  const initialPage = (() => {
     try {
       return new URLSearchParams(window.location.search).get('page') || "home";
     } catch {
       return "home";
     }
-  }); 
-  const [previousPage, setPreviousPage] = useState("home");
+  })();
+
+  const [currentPage, setCurrentPage] = useState(initialPage);
+  const [historyStack, setHistoryStack] = useState([initialPage]);
+
+  // Synchronize browser history popstate (handles browser Back button)
+  useEffect(() => {
+    try {
+      if (!window.history.state || !window.history.state.page) {
+        window.history.replaceState({ page: initialPage }, '', `?page=${initialPage}`);
+      }
+    } catch {}
+
+    const handlePopState = (e) => {
+      if (e.state && e.state.page) {
+        setCurrentPage(e.state.page);
+        setHistoryStack(prevStack => {
+          if (prevStack.length > 1 && prevStack[prevStack.length - 2] === e.state.page) {
+            return prevStack.slice(0, -1);
+          }
+          return [...prevStack, e.state.page];
+        });
+      } else {
+        setHistoryStack(prevStack => {
+          if (prevStack.length > 1) {
+            const newStack = prevStack.slice(0, -1);
+            const prevPage = newStack[newStack.length - 1] || 'home';
+            setCurrentPage(prevPage);
+            return newStack;
+          }
+          setCurrentPage('home');
+          return ['home'];
+        });
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   const navigateToPage = (newPageOrFn) => {
     setCurrentPage(prev => {
       const next = typeof newPageOrFn === 'function' ? newPageOrFn(prev) : newPageOrFn;
       if (prev !== next) {
-        setPreviousPage(prev);
+        setHistoryStack(stack => [...stack, next]);
+        try {
+          window.history.pushState({ page: next }, '', `?page=${next}`);
+        } catch {}
       }
       return next;
     });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const goBack = () => {
-    setCurrentPage(prev => {
-      const target = (previousPage && previousPage !== prev) ? previousPage : 'home';
-      setPreviousPage('home');
-      return target;
-    });
+    if (historyStack.length > 1) {
+      window.history.back();
+    } else {
+      navigateToPage('home');
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const previousPage = historyStack.length > 1 ? historyStack[historyStack.length - 2] : 'home';
+  const canGoBack = currentPage !== 'home' || historyStack.length > 1;
   // 'home', 'explore', 'location', 'story', 'intelligence', 'predictions', 'tourism', 'compare', 'saved', 'photo', 'about'
 
   // 3D Earth GIS Layers
@@ -189,6 +233,7 @@ export const AppProvider = ({ children }) => {
       setCurrentPage: navigateToPage,
       previousPage,
       goBack,
+      canGoBack,
       activeLayers,
       toggleLayer,
       layerOpacity,

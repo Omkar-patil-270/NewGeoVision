@@ -545,7 +545,7 @@ export const StackedStoryCardsStudio = () => {
               title="Return to the previous dashboard"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span>DASHBOARD</span>
+              <span>← BACK</span>
             </button>
 
             <div className="relative flex items-center justify-center">

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
-  Globe, Menu, X
+  Globe, Menu, X, ArrowLeft
 } from 'lucide-react';
 import { AnimatedLogo } from './AnimatedLogo';
 import { SoundToggle } from './SoundToggle';
@@ -9,7 +9,9 @@ import { SoundToggle } from './SoundToggle';
 export const Navbar = () => {
   const { 
     currentPage, 
-    setCurrentPage
+    setCurrentPage,
+    goBack,
+    canGoBack
   } = useApp();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -35,14 +37,28 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 border-b transition-colors duration-300 border-white/10 bg-[#030712]/90 text-white backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         
-        {/* Animated 3D Gyroscope Brand Logo */}
-        <button 
-          onClick={() => handleNavClick('home')}
-          className="focus:outline-none shrink-0"
-          title="GeoVision — Planetary Intelligence"
-        >
-          <AnimatedLogo size="md" showSubtitle={true} isDark={isDark} />
-        </button>
+        {/* Left Side: Universal Back Button + Brand Logo */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {currentPage !== 'home' && (
+            <button
+              onClick={goBack}
+              className="px-3 py-1.5 rounded-xl bg-cyan-950/80 hover:bg-cyan-500 hover:text-black text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 border border-cyan-500/50 hover:border-cyan-300 shadow-md shadow-cyan-500/10 transition-all cursor-pointer group shrink-0"
+              title="Go back to previous view"
+            >
+              <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+              <span>Back</span>
+            </button>
+          )}
+
+          {/* Animated 3D Gyroscope Brand Logo */}
+          <button 
+            onClick={() => handleNavClick('home')}
+            className="focus:outline-none shrink-0"
+            title="GeoVision — Planetary Intelligence"
+          >
+            <AnimatedLogo size="md" showSubtitle={true} isDark={isDark} />
+          </button>
+        </div>
 
         {/* Desktop Navigation Links */}
         <nav className="hidden items-center gap-1 xl:gap-1.5 lg:flex">

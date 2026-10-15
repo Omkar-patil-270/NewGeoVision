@@ -11,7 +11,7 @@ import {
   X, ChevronDown, ChevronUp, Droplets, Thermometer, 
   Users, Layers, CheckCircle2, Loader2, 
   ShieldCheck, Activity, BookOpen, Maximize2,
-  Calendar, ArrowRight, Play, Check, Globe, GitCompare
+  Calendar, ArrowRight, Play, Check, Globe, GitCompare, ArrowLeft
 } from 'lucide-react';
 
 export const ExplorePage = () => {
@@ -19,7 +19,8 @@ export const ExplorePage = () => {
     currentLocation, 
     selectLocation, 
     playNarration,
-    setGeoAIChatOpen
+    setGeoAIChatOpen,
+    goBack
   } = useApp();
 
   const [searchQuery, setSearchQuery] = useState(() => currentLocation?.name || "");
@@ -117,8 +118,17 @@ export const ExplorePage = () => {
       {/* ================= 1. TOP HEADER & CHANGE DETECTION STATUS BAR ================= */}
       <div className="z-30 shrink-0 bg-[#040816]/95 backdrop-blur-md border-b border-slate-800/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shadow-xl">
         
-        {/* Left: Location & Coordinates */}
+        {/* Left: Back button & Location Coordinates */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={goBack}
+            className="px-2.5 py-1 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-sm group shrink-0"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <span>← Back</span>
+          </button>
+
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
             <span className="text-sm font-bold text-white tracking-wide">

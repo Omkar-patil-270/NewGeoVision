@@ -3,12 +3,12 @@ import { useApp } from '../context/AppContext';
 import { analyzeUploadedImage } from '../services/visionService';
 import { 
   Camera, Upload, Sparkles, MapPin, CheckCircle2, ArrowRight, 
-  Loader2, Globe, MessageSquare, Info, ShieldCheck 
+  Loader2, Globe, MessageSquare, Info, ShieldCheck, ArrowLeft 
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export const PhotoDiscoveryPage = () => {
-  const { selectLocation, selectCustomCoordinate, setCurrentPage, playNarration } = useApp();
+  const { selectLocation, selectCustomCoordinate, setCurrentPage, playNarration, goBack } = useApp();
 
   const [previewUrl, setPreviewUrl] = useState("https://images.unsplash.com/photo-1596176530529-78163a4f7af2?auto=format&fit=crop&w=1000&q=80");
   const [analyzing, setAnalyzing] = useState(false);
@@ -60,6 +60,18 @@ export const PhotoDiscoveryPage = () => {
     <div className="min-h-screen bg-[#FAF7F2] text-stone-900 pb-24 pt-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={goBack}
+            className="px-3.5 py-1.5 rounded-xl bg-white border border-[#E7E2DA] hover:border-orange-500 text-stone-700 hover:text-orange-600 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs inline-flex group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>← Back to Previous View</span>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 border border-orange-200 text-primary text-xs font-mono font-semibold uppercase mb-3 shadow-2xs">

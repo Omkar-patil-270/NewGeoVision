@@ -3,11 +3,11 @@ import { useApp } from '../context/AppContext';
 import { storageService } from '../services/storageService';
 import { locationService } from '../services/locationService';
 import { 
-  Bookmark, Globe, Trash2, ArrowRight, Volume2, Sparkles, MapPin
+  Bookmark, Globe, Trash2, ArrowRight, Volume2, Sparkles, MapPin, ArrowLeft
 } from 'lucide-react';
 
 export const SavedPage = () => {
-  const { savedLocations, toggleSaveLocation, selectLocation, playNarration } = useApp();
+  const { savedLocations, toggleSaveLocation, selectLocation, playNarration, goBack } = useApp();
   const [savedStories, setSavedStories] = useState(storageService.getSavedStories());
 
   const locationsList = savedLocations.map(id => locationService.getLocationById(id)).filter(Boolean);
@@ -21,6 +21,18 @@ export const SavedPage = () => {
     <div className="min-h-screen bg-[#FAF7F2] text-stone-900 pb-24 pt-8">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Back Button */}
+        <div className="mb-6">
+          <button
+            onClick={goBack}
+            className="px-3.5 py-1.5 rounded-xl bg-white border border-[#E7E2DA] hover:border-orange-500 text-stone-700 hover:text-orange-600 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs inline-flex group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>← Back to Previous View</span>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-[#E7E2DA] mb-8">
           <div>

@@ -9,7 +9,7 @@ import { Earth3DViewer } from '../components/earth/Earth3DViewer';
 import { 
   TrendingUp, BarChart3, AlertCircle, Sparkles, CheckCircle2, 
   HelpCircle, Info, ArrowUpRight, ArrowDownRight, Layers,
-  Brain, Network, Table, ShieldCheck, ChevronRight
+  Brain, Network, Table, ShieldCheck, ChevronRight, ArrowLeft
 } from 'lucide-react';
 import {
   Chart as ChartJS,
@@ -37,7 +37,7 @@ ChartJS.register(
 );
 
 export const ForecastPage = () => {
-  const { currentLocation, selectLocation, allLocations, activeHeatmap, setActiveHeatmap } = useApp();
+  const { currentLocation, selectLocation, allLocations, activeHeatmap, setActiveHeatmap, goBack } = useApp();
   const [selectedMetric, setSelectedMetric] = useState('population');
   const [activeModelName, setActiveModelName] = useState('SARIMA + XGBoost Hybrid');
   const [liveData, setLiveData] = useState(null);
@@ -175,6 +175,18 @@ export const ForecastPage = () => {
     <div className="min-h-screen bg-[#030712] py-10 px-4 sm:px-6 text-slate-100 font-sans">
       <div className="mx-auto max-w-7xl">
         
+        {/* Back Button */}
+        <div className="mb-4">
+          <button
+            onClick={goBack}
+            className="px-3.5 py-1.5 rounded-xl bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-300 hover:text-cyan-300 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md inline-flex group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>← Back to Previous View</span>
+          </button>
+        </div>
+
         {/* Header with Location Selector */}
         <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>

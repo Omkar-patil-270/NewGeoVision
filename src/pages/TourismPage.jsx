@@ -5,7 +5,7 @@ import { locationService } from '../services/locationService';
 import { storageService } from '../services/storageService';
 import { 
   Compass, Calendar, Clock, MapPin, Volume2, Sparkles, 
-  CheckCircle2, ArrowRight, Flag, Star
+  CheckCircle2, ArrowRight, Flag, Star, ArrowLeft
 } from 'lucide-react';
 import { KolhapurGuideModal } from '../components/modals/KolhapurGuideModal';
 import confetti from 'canvas-confetti';
@@ -15,7 +15,8 @@ export const TourismPage = () => {
     currentLocation, 
     selectLocation, 
     playNarration, 
-    setCurrentPage 
+    setCurrentPage,
+    goBack 
   } = useApp();
 
   const allLocations = locationService.getAllLocations();
@@ -45,6 +46,18 @@ export const TourismPage = () => {
     <div className="min-h-[calc(100vh-65px)] bg-[#FAF7F2] text-stone-900 p-4 sm:p-6 lg:p-8 flex flex-col justify-between">
       <div className="max-w-7xl mx-auto w-full">
         
+        {/* Back Button */}
+        <div className="mb-4">
+          <button
+            onClick={goBack}
+            className="px-3.5 py-1.5 rounded-xl bg-white border border-[#E7E2DA] hover:border-emerald-500 text-stone-700 hover:text-emerald-700 text-xs font-mono font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-xs inline-flex group"
+            title="Return to previous view"
+          >
+            <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
+            <span>← Back to Previous View</span>
+          </button>
+        </div>
+
         {/* Header */}
         <div className="flex flex-wrap items-end justify-between gap-4 pb-5 border-b border-[#E7E2DA] mb-6">
           <div>

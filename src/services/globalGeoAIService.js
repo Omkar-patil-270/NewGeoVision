@@ -85,12 +85,12 @@ export const globalGeoAIService = {
     }
 
     try {
-      // Step A: Request categorized images from LocationImageService and Wikipedia in fast parallel race (1800ms max)
-      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 1800));
+      // Step A: Request categorized images from LocationImageService and Wikipedia in fast parallel race (3500ms max)
+      const timeoutPromise = new Promise(resolve => setTimeout(() => resolve(null), 3500));
 
       const wikiFetch = fetch(
         `https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(cleanName)}&gsrlimit=6&prop=pageimages|extracts&exintro=1&explaintext=1&pithumbsize=1200&format=json&origin=*`,
-        { signal: AbortSignal.timeout(1800) }
+        { signal: AbortSignal.timeout(3000) }
       ).then(r => r.ok ? r.json() : null).catch(() => null);
 
       const [catResult, wikiResult] = await Promise.all([
@@ -117,9 +117,9 @@ export const globalGeoAIService = {
         }
       }
 
-      // Extract standard categories from LocationImageService
+      // Extract standard categories from LocationImageService FIRST (multi-source, diverse, recent)
       const catMap = {};
-      const allGatheredImages = [...wikiImages];
+      const allGatheredImages = [];
 
       if (catResult?.categories) {
         for (const cat of catResult.categories) {
@@ -131,10 +131,20 @@ export const globalGeoAIService = {
               title: img.title || `${cleanName} Sight`,
               url: img.url,
               source: img.source || "Verified Source",
-              attribution: img.attribution || img.title || "Real Photography",
-              category: cat.name
+              attribution: img.attribution || img.photographer || "Real Photography",
+              category: cat.name,
+              captureDate: img.captureDate,
+              recencyBadge: img.recencyBadge,
+              isRecent: img.isRecent
             };
           });
+        }
+      }
+
+      // Append supplementary unique Wikipedia images
+      for (const wImg of wikiImages) {
+        if (!allGatheredImages.includes(wImg)) {
+          allGatheredImages.push(wImg);
         }
       }
 

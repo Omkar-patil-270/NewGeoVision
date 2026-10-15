@@ -604,51 +604,12 @@ class LocationImageService:
         results = []
         headers = {"User-Agent": "GeoVisionAI/2.0 (https://geovisionai.org; contact@geovisionai.org)"}
 
-        # Sub-query using specific category search terms
+        # 1. PRIMARY: Direct Wikimedia Commons Media Search (High-Res Photographs with Date EXIF & Metadata)
         for term in cat_meta.get("wiki_terms", [])[:2]:
             if len(results) >= limit:
                 break
-            query = f"{city_name} {term}"
-            search_url = "https://en.wikipedia.org/w/api.php"
-            params = {
-                "action": "query",
-                "generator": "search",
-                "gsrsearch": query,
-                "gsrlimit": limit * 2,
-                "prop": "pageimages|images",
-                "pithumbsize": 1200,
-                "imlimit": 10,
-                "format": "json"
-            }
             try:
-                res = await client.get(search_url, params=params, headers=headers)
-                if res.status_code == 200:
-                    pages = res.json().get("query", {}).get("pages", {})
-                    for page in pages.values():
-                        title = page.get("title", "")
-                        thumb = page.get("thumbnail", {}).get("source")
-                        if thumb and _is_valid_photo(title, thumb):
-                            results.append({
-                                "title": title,
-                                "url": thumb,
-                                "source": "Wikimedia Commons",
-                                "sourceProvider": "wikimedia",
-                                "imageType": "wikimedia",
-                                "locationAssociation": city_name,
-                                "sourceUrl": f"https://en.wikipedia.org/wiki/{quote(title.replace(' ', '_'))}",
-                                "attribution": f"Wikimedia Commons / Wikipedia ({title})",
-                                "license": "Creative Commons Attribution-ShareAlike 4.0 / Public Domain",
-                                "placeVerified": True
-                            })
-                            if len(results) >= limit:
-                                break
-            except Exception:
-                continue
-
-        # Direct Wikimedia Commons Media Search if still below limit
-        if len(results) < limit:
-            try:
-                c_query = f"{city_name} {cat_meta['wiki_terms'][0]}"
+                c_query = f"{city_name} {term}"
                 commons_res = await client.get(
                     "https://commons.wikimedia.org/w/api.php",
                     params={
@@ -673,7 +634,7 @@ class LocationImageService:
                         if u and _is_valid_photo(t, u):
                             dt_meta = _parse_metadata_dates(info.get("extmetadata", {}))
                             results.append({
-                                "title": t,
+                                "title": t[:70],
                                 "url": u,
                                 "source": "Wikimedia Commons",
                                 "sourceProvider": "wikimedia",
@@ -692,8 +653,56 @@ class LocationImageService:
                             })
                             if len(results) >= limit:
                                 break
-            except Exception:
-                pass
+            except Exception as e:
+                print(f"[LocationImageService] Wikimedia commons media query error: {e}")
+                continue
+
+        # 2. SECONDARY: Wikipedia Article Search if Commons media is still below limit
+        if len(results) < limit:
+            for term in cat_meta.get("wiki_terms", [])[:1]:
+                if len(results) >= limit:
+                    break
+                query = f"{city_name} {term}"
+                search_url = "https://en.wikipedia.org/w/api.php"
+                params = {
+                    "action": "query",
+                    "generator": "search",
+                    "gsrsearch": query,
+                    "gsrlimit": limit,
+                    "prop": "pageimages",
+                    "pithumbsize": 1200,
+                    "format": "json"
+                }
+                try:
+                    res = await client.get(search_url, params=params, headers=headers)
+                    if res.status_code == 200:
+                        pages = res.json().get("query", {}).get("pages", {})
+                        for page in pages.values():
+                            title = page.get("title", "")
+                            thumb = page.get("thumbnail", {}).get("source")
+                            if thumb and _is_valid_photo(title, thumb):
+                                results.append({
+                                    "title": title[:70],
+                                    "url": thumb,
+                                    "source": "Wikimedia Commons",
+                                    "sourceProvider": "wikimedia",
+                                    "imageType": "wikimedia",
+                                    "locationAssociation": city_name,
+                                    "sourceUrl": f"https://en.wikipedia.org/wiki/{quote(title.replace(' ', '_'))}",
+                                    "attribution": f"Wikimedia Commons Contributor ({title})",
+                                    "license": "Creative Commons Attribution-ShareAlike 4.0 / Public Domain",
+                                    "placeVerified": True,
+                                    "captureDate": "Unknown",
+                                    "publicationDate": "Unknown",
+                                    "dateStatus": "unknown",
+                                    "isRecent": False,
+                                    "recencyBadge": "Date: Unknown",
+                                    "photographer": "Wikimedia Contributor"
+                                })
+                                if len(results) >= limit:
+                                    break
+                except Exception:
+                    continue
 
         return results
 

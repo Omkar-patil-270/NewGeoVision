@@ -487,14 +487,6 @@ export const StackedStoryCardsStudio = () => {
               <span>Photos {locationPhotoData?.totalImages ? `(${locationPhotoData.totalImages})` : ''}</span>
             </button>
 
-            <button
-              onClick={() => setShowHeritageDashboard(true)}
-              className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500/20 via-sky-500/20 to-blue-500/20 border border-cyan-400/50 hover:border-cyan-300 text-cyan-300 font-mono text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer shadow-md"
-              title="Explore Sangli, Satara & Kolhapur Chapter Dashboard"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-              <span>Heritage Dashboard</span>
-            </button>
 
             <button
               onClick={() => setCurrentPage('predictions')}

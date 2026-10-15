@@ -313,9 +313,42 @@ export const apiClient = {
   async getLocationImages(locationName, lat = null, lon = null, limit = 8) {
     if (!locationName) return { images: [], count: 0, has_photos: false };
 
-    // 1. Instant Curated Photographic Archive (< 1ms, zero latency, guaranteed unique distinct images)
+    // 1. Try FastAPI backend live multi-source pipeline first
     try {
-      const localData = getCategorizedPhotos(locationName);
+      const params = new URLSearchParams({ location: locationName, limit: String(limit) });
+      if (lat !== null && lon !== null) {
+        params.append("lat", String(lat));
+        params.append("lon", String(lon));
+      }
+      const res = await fetchWithCache(`${API_BASE_URL}/api/locations/images?${params.toString()}`, {}, 600000);
+      if (res && res.categories && res.categories.length > 0) {
+        const flat = res.categories.flatMap(c => c.images || []);
+        if (flat.length > 0) {
+          return {
+            images: flat.slice(0, limit).map(img => ({
+              url: img.url,
+              title: img.title,
+              caption: img.title,
+              credit: img.attribution || img.photographer || "Live Web Contributor",
+              source: img.source || "Multi-Source Live Search",
+              category: img.category,
+              recencyBadge: img.recencyBadge,
+              captureDate: img.captureDate,
+              isRecent: img.isRecent
+            })),
+            count: Math.min(flat.length, limit),
+            has_photos: true,
+            source: "backend_live_pipeline"
+          };
+        }
+      }
+    } catch (err) {
+      // Backend not reached, proceed to client-side retrieval
+    }
+
+    // 2. Direct Async Categorized & Live Commons Media Retrieval
+    try {
+      const localData = await getAsyncCategorizedPhotos(locationName);
       if (localData && localData.categories && localData.categories.length > 0) {
         const seenUrls = new Set();
         const distinctImages = [];
@@ -327,9 +360,12 @@ export const apiClient = {
                 url: img.url,
                 title: img.title || `${cat.name} in ${locationName}`,
                 caption: img.title || `Verified Photo of ${locationName}`,
-                credit: img.attribution || "GeoVision Verified Archive",
-                source: img.source || "Curated Photographic Archive",
-                category: cat.name
+                credit: img.attribution || img.photographer || "GeoVision Verified Archive",
+                source: img.source || "Live Photographic Archive",
+                category: cat.name,
+                recencyBadge: img.recencyBadge,
+                captureDate: img.captureDate,
+                isRecent: img.isRecent
               });
               if (distinctImages.length >= limit) break;
             }
@@ -342,27 +378,12 @@ export const apiClient = {
             images: distinctImages,
             count: distinctImages.length,
             has_photos: true,
-            source: "curated_archive"
+            source: "live_commons_archive"
           };
         }
       }
     } catch (curatedErr) {
-      console.warn("Curated image lookup notice:", curatedErr);
-    }
-
-    // 2. Try FastAPI backend
-    try {
-      const params = new URLSearchParams({ location_name: locationName, limit: String(limit) });
-      if (lat !== null && lon !== null) {
-        params.append("lat", String(lat));
-        params.append("lon", String(lon));
-      }
-      const res = await fetchWithCache(`${API_BASE_URL}/api/story/images?${params.toString()}`, {}, 600000);
-      if (res && res.images && res.images.length > 0) {
-        return res;
-      }
-    } catch (err) {
-      // Backend unavailable, proceeding to Wikipedia fallback
+      console.warn("Live image lookup notice:", curatedErr);
     }
 
     // 3. Direct browser Wikipedia Action API fallback (Guaranteed CORS origin=*)

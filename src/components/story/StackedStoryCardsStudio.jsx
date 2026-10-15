@@ -617,35 +617,6 @@ export const StackedStoryCardsStudio = () => {
               <span className="hidden sm:inline">{isLocatingGPS ? "Locating..." : "My GPS"}</span>
             </button>
 
-            {/* Google Places API Usage Safeguard Indicator */}
-            <button
-              onClick={() => setShowCategorizedGallery(true)}
-              className={`px-2.5 py-1.5 rounded-xl border flex items-center gap-1.5 transition-all text-xs font-mono shadow-md cursor-pointer ${
-                googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
-                  ? "bg-rose-950/50 border-rose-500/60 text-rose-300 hover:bg-rose-900/40"
-                  : googleUsageData?.status === 'warning_high'
-                  ? "bg-amber-950/50 border-amber-500/60 text-amber-300 hover:bg-amber-900/40"
-                  : googleUsageData?.status === 'warning_info'
-                  ? "bg-yellow-950/40 border-yellow-500/50 text-yellow-300 hover:bg-yellow-900/30"
-                  : "bg-[#091326] border-cyan-500/40 text-cyan-300 hover:border-cyan-300 hover:bg-cyan-950/30"
-              }`}
-              title={`Google Places Usage: ${googleUsageData?.usage_percentage ?? 0}% (${googleUsageData?.total_requests ?? 0}/${googleUsageData?.max_monthly_allowance ?? 1000} requests). Zero-cost safeguard active.`}
-            >
-              <span className={`w-2 h-2 rounded-full ${
-                googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
-                  ? "bg-rose-500 animate-pulse"
-                  : googleUsageData?.status === 'warning_high'
-                  ? "bg-amber-400 animate-pulse"
-                  : googleUsageData?.status === 'warning_info'
-                  ? "bg-yellow-400"
-                  : "bg-emerald-400"
-              }`} />
-              <span className="font-bold">
-                {googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded'
-                  ? "Safeguard Paused"
-                  : `Google: ${googleUsageData?.usage_percentage ?? 0}%`}
-              </span>
-            </button>
 
             {/* Photos Modal Trigger */}
             <button

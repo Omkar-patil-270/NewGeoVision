@@ -62,11 +62,11 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
       maxZoom: 19
     },
     dark: {
-      url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a>',
+      url: 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+      attribution: '&copy; Esri &mdash; World Dark Gray Base',
       hasLabels: false,
       subdomains: ['a', 'b', 'c'],
-      maxZoom: 19
+      maxZoom: 16
     }
   };
 

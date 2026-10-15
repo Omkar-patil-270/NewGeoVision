@@ -4,7 +4,7 @@ import 'cesium/Build/Cesium/Widgets/widgets.css';
 import '../../cesiumConfig';
 import { getLocationBoundary, getBoundaryFlatDegrees, fetchRealLocationBoundary } from '../../services/boundaryService';
 
-const LABELS_URL = "https://{s}.basemaps.cartocdn.com/rastertiles/voyager_only_labels/{z}/{x}/{y}{r}.png";
+const LABELS_URL = "https://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}";
 const SATELLITE_FALLBACK_URL = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 const LABEL_VISIBLE_HEIGHT = 800000;
 

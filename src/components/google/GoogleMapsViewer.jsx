@@ -180,8 +180,9 @@ export const GoogleMapsViewer = ({
 
 
   const openStreetViewForPlace = (place) => {
-    const lat = place.coordinates?.lat || place.lat;
-    const lng = place.coordinates?.lng || place.lng;
+    if (!place) return;
+    const lat = place.coordinates?.lat ?? place.lat ?? 16.7050;
+    const lng = place.coordinates?.lng ?? place.lng ?? 74.2433;
     const name = place.name || "Street View Panorama";
     
     // Look up heading if preset
@@ -191,8 +192,8 @@ export const GoogleMapsViewer = ({
 
     setActiveStreetView({
       name,
-      lat,
-      lng,
+      lat: typeof lat === 'number' ? lat : (parseFloat(lat) || 16.7050),
+      lng: typeof lng === 'number' ? lng : (parseFloat(lng) || 74.2433),
       heading: preset?.heading || 0,
       pitch: preset?.pitch || 0
     });

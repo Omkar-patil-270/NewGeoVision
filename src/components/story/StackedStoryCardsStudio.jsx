@@ -851,11 +851,6 @@ export const StackedStoryCardsStudio = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                  <span className="px-2.5 py-1 rounded-xl bg-emerald-950/80 backdrop-blur-md text-[10px] font-mono text-emerald-300 border border-emerald-500/50 font-bold flex items-center gap-1 shadow-md">
-                    <Calendar className="w-3 h-3 text-emerald-400" />
-                    <span>2024 • Verified Recent</span>
-                  </span>
-
                   <button
                     onClick={() => setLightboxImage(activeHeroImage)}
                     className="pointer-events-auto p-1.5 rounded-xl bg-black/75 hover:bg-cyan-500 hover:text-black text-slate-300 transition-colors border border-slate-700 cursor-pointer shadow-md"
@@ -866,7 +861,7 @@ export const StackedStoryCardsStudio = () => {
                 </div>
               </div>
 
-              {/* Bottom Photo Title & Attribution Overlay */}
+              {/* Bottom Photo Title Overlay */}
               <div className="absolute bottom-3 left-3 right-3 flex flex-col justify-end pointer-events-none">
                 <div className="bg-[#070D1E]/90 backdrop-blur-md p-3 rounded-2xl border border-cyan-500/30 max-w-full shadow-xl space-y-1">
                   <div className="flex items-center justify-between gap-2">
@@ -881,15 +876,6 @@ export const StackedStoryCardsStudio = () => {
                   <p className="text-[11px] text-slate-300 line-clamp-2 font-sans">
                     {activeHeroCaption}
                   </p>
-
-                  <div className="pt-1 border-t border-slate-800/80 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
-                    <span className="truncate max-w-[280px]">
-                      📍 {loc.name} Heritage Grid • Source: Wikimedia Commons & Local Archives
-                    </span>
-                    <span className="text-cyan-400 shrink-0 font-bold">
-                      CC-BY-SA 4.0 Verified
-                    </span>
-                  </div>
                 </div>
               </div>
 
@@ -1271,72 +1257,48 @@ export const StackedStoryCardsStudio = () => {
             </div>
 
             {/* Google Places Usage & Safety Allowance Banner */}
-            <div className="p-3 sm:px-6 bg-[#050b16] border-b border-slate-800">
-              {googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded' ? (
-                <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wide">
-                        Google image request limit reached. Google image retrieval is temporarily paused and will resume when the usage allowance resets.
-                      </h4>
-                      <p className="text-[11px] text-slate-300 font-mono mt-0.5">
-                        Existing backup image retrieval system is active (Wikimedia Commons & verified regional archives). 0 Google API calls made while paused.
-                      </p>
+            {/* Google Places Usage Warning (Only visible if limit or warning threshold reached) */}
+            {(googleUsageData?.status === 'paused_threshold' || googleUsageData?.status === 'paused_manual' || googleUsageData?.status === 'quota_exceeded' || googleUsageData?.status === 'warning_high') && (
+              <div className="p-3 sm:px-6 bg-[#050b16] border-b border-slate-800">
+                {googleUsageData?.status === 'warning_high' ? (
+                  <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wide">
+                          Google Usage Warning: {googleUsageData.usage_percentage || 85}% of Safety Threshold Reached
+                        </h4>
+                        <p className="text-[11px] text-slate-300 font-mono mt-0.5">
+                          Precautionary hard pause triggers at 95% to maintain 100% free $0.00 zero-spend allowance. Seamless backup failover prepared.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="shrink-0 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-amber-500/40 text-amber-200">
+                      {googleUsageData.remaining_allowance || 150} requests remaining
                     </div>
                   </div>
-                  <div className="shrink-0 flex items-center gap-2 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-rose-500/40 text-rose-200">
-                    <span>Allowance: {googleUsageData.total_requests || googleUsageData.usedRequests || 0}/{googleUsageData.max_monthly_allowance || 1000} req</span>
-                    <span>•</span>
-                    <span>Reset: {googleUsageData.reset_date_expected || "Verified Cycle"}</span>
-                  </div>
-                </div>
-              ) : googleUsageData?.status === 'warning_high' ? (
-                <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                    <div>
-                      <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wide">
-                        Google Usage Warning: {googleUsageData.usage_percentage || 85}% of Safety Threshold Reached
-                      </h4>
-                      <p className="text-[11px] text-slate-300 font-mono mt-0.5">
-                        Precautionary hard pause triggers at 95% to maintain 100% free $0.00 zero-spend allowance. Seamless backup failover prepared.
-                      </p>
+                ) : (
+                  <div className="p-3.5 rounded-2xl bg-rose-950/40 border border-rose-500/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                      <div>
+                        <h4 className="text-xs font-bold text-rose-300 uppercase tracking-wide">
+                          Google image request limit reached. Google image retrieval is temporarily paused and will resume when the usage allowance resets.
+                        </h4>
+                        <p className="text-[11px] text-slate-300 font-mono mt-0.5">
+                          Existing backup image retrieval system is active (Wikimedia Commons & verified regional archives). 0 Google API calls made while paused.
+                        </p>
+                      </div>
+                    </div>
+                    <div className="shrink-0 flex items-center gap-2 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-rose-500/40 text-rose-200">
+                      <span>Allowance: {googleUsageData?.total_requests || googleUsageData?.usedRequests || 0}/{googleUsageData?.max_monthly_allowance || 1000} req</span>
+                      <span>•</span>
+                      <span>Reset: {googleUsageData?.reset_date_expected || "Verified Cycle"}</span>
                     </div>
                   </div>
-                  <div className="shrink-0 text-[10px] font-mono bg-black/70 px-3 py-1.5 rounded-xl border border-amber-500/40 text-amber-200">
-                    {googleUsageData.remaining_allowance || 150} requests remaining
-                  </div>
-                </div>
-              ) : googleUsageData?.status === 'warning_info' ? (
-                <div className="p-2.5 rounded-xl bg-yellow-950/30 border border-yellow-500/40 flex items-center justify-between text-xs font-mono text-yellow-300">
-                  <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-yellow-400 shrink-0" />
-                    <span>Google Places usage approaching threshold: {googleUsageData.usage_percentage}% used ({googleUsageData.total_requests || 0}/{googleUsageData.max_monthly_allowance || 1000} req).</span>
-                  </div>
-                  <span className="text-[11px] text-slate-400">{googleUsageData.remaining_allowance || 300} req remaining</span>
-                </div>
-              ) : (
-                <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-mono">
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span className="text-slate-300">
-                      Google Places Primary: <span className="text-emerald-400 font-bold">Active</span>
-                    </span>
-                    <span className="text-slate-500">|</span>
-                    <span className="text-slate-400">
-                      Estimated Usage: <span className="text-cyan-300 font-bold">{googleUsageData?.usage_percentage ?? 0}%</span> ({googleUsageData?.total_requests ?? 0}/{googleUsageData?.max_monthly_allowance ?? 1000} req)
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                    <span className="px-2 py-0.5 rounded-md bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 text-[10px]">
-                      100% Free Safeguard ($0.00 spend)
-                    </span>
-                    <span>Reset: {googleUsageData?.reset_date_expected || "Next Month"}</span>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
             {/* Image-Type Filter */}
             <div className="p-3 sm:px-6 bg-[#070e1c] border-b border-slate-800 flex flex-wrap items-center justify-between gap-3">

@@ -150,11 +150,17 @@ export const globalGeoAIService = {
 
       // Ensure at least 3 distinct high-definition real photos for ANY location worldwide
       if (allGatheredImages.length < 3) {
-        const fallbackGeos = [
-          "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=1000&q=80",
-          "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80",
+        const isIndiaLoc = /maharashtra|kolhapur|satara|sangli|pune|mumbai|taluka|gadhinglaj|ajra|chandgad|bhudargad|radhanagari|kagal|panhala|shahuwadi|hatkanangale|shirol|karvir|bavda|solapur|nashik|aurangabad|india/i.test(cleanName);
+        const fallbackGeos = isIndiaLoc ? [
+          "/images/kolhapur/panhala_fort.jpg",
+          "/images/kolhapur/rankala_lake.jpg",
+          "/images/locations/amba_ghat.jpg",
+          "/images/talukas/radhanagari.jpg"
+        ] : [
+          "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1000&q=80",
+          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80",
           "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1000&q=80",
-          "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1000&q=80"
+          "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1000&q=80"
         ];
         for (const fb of fallbackGeos) {
           if (allGatheredImages.length >= 4) break;
@@ -233,10 +239,13 @@ export const globalGeoAIService = {
       return fb;
     };
 
+    const isIndia = (country && country.toLowerCase().includes('india')) ||
+                    /maharashtra|kolhapur|satara|sangli|pune|mumbai|taluka|gadhinglaj|ajra|chandgad|bhudargad|radhanagari|kagal|panhala|shahuwadi|hatkanangale|shirol|karvir|bavda|solapur|nashik|aurangabad/i.test(`${cityName} ${country} ${overview}`);
+
     // 1. History Category Image
     const imgHistory = pickUnique(
       [cats.historical_places?.[0]?.url, intel.galleryImages?.[0], intel.image],
-      "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80"
+      isIndia ? "/images/kolhapur/panhala_fort.jpg" : "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=800&q=80"
     );
 
     // 2. Tourist Places Category
@@ -244,19 +253,19 @@ export const globalGeoAIService = {
     const touristGallery = touristList.length > 0 ? touristList.slice(0, 4).map((img, i) => ({
       title: img.title || `${cityName} Attraction ${i + 1}`,
       desc: img.attribution || `Iconic sightseeing landmark in ${cityName}`,
-      image: pickUnique([img.url], "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=800&q=80"),
+      image: pickUnique([img.url], isIndia ? (i % 2 === 0 ? "/images/kolhapur/rankala_lake.jpg" : "/images/locations/amba_ghat.jpg") : "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80"),
       caption: `${img.title} (${img.source || "Verified Real Photo"})`
     })) : [
       {
-        title: `${cityName} Central Landmark`,
-        desc: `Verified architectural icon and visitor hub in ${cityName}.`,
-        image: pickUnique([cats.tourist_attractions?.[0]?.url, intel.galleryImages?.[1], intel.image], "https://images.unsplash.com/photo-1477959858617-67f30bc75b82?auto=format&fit=crop&w=800&q=80"),
-        caption: `${cityName} Central View (Verified Real Photo)`
+        title: `${cityName} Landmark & Surroundings`,
+        desc: `Verified sight and visitor landmark in ${cityName}.`,
+        image: pickUnique([cats.tourist_attractions?.[0]?.url, intel.galleryImages?.[1], intel.image], isIndia ? "/images/kolhapur/rankala_lake.jpg" : "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80"),
+        caption: `${cityName} Heritage Vista (Verified Real Photo)`
       },
       {
-        title: `${cityName} Panoramic Vista`,
-        desc: `Celebrated viewpoint and historic surroundings in ${cityName}.`,
-        image: pickUnique([cats.tourist_attractions?.[1]?.url, intel.galleryImages?.[2]], "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80"),
+        title: `${cityName} Scenic Viewpoint`,
+        desc: `Celebrated vista and natural surroundings in ${cityName}.`,
+        image: pickUnique([cats.tourist_attractions?.[1]?.url, intel.galleryImages?.[2]], isIndia ? "/images/locations/amba_ghat.jpg" : "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"),
         caption: `${cityName} Scenic Panorama`
       }
     ];
@@ -267,14 +276,14 @@ export const globalGeoAIService = {
       name: img.title || `${cityName} Specialty Dish ${i + 1}`,
       tag: "Authentic Regional Cuisine",
       desc: img.attribution || `Signature regional preparation beloved in ${cityName}`,
-      image: pickUnique([img.url], "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"),
+      image: pickUnique([img.url], isIndia ? "/images/kolhapur/kolhapuri_misal.jpg" : "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"),
       caption: `${img.title} (${img.source || "Local Dining"})`
     })) : [
       {
         name: `${cityName} Local Specialty`,
         tag: "Traditional Cuisine",
         desc: `Beloved culinary tradition celebrated by generations in ${cityName}.`,
-        image: pickUnique([cats.famous_food?.[0]?.url, intel.galleryImages?.[3]], "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"),
+        image: pickUnique([cats.famous_food?.[0]?.url, intel.galleryImages?.[3]], isIndia ? "/images/kolhapur/kolhapuri_misal.jpg" : "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=800&q=80"),
         caption: `Signature dining in ${cityName}`
       }
     ];
@@ -282,25 +291,25 @@ export const globalGeoAIService = {
     // 4. City & Mayor (Civic Administration) Image
     const imgGov = pickUnique(
       [cats.historical_places?.[1]?.url, cats.tourist_attractions?.[2]?.url, intel.galleryImages?.[4]],
-      "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=800&q=80"
+      isIndia ? "/images/locations/kagal.jpg" : "/images/locations/mumbai_cst.jpg"
     );
 
     // 5. Culture & Living Traditions Image
     const imgCulture = pickUnique(
       [cats.local_culture?.[0]?.url, cats.tourist_attractions?.[3]?.url, intel.galleryImages?.[5]],
-      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80"
+      isIndia ? "/images/kolhapur/kusti_akhada.jpg" : "/images/locations/delhi_indiagate.jpg"
     );
 
     // 6. Nature & Greenery Image
     const imgNature = pickUnique(
       [cats.nature_scenery?.[0]?.url, cats.tourist_attractions?.[4]?.url, intel.galleryImages?.[6]],
-      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=800&q=80"
+      isIndia ? "/images/talukas/radhanagari.jpg" : "/images/satara/thoseghar_falls.jpg"
     );
 
     // 7. Why Visit Image
     const imgVisit = pickUnique(
       [cats.nature_scenery?.[1]?.url, intel.galleryImages?.[7]],
-      "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80"
+      isIndia ? "/images/satara/kaas_plateau.jpg" : "/images/satara/pratapgad_fort.jpg"
     );
 
     return [

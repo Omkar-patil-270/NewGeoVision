@@ -1609,6 +1609,76 @@ export const getStoryCardsForCity = (cityId, locationMeta = {}) => {
       nature: "/images/locations/amba_ghat.jpg",
       visit: "/images/locations/amba_ghat.jpg"
     },
+    gadhinglaj: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/kolhapur/rankala_lake.jpg",
+      tourist1: "/images/locations/panhala.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/locations/kagal.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/radhanagari.jpg",
+      visit: "/images/locations/amba_ghat.jpg"
+    },
+    ajra: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/locations/amba_ghat.jpg",
+      tourist1: "/images/satara/thoseghar_falls.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/locations/kagal.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/radhanagari.jpg",
+      visit: "/images/locations/amba_ghat.jpg"
+    },
+    chandgad: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/talukas/radhanagari.jpg",
+      tourist1: "/images/locations/amba_ghat.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/locations/kagal.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/radhanagari.jpg",
+      visit: "/images/satara/thoseghar_falls.jpg"
+    },
+    bhudargad: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/kolhapur/panhala_view.jpg",
+      tourist1: "/images/satara/pratapgad_fort.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/locations/kagal.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/radhanagari.jpg",
+      visit: "/images/locations/amba_ghat.jpg"
+    },
+    radhanagari: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/talukas/radhanagari.jpg",
+      tourist1: "/images/kolhapur/rankala_lake.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/kolhapur/bhavani_mandap.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/radhanagari.jpg",
+      visit: "/images/satara/thoseghar_falls.jpg"
+    },
+    gaganbawda: {
+      history: "/images/kolhapur/panhala_fort.jpg",
+      tourist0: "/images/talukas/gaganbawda.jpg",
+      tourist1: "/images/locations/amba_ghat.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/kolhapur/bhavani_mandap.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/talukas/gaganbawda.jpg",
+      visit: "/images/locations/amba_ghat.jpg"
+    },
+    karvir: {
+      history: "/images/kolhapur/mahalaxmi_temple.jpg",
+      tourist0: "/images/kolhapur/new_palace.jpg",
+      tourist1: "/images/kolhapur/panchganga_ghat.jpg",
+      food: "/images/kolhapur/kolhapuri_misal.jpg",
+      gov: "/images/kolhapur/bhavani_mandap.jpg",
+      culture: "/images/kolhapur/kusti_akhada.jpg",
+      nature: "/images/kolhapur/rankala_lake.jpg",
+      visit: "/images/kolhapur/new_palace.jpg"
+    },
     bandra: {
       history: "/images/locations/bandra.jpg",
       tourist0: "/images/locations/bandra.jpg",

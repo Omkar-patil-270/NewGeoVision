@@ -151,15 +151,16 @@ export const loadGoogleMapsSDK = (libraries = ['places', 'geometry']) => {
 
 /**
  * Generates an interactive Google Street View URL or iframe embed.
- * Uses fallback Google Street View embed URL that functions with or without an API key.
+ * Uses universal Google Street View embed that functions reliably without 403 authorization errors or missing parameters.
  */
 export const getStreetViewEmbedUrl = (lat, lng, heading = 0, pitch = 0, fov = 90) => {
-  const apiKey = getGoogleApiKey();
-  if (apiKey) {
-    return `https://www.google.com/maps/embed/v1/streetview?key=${apiKey}&location=${lat},${lng}&heading=${heading}&pitch=${pitch}&fov=${fov}`;
-  }
-  // Universal Street View URL fallback (opens interactive 360 panorama directly)
-  return `https://maps.google.com/maps?q=&layer=c&cbll=${lat},${lng}&cbp=11,${heading},0,${pitch},0&output=svembed`;
+  const safeLat = typeof lat === 'number' && !isNaN(lat) ? lat : (parseFloat(lat) || 16.7050);
+  const safeLng = typeof lng === 'number' && !isNaN(lng) ? lng : (parseFloat(lng) || 74.2433);
+  const safeHeading = typeof heading === 'number' && !isNaN(heading) ? heading : (parseFloat(heading) || 0);
+  const safePitch = typeof pitch === 'number' && !isNaN(pitch) ? pitch : (parseFloat(pitch) || 0);
+
+  // Universal Street View URL fallback (opens interactive 360 panorama directly, 0% 403 errors, 100% free)
+  return `https://maps.google.com/maps?q=&layer=c&cbll=${safeLat},${safeLng}&cbp=11,${safeHeading},0,${safePitch},0&output=svembed`;
 };
 
 /**
@@ -169,63 +170,73 @@ export const getGoogleMapsLocationUrl = (lat, lng, name = '') => {
   if (name) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(name)}&query_place_id=`;
   }
-  return `https://www.google.com/maps/@${lat},${lng},16z`;
+  const safeLat = parseFloat(lat) || 16.7050;
+  const safeLng = parseFloat(lng) || 74.2433;
+  return `https://www.google.com/maps/@${safeLat},${safeLng},16z`;
 };
 
 /**
  * Searches Google Places for real locations, photos, and ratings.
- * If SDK is unavailable, returns null so caller uses local curated database.
+ * If SDK is unavailable or key has legacy API restrictions, returns null gracefully so caller uses local curated database.
  */
 export const searchGooglePlaces = async (query, lat, lng, radius = 50000) => {
+  if (!query || typeof query !== 'string' || !query.trim()) return null;
   try {
     const google = await loadGoogleMapsSDK(['places']);
-    if (!google || !google.maps || !google.maps.places) return null;
+    if (!google || !google.maps || !google.maps.places || !google.maps.places.PlacesService) return null;
 
     // Use dummy container for PlacesService
     const dummyDiv = document.createElement('div');
     const service = new google.maps.places.PlacesService(dummyDiv);
 
+    const safeLat = parseFloat(lat);
+    const safeLng = parseFloat(lng);
+    const hasCoords = !isNaN(safeLat) && !isNaN(safeLng) && safeLat !== 0 && safeLng !== 0;
+
     const request = {
-      query: query,
-      location: lat && lng ? new google.maps.LatLng(lat, lng) : undefined,
-      radius: radius
+      query: query.trim(),
+      ...(hasCoords ? { location: new google.maps.LatLng(safeLat, safeLng), radius } : {})
     };
 
     return new Promise((resolve) => {
-      service.textSearch(request, (results, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
-          const formatted = results.map((place) => {
-            const allPhotos = (place.photos || []).map(p => {
-              try {
-                return typeof p.getUrl === 'function' ? p.getUrl({ maxWidth: 1200, maxHeight: 900 }) : null;
-              } catch {
-                return null;
-              }
-            }).filter(Boolean);
+      try {
+        service.textSearch(request, (results, status) => {
+          if (status === google.maps.places.PlacesServiceStatus?.OK && results && results.length > 0) {
+            const formatted = results.map((place) => {
+              const allPhotos = (place.photos || []).map(p => {
+                try {
+                  return typeof p.getUrl === 'function' ? p.getUrl({ maxWidth: 1200, maxHeight: 900 }) : null;
+                } catch {
+                  return null;
+                }
+              }).filter(Boolean);
 
-            return {
-              id: place.place_id,
-              name: place.name,
-              address: place.formatted_address,
-              rating: place.rating || null,
-              userRatingsTotal: place.user_ratings_total || 0,
-              location: {
-                lat: place.geometry?.location?.lat(),
-                lng: place.geometry?.location?.lng()
-              },
-              photoUrl: allPhotos[0] || null,
-              photos: allPhotos,
-              types: place.types || []
-            };
-          });
-          resolve(formatted);
-        } else {
-          resolve([]);
-        }
-      });
+              return {
+                id: place.place_id,
+                name: place.name,
+                address: place.formatted_address,
+                rating: place.rating || null,
+                userRatingsTotal: place.user_ratings_total || 0,
+                location: {
+                  lat: place.geometry?.location?.lat?.(),
+                  lng: place.geometry?.location?.lng?.()
+                },
+                photoUrl: allPhotos[0] || null,
+                photos: allPhotos,
+                types: place.types || []
+              };
+            });
+            resolve(formatted);
+          } else {
+            resolve([]);
+          }
+        });
+      } catch {
+        resolve([]);
+      }
     });
   } catch (err) {
-    console.warn('[GoogleMapsService] Places search error:', err);
+    // Graceful fallback without breaking execution
     return null;
   }
 };

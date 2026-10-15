@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { 
   Compass, Layers, Search, MapPin, Eye, ExternalLink, 
   Sparkles, X, Check, ZoomIn, ZoomOut, RotateCcw, 
-  Navigation, Car, Building2, Trees, ArrowRight
+  Navigation, Car, Building2, Trees, ArrowRight, MousePointerClick
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
@@ -10,7 +10,9 @@ import {
   GOOGLE_TILE_LAYERS,
   getStreetViewEmbedUrl,
   getGoogleMapsLocationUrl,
-  STREET_VIEW_PRESETS
+  STREET_VIEW_PRESETS,
+  CITY_STREET_VIEW_SPOTS,
+  getLocationStreetViewSpots
 } from '../../services/googleMapsService';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -25,10 +27,11 @@ export const GoogleMapsViewer = ({
 
   const mapContainerRef = useRef(null);
   const leafletMapRef = useRef(null);
-  const googleMapInstanceRef = useRef(null);
   const activeTileLayerRef = useRef(null);
   const trafficTileLayerRef = useRef(null);
   const markersGroupRef = useRef(null);
+  const spotsGroupRef = useRef(null);
+  const clickedMarkerRef = useRef(null);
 
   const [mapType, setMapType] = useState(initialMode); // 'hybrid', 'roadmap', 'terrain', 'satellite'
   const [trafficEnabled, setTrafficEnabled] = useState(false);
@@ -37,36 +40,126 @@ export const GoogleMapsViewer = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaceInfo, setSelectedPlaceInfo] = useState(null);
+  const [clickToExploreMode, setClickToExploreMode] = useState(true);
+
+  // 360° spots for current city/taluka (Kolhapur has Mahalaxmi, Rankala, New Palace, Panhala, etc.)
+  const currentSpots = useMemo(() => {
+    return getLocationStreetViewSpots(currentLocation?.id || 'kolhapur', currentLocation);
+  }, [currentLocation]);
+
+  // Open 360° Street View with intelligent defaults
+  const openStreetViewForPlace = (place) => {
+    if (!place) return;
+    let lat = place.coordinates?.lat ?? place.lat;
+    let lng = place.coordinates?.lng ?? place.lng;
+    let name = place.name || "Street View Panorama";
+    let heading = place.heading || 0;
+    let pitch = place.pitch || 0;
+
+    // For Kolhapur default city trigger: avoid the random clothing shop at 16.7050, 74.2433
+    // Default to the world-renowned Shri Ambabai Mahalaxmi Temple
+    if ((place.id === 'kolhapur' || (place.name && place.name.toLowerCase() === 'kolhapur')) && !place.isCustom) {
+      const bestSpot = CITY_STREET_VIEW_SPOTS.kolhapur[0];
+      lat = bestSpot.lat;
+      lng = bestSpot.lng;
+      name = bestSpot.name;
+      heading = bestSpot.heading;
+      pitch = bestSpot.pitch;
+    } else {
+      // Look up heading if preset
+      const preset = Object.values(STREET_VIEW_PRESETS).find(p => 
+        Math.abs(p.lat - lat) < 0.03 && Math.abs(p.lng - lng) < 0.03
+      );
+      if (preset) {
+        heading = preset.heading || heading;
+        pitch = preset.pitch || pitch;
+      }
+    }
+
+    setActiveStreetView({
+      name,
+      lat: typeof lat === 'number' ? lat : (parseFloat(lat) || 16.6946),
+      lng: typeof lng === 'number' ? lng : (parseFloat(lng) || 74.2238),
+      heading,
+      pitch
+    });
+    setStreetViewOpen(true);
+  };
 
   // Initialize Map
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
-    const lat = currentLocation?.coordinates?.lat || 16.7050;
-    const lng = currentLocation?.coordinates?.lng || 74.2433;
+    // Default to iconic spot for Kolhapur or current location
+    const defaultSpot = (currentLocation?.id === 'kolhapur' || !currentLocation?.id) 
+      ? CITY_STREET_VIEW_SPOTS.kolhapur[0]
+      : null;
+    const lat = defaultSpot?.lat || currentLocation?.coordinates?.lat || 16.6946;
+    const lng = defaultSpot?.lng || currentLocation?.coordinates?.lng || 74.2238;
 
     // Create Leaflet instance running Google Tile Service
     if (!leafletMapRef.current) {
       const map = L.map(mapContainerRef.current, {
         center: [lat, lng],
-        zoom: 13,
+        zoom: 14,
         zoomControl: false,
         attributionControl: false
       });
       leafletMapRef.current = map;
 
-      // Group for markers
+      // Group for generic locations
       const markers = L.layerGroup().addTo(map);
       markersGroupRef.current = markers;
 
-      // Click to inspect coordinates
+      // Group for local landmark 360 spots
+      const spotsMarkers = L.layerGroup().addTo(map);
+      spotsGroupRef.current = spotsMarkers;
+
+      // Click to inspect coordinates and explore 360° from ANY clicked point
       map.on('click', (e) => {
-        setSelectedPlaceInfo({
-          name: `Point [${e.latlng.lat.toFixed(4)}°N, ${e.latlng.lng.toFixed(4)}°E]`,
-          lat: e.latlng.lat,
-          lng: e.latlng.lng,
-          isCustom: true
+        const clickedLat = e.latlng.lat;
+        const clickedLng = e.latlng.lng;
+
+        // Add/Move animated target pin at clicked coordinate
+        if (clickedMarkerRef.current) {
+          map.removeLayer(clickedMarkerRef.current);
+        }
+
+        const pinHtml = `
+          <div class="relative group cursor-pointer" style="transform: translate(-50%, -100%);">
+            <div class="absolute -top-1 -left-1 w-9 h-9 rounded-full bg-amber-400/40 animate-ping"></div>
+            <div class="relative w-8 h-8 rounded-full bg-gradient-to-tr from-amber-500 to-orange-500 border-2 border-white shadow-2xl flex items-center justify-center text-black font-black text-xs">
+              👁️
+            </div>
+            <div class="absolute left-1/2 -bottom-5 -translate-x-1/2 whitespace-nowrap bg-black/90 text-amber-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full border border-amber-400/50 shadow-lg pointer-events-none">
+              Explore 360° Here
+            </div>
+          </div>
+        `;
+
+        const pinIcon = L.divIcon({
+          className: 'clicked-360-marker',
+          html: pinHtml,
+          iconSize: [32, 40],
+          iconAnchor: [16, 40]
         });
+
+        const newMarker = L.marker([clickedLat, clickedLng], { icon: pinIcon }).addTo(map);
+        clickedMarkerRef.current = newMarker;
+
+        const clickedSpot = {
+          name: `Map Point [${clickedLat.toFixed(4)}°N, ${clickedLng.toFixed(4)}°E]`,
+          lat: clickedLat,
+          lng: clickedLng,
+          isCustom: true
+        };
+
+        setSelectedPlaceInfo(clickedSpot);
+
+        // Instant 360 exploration if clickToExploreMode is ON!
+        if (clickToExploreMode) {
+          openStreetViewForPlace(clickedSpot);
+        }
       });
     }
 
@@ -100,7 +193,7 @@ export const GoogleMapsViewer = ({
       trafficTileLayerRef.current = null;
     }
 
-    // Refresh Markers
+    // Refresh Regional / City Markers
     if (markersGroupRef.current) {
       markersGroupRef.current.clearLayers();
 
@@ -138,10 +231,44 @@ export const GoogleMapsViewer = ({
       });
     }
 
-    // Pan map to active location
-    map.flyTo([lat, lng], 13, { duration: 1.2 });
+    // Refresh Local 360° Spots on Map (Mahalaxmi Temple, Rankala, New Palace, Panhala, etc.)
+    if (spotsGroupRef.current) {
+      spotsGroupRef.current.clearLayers();
 
-  }, [mapType, trafficEnabled, currentLocation?.id]);
+      currentSpots.forEach((spot) => {
+        const spotHtml = `
+          <div class="relative group cursor-pointer" style="transform: translate(-50%, -50%);">
+            <div class="absolute -inset-1.5 bg-amber-400/30 rounded-full animate-pulse"></div>
+            <div class="relative w-8 h-8 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 border border-amber-200 shadow-xl flex items-center justify-center text-black font-bold text-xs">
+              👁️
+            </div>
+            <div class="absolute left-1/2 -bottom-7 -translate-x-1/2 whitespace-nowrap bg-[#080e1c] text-amber-300 text-[10px] font-mono font-bold px-2 py-0.5 rounded-lg border border-amber-500/50 shadow-lg pointer-events-none">
+              ${spot.shortName || spot.name}
+            </div>
+          </div>
+        `;
+
+        const spotIcon = L.divIcon({
+          className: 'custom-spot-marker',
+          html: spotHtml,
+          iconSize: [32, 32],
+          iconAnchor: [16, 16]
+        });
+
+        const spotMarker = L.marker([spot.lat, spot.lng], { icon: spotIcon });
+        spotMarker.on('click', (e) => {
+          L.DomEvent.stopPropagation(e);
+          setSelectedPlaceInfo(spot);
+          openStreetViewForPlace(spot);
+        });
+        spotMarker.addTo(spotsGroupRef.current);
+      });
+    }
+
+    // Pan map to active spot or location
+    map.flyTo([lat, lng], 14, { duration: 1.2 });
+
+  }, [mapType, trafficEnabled, currentLocation?.id, currentSpots]);
 
   // Handle Search Input
   const handleSearch = (e) => {
@@ -165,39 +292,14 @@ export const GoogleMapsViewer = ({
       }
     } else {
       // Check preset landmarks
-      const presetKey = Object.keys(STREET_VIEW_PRESETS).find(k => 
-        k.includes(q) || STREET_VIEW_PRESETS[k].name.toLowerCase().includes(q)
-      );
-      if (presetKey) {
-        const p = STREET_VIEW_PRESETS[presetKey];
-        setSelectedPlaceInfo(p);
+      const spot = currentSpots.find(s => s.name.toLowerCase().includes(q) || s.id.toLowerCase().includes(q));
+      if (spot) {
+        setSelectedPlaceInfo(spot);
         if (leafletMapRef.current) {
-          leafletMapRef.current.flyTo([p.lat, p.lng], 15, { duration: 1.5 });
+          leafletMapRef.current.flyTo([spot.lat, spot.lng], 15, { duration: 1.5 });
         }
       }
     }
-  };
-
-
-  const openStreetViewForPlace = (place) => {
-    if (!place) return;
-    const lat = place.coordinates?.lat ?? place.lat ?? 16.7050;
-    const lng = place.coordinates?.lng ?? place.lng ?? 74.2433;
-    const name = place.name || "Street View Panorama";
-    
-    // Look up heading if preset
-    const preset = Object.values(STREET_VIEW_PRESETS).find(p => 
-      Math.abs(p.lat - lat) < 0.05 && Math.abs(p.lng - lng) < 0.05
-    );
-
-    setActiveStreetView({
-      name,
-      lat: typeof lat === 'number' ? lat : (parseFloat(lat) || 16.7050),
-      lng: typeof lng === 'number' ? lng : (parseFloat(lng) || 74.2433),
-      heading: preset?.heading || 0,
-      pitch: preset?.pitch || 0
-    });
-    setStreetViewOpen(true);
   };
 
   return (
@@ -254,7 +356,7 @@ export const GoogleMapsViewer = ({
                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
-            <span>⛰️ Topo Terrain</span>
+            <span>⛰️ Terrain</span>
           </button>
 
           <div className="h-4 w-px bg-slate-800 mx-1"></div>
@@ -274,8 +376,22 @@ export const GoogleMapsViewer = ({
           </button>
         </div>
 
-        {/* Right Controls: Street View */}
+        {/* Right Controls: Click-to-Explore Toggle & 360 Launch */}
         <div className="flex items-center gap-2 pointer-events-auto">
+          {/* Click to Explore 360 Toggle */}
+          <button
+            onClick={() => setClickToExploreMode(!clickToExploreMode)}
+            className={`px-3 py-2 rounded-2xl text-xs font-semibold flex items-center gap-1.5 border shadow-xl transition-all cursor-pointer ${
+              clickToExploreMode
+                ? 'bg-cyan-500 text-black font-bold border-cyan-400 shadow-cyan-500/20'
+                : 'bg-slate-950/90 text-slate-300 border-slate-800 hover:text-white'
+            }`}
+            title="When active, clicking anywhere on the map instantly starts 360° Street View at that exact spot"
+          >
+            <MousePointerClick className="w-3.5 h-3.5" />
+            <span>Click-to-360°: {clickToExploreMode ? 'ON' : 'OFF'}</span>
+          </button>
+
           {/* Street View Quick Launch Button */}
           <button
             onClick={() => openStreetViewForPlace(currentLocation)}
@@ -296,7 +412,7 @@ export const GoogleMapsViewer = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search taluka, fort, landmark..."
+            placeholder="Search landmark, fort, taluka..."
             className="w-full pl-9 pr-8 py-2 rounded-2xl bg-slate-950/90 backdrop-blur-xl border border-slate-800 text-white placeholder-slate-400 text-xs shadow-2xl focus:outline-none focus:border-amber-400 transition-all"
           />
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
@@ -339,29 +455,39 @@ export const GoogleMapsViewer = ({
         )}
       </div>
 
-      {/* Preset Landmark Pills Dock */}
-      <div className="absolute top-18 right-3 z-[999] hidden lg:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/90 backdrop-blur-xl border border-slate-800 shadow-2xl">
-        <span className="text-[10px] font-mono text-slate-400 px-2 flex items-center gap-1">
-          <Sparkles className="w-3 h-3 text-amber-400" /> Hotspots:
+      {/* Preset Landmark Pills Dock for Current City (Mahalaxmi, Rankala, New Palace, Panhala, etc.) */}
+      <div className="absolute top-18 right-3 z-[999] hidden sm:flex items-center gap-1.5 p-1 rounded-2xl bg-slate-950/90 backdrop-blur-xl border border-amber-500/30 shadow-2xl max-w-xl overflow-x-auto no-scrollbar">
+        <span className="text-[10px] font-mono font-bold text-amber-400 px-2 flex items-center gap-1 shrink-0">
+          <Sparkles className="w-3 h-3 text-amber-400" /> {currentLocation?.name || 'Kolhapur'} Spots:
         </span>
-        {Object.entries(STREET_VIEW_PRESETS).slice(0, 5).map(([key, item]) => (
+        {currentSpots.map((spot) => (
           <button
-            key={key}
+            key={spot.id}
             onClick={() => {
-              setSelectedPlaceInfo(item);
+              setSelectedPlaceInfo(spot);
               if (leafletMapRef.current) {
-                leafletMapRef.current.flyTo([item.lat, item.lng], 15, { duration: 1.2 });
+                leafletMapRef.current.flyTo([spot.lat, spot.lng], 15, { duration: 1.2 });
               }
+              openStreetViewForPlace(spot);
             }}
-            className="px-2.5 py-1 rounded-xl text-[11px] font-medium text-slate-300 hover:text-white hover:bg-slate-800/80 transition-all cursor-pointer"
+            className="px-2.5 py-1 rounded-xl text-[11px] font-bold text-slate-200 hover:text-black bg-slate-900/80 hover:bg-amber-400 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 border border-slate-800 hover:border-amber-400"
+            title={`View 360° Panorama of ${spot.name}`}
           >
-            {item.name.split('(')[0].trim()}
+            <span>{spot.shortName || spot.name}</span>
           </button>
         ))}
       </div>
 
+      {/* Click-to-Explore Notice Banner */}
+      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[998] pointer-events-none">
+        <div className="px-4 py-1.5 rounded-full bg-black/80 backdrop-blur-md border border-cyan-500/40 text-cyan-300 font-mono text-[11px] flex items-center gap-2 shadow-xl">
+          <MousePointerClick className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+          <span>Click anywhere on the map to start 360° Street View at that exact spot</span>
+        </div>
+      </div>
+
       {/* Main Map Container */}
-      <div ref={mapContainerRef} className="w-full h-full flex-1 z-0 cursor-grab active:cursor-grabbing" />
+      <div ref={mapContainerRef} className="w-full h-full flex-1 z-0 cursor-crosshair active:cursor-grabbing" />
 
       {/* Map Zoom Controls */}
       <div className="absolute bottom-6 right-4 z-[999] flex flex-col gap-2">
@@ -381,9 +507,10 @@ export const GoogleMapsViewer = ({
         </button>
         <button
           onClick={() => {
-            const lat = currentLocation?.coordinates?.lat || 16.7050;
-            const lng = currentLocation?.coordinates?.lng || 74.2433;
-            leafletMapRef.current?.flyTo([lat, lng], 13, { duration: 1.2 });
+            const defaultSpot = (currentLocation?.id === 'kolhapur' || !currentLocation?.id) ? CITY_STREET_VIEW_SPOTS.kolhapur[0] : null;
+            const lat = defaultSpot?.lat || currentLocation?.coordinates?.lat || 16.6946;
+            const lng = defaultSpot?.lng || currentLocation?.coordinates?.lng || 74.2238;
+            leafletMapRef.current?.flyTo([lat, lng], 14, { duration: 1.2 });
           }}
           className="w-9 h-9 rounded-xl bg-slate-950/90 hover:bg-slate-800 text-white border border-slate-800 flex items-center justify-center shadow-2xl cursor-pointer hover:border-amber-400/50 transition-all"
           title="Recenter to Target"
@@ -399,7 +526,7 @@ export const GoogleMapsViewer = ({
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                  Google Map Target
+                  {selectedPlaceInfo.isCustom ? 'Clicked Map Spot' : 'Google Landmark'}
                 </span>
                 <span className="text-[11px] font-mono text-slate-400">
                   {(selectedPlaceInfo.coordinates?.lat || selectedPlaceInfo.lat)?.toFixed(4)}°N, {(selectedPlaceInfo.coordinates?.lng || selectedPlaceInfo.lng)?.toFixed(4)}°E
@@ -446,45 +573,83 @@ export const GoogleMapsViewer = ({
         </div>
       )}
 
-      {/* Street View 360° Modal / Overlay */}
+      {/* Street View 360° Full Exploration Modal / Overlay */}
       {streetViewOpen && activeStreetView && (
-        <div className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-xl flex flex-col p-3 sm:p-6 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between gap-3 mb-3 bg-slate-950/80 p-3 rounded-2xl border border-slate-800">
+        <div className="fixed inset-0 z-[2000] bg-black/90 backdrop-blur-xl flex flex-col p-3 sm:p-5 animate-in fade-in duration-200">
+          
+          {/* 360 Header Bar */}
+          <div className="flex items-center justify-between gap-3 mb-2.5 bg-slate-950/90 p-3 rounded-2xl border border-slate-800 shadow-xl">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                <Eye className="w-4 h-4" />
+              <div className="w-8 h-8 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold">
+                👁️
               </div>
               <div>
                 <h2 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span>Google Street View 360° Panorama:</span>
+                  <span>Google Street View 360°:</span>
                   <span className="text-amber-400">{activeStreetView.name}</span>
                 </h2>
                 <p className="text-[11px] font-mono text-slate-400">
-                  Coordinates: {activeStreetView.lat.toFixed(4)}°N, {activeStreetView.lng.toFixed(4)}°E • Drag to rotate camera 360°
+                  Coordinates: {activeStreetView.lat.toFixed(4)}°N, {activeStreetView.lng.toFixed(4)}°E • Click &amp; drag inside view to look 360° in all directions
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
+              {/* Return to Map & Pick Point */}
+              <button
+                onClick={() => setStreetViewOpen(false)}
+                className="px-3 py-1.5 rounded-xl bg-cyan-950 hover:bg-cyan-500 hover:text-black text-xs font-bold text-cyan-300 border border-cyan-500/40 flex items-center gap-1.5 transition-all cursor-pointer"
+                title="Return to map to click and pick another location"
+              >
+                <MapPin className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Pick from Map</span>
+              </button>
+
               <a
                 href={`https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${activeStreetView.lat},${activeStreetView.lng}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-slate-300 hover:text-white border border-slate-800 flex items-center gap-1.5"
               >
-                <span>Fullscreen in Maps</span>
+                <span>Fullscreen</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
 
               <button
                 onClick={() => setStreetViewOpen(false)}
                 className="w-8 h-8 rounded-xl bg-slate-900 hover:bg-red-500/20 hover:text-red-300 text-slate-300 border border-slate-800 flex items-center justify-center transition-colors cursor-pointer"
+                title="Close 360° View"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
+          {/* Point-to-Point Landmark Exploration Switcher inside 360 Viewer */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2 px-3 bg-slate-950/80 rounded-2xl border border-slate-800/80 mb-2.5">
+            <span className="text-[10px] font-mono font-bold text-amber-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>Explore {currentLocation?.name || 'City'} Spots:</span>
+            </span>
+            {currentSpots.map((spot) => {
+              const isSelected = activeStreetView && Math.abs(activeStreetView.lat - spot.lat) < 0.002 && Math.abs(activeStreetView.lng - spot.lng) < 0.002;
+              return (
+                <button
+                  key={spot.id}
+                  onClick={() => openStreetViewForPlace(spot)}
+                  className={`px-3 py-1.5 rounded-xl font-mono text-xs font-bold whitespace-nowrap flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-black shadow-lg shadow-amber-500/30 font-black'
+                      : 'bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white border border-slate-800'
+                  }`}
+                >
+                  <span>{spot.shortName || spot.name}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* 360° Interactive Canvas Iframe */}
           <div className="flex-1 w-full rounded-2xl overflow-hidden border border-slate-800 bg-slate-950 relative shadow-2xl">
             <iframe
               title={`Google Street View: ${activeStreetView.name}`}
@@ -497,7 +662,8 @@ export const GoogleMapsViewer = ({
         </div>
       )}
 
-
     </div>
   );
 };
+
+export default GoogleMapsViewer;

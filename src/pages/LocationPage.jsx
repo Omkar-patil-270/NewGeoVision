@@ -212,15 +212,6 @@ export const LocationPage = () => {
 
           <div className="flex items-center gap-2 shrink-0">
             <button
-              onClick={() => setActiveTab('google')}
-              className="hidden md:flex px-3 py-1.5 rounded-xl bg-amber-950/60 border border-amber-500/40 text-amber-300 hover:bg-amber-900/40 text-xs font-mono font-bold items-center gap-1.5 transition-all cursor-pointer"
-              title="Launch Google Maps with 360° Street View"
-            >
-              <Globe className="w-3.5 h-3.5 text-amber-400" />
-              <span>Google Maps 360°</span>
-            </button>
-
-            <button
               onClick={() => setCurrentPage('story')}
               className="hidden md:flex px-3.5 py-1.5 rounded-xl bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-900/40 text-xs font-mono font-bold items-center gap-1.5 transition-all cursor-pointer"
               title="Open high-graphics Chapter Slideshow Studio"

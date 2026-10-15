@@ -1,16 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { 
   Compass, Layers, Search, MapPin, Eye, ExternalLink, 
-  Key, Sparkles, X, Check, ZoomIn, ZoomOut, RotateCcw, 
+  Sparkles, X, Check, ZoomIn, ZoomOut, RotateCcw, 
   Navigation, Car, Building2, Trees, ArrowRight
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { locationService } from '../../services/locationService';
 import { 
-  getGoogleApiKey, 
-  setGoogleApiKey, 
-  hasGoogleApiKey, 
-  loadGoogleMapsSDK, 
   GOOGLE_TILE_LAYERS,
   getStreetViewEmbedUrl,
   getGoogleMapsLocationUrl,
@@ -38,23 +34,9 @@ export const GoogleMapsViewer = ({
   const [trafficEnabled, setTrafficEnabled] = useState(false);
   const [streetViewOpen, setStreetViewOpen] = useState(false);
   const [activeStreetView, setActiveStreetView] = useState(null);
-  const [keyModalOpen, setKeyModalOpen] = useState(false);
-  const [apiKeyInput, setApiKeyInput] = useState(getGoogleApiKey());
-  const [hasCustomKey, setHasCustomKey] = useState(hasGoogleApiKey());
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [selectedPlaceInfo, setSelectedPlaceInfo] = useState(null);
-  const [usingOfficialSdk, setUsingOfficialSdk] = useState(false);
-
-  // Sync API Key state
-  useEffect(() => {
-    const handleKeyChange = (e) => {
-      setHasCustomKey(Boolean(e.detail?.key));
-      setApiKeyInput(e.detail?.key || '');
-    };
-    window.addEventListener('geovision:google_key_changed', handleKeyChange);
-    return () => window.removeEventListener('geovision:google_key_changed', handleKeyChange);
-  }, []);
 
   // Initialize Map
   useEffect(() => {
@@ -97,6 +79,7 @@ export const GoogleMapsViewer = ({
 
     const tileConfig = GOOGLE_TILE_LAYERS[mapType] || GOOGLE_TILE_LAYERS.hybrid;
     const tileLayer = L.tileLayer(tileConfig.url, {
+      maxNativeZoom: tileConfig.maxNativeZoom || 19,
       maxZoom: tileConfig.maxZoom || 20,
       subdomains: tileConfig.subdomains || ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution: tileConfig.attribution
@@ -195,10 +178,6 @@ export const GoogleMapsViewer = ({
     }
   };
 
-  const handleSaveApiKey = () => {
-    setGoogleApiKey(apiKeyInput);
-    setKeyModalOpen(false);
-  };
 
   const openStreetViewForPlace = (place) => {
     const lat = place.coordinates?.lat || place.lat;
@@ -274,7 +253,7 @@ export const GoogleMapsViewer = ({
                 : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
-            <span>⛰️ Terrain</span>
+            <span>⛰️ Topo Terrain</span>
           </button>
 
           <div className="h-4 w-px bg-slate-800 mx-1"></div>
@@ -294,7 +273,7 @@ export const GoogleMapsViewer = ({
           </button>
         </div>
 
-        {/* Right Controls: Street View, Search, Key Config */}
+        {/* Right Controls: Street View */}
         <div className="flex items-center gap-2 pointer-events-auto">
           {/* Street View Quick Launch Button */}
           <button
@@ -304,20 +283,6 @@ export const GoogleMapsViewer = ({
           >
             <Eye className="w-4 h-4" />
             <span className="font-bold">360° Street View</span>
-          </button>
-
-          {/* API Key Status Pill */}
-          <button
-            onClick={() => setKeyModalOpen(true)}
-            className={`px-3 py-2 rounded-2xl backdrop-blur-xl border flex items-center gap-1.5 text-xs font-mono font-medium shadow-xl cursor-pointer transition-all ${
-              hasCustomKey
-                ? 'bg-emerald-950/80 border-emerald-500/50 text-emerald-300 hover:bg-emerald-900/80'
-                : 'bg-slate-950/90 border-slate-800 text-slate-300 hover:border-amber-500/50 hover:text-amber-300'
-            }`}
-            title="Configure Google Cloud Maps API Key"
-          >
-            <Key className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden md:inline">{hasCustomKey ? 'API Key Active' : 'Configure API Key'}</span>
           </button>
         </div>
 
@@ -531,86 +496,6 @@ export const GoogleMapsViewer = ({
         </div>
       )}
 
-      {/* Google Cloud API Key Configuration Modal */}
-      {keyModalOpen && (
-        <div className="fixed inset-0 z-[2000] bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="max-w-md w-full bg-slate-950 border border-amber-500/40 rounded-3xl p-6 shadow-2xl shadow-black text-slate-100 animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
-                  <Key className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-white">Google Maps API Setup</h3>
-                  <p className="text-xs text-slate-400">Google Cloud Maps Platform</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setKeyModalOpen(false)}
-                className="w-7 h-7 rounded-xl bg-slate-900 text-slate-400 hover:text-white flex items-center justify-center border border-slate-800"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="p-3 rounded-2xl bg-slate-900/80 border border-slate-800 text-xs text-slate-300 leading-relaxed">
-                <strong className="text-amber-400 font-semibold block mb-1">
-                  ✨ Instant Rendering Active:
-                </strong>
-                Google Hybrid Satellite, Roadmaps, and Street View 360° are currently running smoothly on GeoVision's integrated tile engine without requiring a key.
-                <br /><br />
-                To enable live Google Places Text Search and Places Autocomplete, paste your Google Cloud API key below:
-              </div>
-
-              <div>
-                <label className="block text-xs font-mono text-slate-400 mb-1.5">
-                  Google Maps API Key:
-                </label>
-                <input
-                  type="text"
-                  value={apiKeyInput}
-                  onChange={(e) => setApiKeyInput(e.target.value)}
-                  placeholder="AIzaSy..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-white font-mono text-xs focus:outline-none focus:border-amber-400 transition-colors"
-                />
-              </div>
-
-              <div className="flex items-center justify-between gap-3 pt-2">
-                {apiKeyInput && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setApiKeyInput('');
-                      setGoogleApiKey('');
-                      setKeyModalOpen(false);
-                    }}
-                    className="text-xs text-rose-400 hover:text-rose-300 underline"
-                  >
-                    Clear Key
-                  </button>
-                )}
-                <div className="flex items-center gap-2 ml-auto">
-                  <button
-                    type="button"
-                    onClick={() => setKeyModalOpen(false)}
-                    className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-xs text-slate-300"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleSaveApiKey}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-bold text-xs shadow-lg shadow-amber-500/20 hover:scale-102 transition-transform"
-                  >
-                    Save API Key
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
     </div>
   );

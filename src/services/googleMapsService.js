@@ -59,12 +59,13 @@ export const GOOGLE_TILE_LAYERS = {
   },
   terrain: {
     id: 'google_terrain',
-    name: 'Google Terrain',
-    description: 'Topographic contour elevation shading, mountain passes, and river basins',
-    url: 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
-    attribution: '&copy; Google Maps Terrain Topography',
+    name: 'Topographic Terrain',
+    description: 'Physical topographic elevation contours, altitude meters, hillshade relief, and mountain ridges',
+    url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenTopoMap (CC-BY-SA) &amp; SRTM Elevation Topography',
+    maxNativeZoom: 17,
     maxZoom: 20,
-    subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+    subdomains: ['a', 'b', 'c']
   },
   satellite: {
     id: 'google_satellite',

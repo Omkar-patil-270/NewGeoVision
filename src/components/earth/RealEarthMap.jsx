@@ -40,10 +40,11 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
       maxZoom: 20
     },
     google_terrain: {
-      url: 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}',
-      attribution: '&copy; Google Maps Terrain',
+      url: 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',
+      attribution: '&copy; OpenTopoMap (CC-BY-SA) &amp; SRTM Elevation Topography',
       hasLabels: false,
-      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      subdomains: ['a', 'b', 'c'],
+      maxNativeZoom: 17,
       maxZoom: 20
     },
     satellite: {
@@ -247,7 +248,8 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
 
     const config = TILE_LAYERS[styleKey] || TILE_LAYERS.satellite;
     const newBase = L.tileLayer(config.url, {
-      maxZoom: config.maxZoom || 19,
+      maxNativeZoom: config.maxNativeZoom || 19,
+      maxZoom: config.maxZoom || 20,
       subdomains: config.subdomains || ['a', 'b', 'c'],
       attribution: config.attribution
     }).addTo(map);
@@ -285,7 +287,7 @@ export const RealEarthMap = ({ height = "100%", onLocationSelect = null, initial
         {[
           { key: "google_hybrid", label: "🌍 Google Hybrid" },
           { key: "google_streets", label: "🗺️ Google Roads" },
-          { key: "google_terrain", label: "⛰️ Google Terrain" },
+          { key: "google_terrain", label: "⛰️ Topo Terrain" },
           { key: "satellite", label: "🛰️ Satellite" },
           { key: "streets", label: "📍 OSM" },
           { key: "dark", label: "🌙 Dark" }

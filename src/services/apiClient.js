@@ -5,6 +5,7 @@
  */
 
 import { getCategorizedPhotos, getAsyncCategorizedPhotos } from './categorizedPhotoService.js';
+import { searchGooglePlaces, hasGoogleApiKey } from './googleMapsService.js';
 
 const API_BASE_URL = import.meta.env?.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -346,7 +347,38 @@ export const apiClient = {
       // Backend not reached, proceed to client-side retrieval
     }
 
-    // 2. Direct Async Categorized & Live Commons Media Retrieval
+    // 2. Direct Google Places Photographic Search (High-resolution, distinct visitor photos)
+    if (hasGoogleApiKey()) {
+      try {
+        const places = await searchGooglePlaces(locationName, lat, lon);
+        if (places && places.length > 0) {
+          const googlePhotos = places
+            .filter(p => p.photoUrl)
+            .map(p => ({
+              url: p.photoUrl,
+              title: p.name,
+              caption: p.address || `Google Verified Landmark: ${p.name}`,
+              credit: `Google Places Contributor (${p.rating ? '★ ' + p.rating : 'Verified'})`,
+              source: "Google Places API",
+              category: "Verified Landmark",
+              recencyBadge: "GOOGLE VERIFIED",
+              isRecent: true
+            }));
+          if (googlePhotos.length > 0) {
+            return {
+              images: googlePhotos.slice(0, limit),
+              count: Math.min(googlePhotos.length, limit),
+              has_photos: true,
+              source: "google_places_api"
+            };
+          }
+        }
+      } catch (gErr) {
+        console.warn("[apiClient] Google Places photo lookup notice:", gErr);
+      }
+    }
+
+    // 3. Direct Async Categorized & Live Commons Media Retrieval
     try {
       const localData = await getAsyncCategorizedPhotos(locationName);
       if (localData && localData.categories && localData.categories.length > 0) {

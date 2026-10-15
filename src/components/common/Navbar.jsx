@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
-  Globe, Search, Menu, X, Bookmark
+  Globe, Menu, X
 } from 'lucide-react';
 import { AnimatedLogo } from './AnimatedLogo';
 import { SoundToggle } from './SoundToggle';
@@ -9,8 +9,7 @@ import { SoundToggle } from './SoundToggle';
 export const Navbar = () => {
   const { 
     currentPage, 
-    setCurrentPage, 
-    setSearchModalOpen
+    setCurrentPage
   } = useApp();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -65,40 +64,9 @@ export const Navbar = () => {
           })}
         </nav>
 
-        {/* Right Side Actions: Clean, uncluttered Search, Bookmark, Languages */}
+        {/* Right Side Actions: Clean mobile toggle */}
         <div className="flex items-center gap-2.5 shrink-0">
           
-          {/* Omni Search Button */}
-          <button
-            onClick={() => setSearchModalOpen(true)}
-            className={`flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-medium shadow-sm transition-all hover:scale-[1.02] shrink-0 whitespace-nowrap ${
-              isDark 
-                ? 'border-white/20 bg-white/10 text-stone-300 hover:border-cyan-400 hover:text-white' 
-                : 'border-stone-300/80 bg-white text-stone-600 hover:border-sky-500 hover:text-stone-900'
-            }`}
-            title="Search locations (Ctrl+K)"
-          >
-            <Search className="h-3.5 w-3.5 text-sky-400 shrink-0" />
-            <span className="hidden sm:inline text-xs whitespace-nowrap">Search Earth...</span>
-            <kbd className={`hidden sm:inline-block rounded px-1.5 py-0.5 text-[10px] font-mono border ${
-              isDark ? 'bg-white/10 text-stone-400 border-white/20' : 'bg-stone-100 text-stone-500 border-stone-200'
-            }`}>⌘K</kbd>
-          </button>
-
-          {/* Bookmark pill badge */}
-          <button
-            onClick={() => handleNavClick('explore')}
-            title="Saved Coordinates"
-            className={`hidden sm:flex items-center justify-center h-8 px-2.5 rounded-full border transition-colors gap-1 shadow-2xs shrink-0 ${
-              isDark 
-                ? 'border-cyan-500/30 bg-cyan-950/40 text-cyan-300 hover:bg-cyan-900/50' 
-                : 'border-sky-200 bg-sky-50 text-sky-700 hover:bg-sky-100'
-            }`}
-          >
-            <Bookmark className="w-3.5 h-3.5 fill-cyan-400 text-cyan-400" />
-            <span className="text-[11px] font-bold font-mono">4</span>
-          </button>
-
           {/* Mobile Menu Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

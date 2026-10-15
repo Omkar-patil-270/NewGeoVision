@@ -114,18 +114,6 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Quick Fly-To Locations
-  const quickPlaces = [
-    { name: "Kolhapur", id: "kolhapur", badge: "Flagship" },
-    { name: "Karveer", id: "karveer", badge: "Taluka" },
-    { name: "Mumbai", id: "mumbai", badge: "Capital" },
-    { name: "Pune", id: "pune", badge: "IT Hub" },
-    { name: "Panhala", id: "panhala", badge: "Fort Taluka" },
-    { name: "Satara", id: "satara", badge: "District" },
-    { name: "Paris", id: "paris", badge: "Europe" },
-    { name: "Tokyo", id: "tokyo", badge: "East Asia" }
-  ];
-
   // Select location and display its interactive dossier while preserving place name in searchbox
   const handleSelectLocation = (locOrId, navigateTo = 'dossier') => {
     let targetId = locOrId;
@@ -480,21 +468,6 @@ export const GlobalSearchExperience = ({ onOpenStoryStudio, onOpenForecastLab })
           </div>
         )}
 
-        {/* Quick Fly-To City Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 mt-3 text-xs text-stone-400">
-          <span className="font-semibold text-stone-300">Quick Fly-To:</span>
-          {quickPlaces.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => handleSelectLocation(c.id)}
-              className="px-3 py-1 rounded-full bg-white/5 hover:bg-cyan-500/20 hover:text-cyan-300 border border-white/10 hover:border-cyan-400/50 text-stone-300 transition-colors text-[11px] font-medium backdrop-blur-md shadow-sm flex items-center gap-1 cursor-pointer"
-            >
-              <span>{c.name}</span>
-              <span className="text-[9px] text-stone-400 font-mono">({c.badge})</span>
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* ========================================================================= */}

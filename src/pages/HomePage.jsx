@@ -93,14 +93,6 @@ export const HomePage = () => {
             <span>EXPLORE THE WORLD MAP</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-
-          <button
-            onClick={() => setCurrentPage('story')}
-            className="px-7 py-3 rounded-2xl bg-black/50 hover:bg-white/10 text-white font-bold text-xs uppercase tracking-wider flex items-center gap-2 border border-white/20 hover:border-cyan-400/60 shadow-lg backdrop-blur-md transition-all hover:scale-[1.03] cursor-pointer"
-          >
-            <Sparkles className="w-4 h-4 text-cyan-400" />
-            <span>DISCOVER A STORY</span>
-          </button>
         </div>
 
       </div>

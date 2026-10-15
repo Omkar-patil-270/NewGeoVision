@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import { EarthHero3D } from '../components/home/EarthHero3D';
 import { SoundToggle } from '../components/common/SoundToggle';
 import { GlobalSearchExperience } from '../components/home/GlobalSearchExperience';
+import { SavedCollectionSection } from '../components/home/SavedCollectionSection';
 import { 
   Compass, Sparkles, ArrowRight
 } from 'lucide-react';
@@ -13,7 +14,7 @@ export const HomePage = () => {
   } = useApp();
 
   return (
-    <div className="h-[calc(100vh-65px)] max-h-[calc(100vh-65px)] w-full bg-[#010309] text-white flex flex-col justify-between items-center relative overflow-hidden px-4 sm:px-6 select-none">
+    <div className="min-h-[calc(100vh-65px)] w-full bg-[#010309] text-white flex flex-col justify-between items-center relative overflow-x-hidden px-4 sm:px-6 select-none pb-12">
       
       {/* 1. FEROX-Style Volumetric Atmospheric Backlight & Electric Blue Horizon */}
       {/* Intense electric royal blue and sapphire glow concentrated behind the Earth's lower curve */}
@@ -97,8 +98,11 @@ export const HomePage = () => {
 
       </div>
 
-      {/* 5. Clean Spacer for balanced viewport */}
-      <div className="pb-3" />
+      {/* 5. My Saved Collection Section (Direct Access on First Page) */}
+      <SavedCollectionSection />
+
+      {/* 6. Clean Spacer for balanced viewport */}
+      <div className="pb-4" />
 
     </div>
   );

@@ -219,25 +219,6 @@ export const ExplorePage = () => {
                   {isSearchingOnline ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Analyze"}
                 </button>
               </form>
-
-              <div className="flex flex-wrap items-center justify-center gap-1 text-[10px] font-mono">
-                {quickFlyList.slice(0, 6).map((c) => {
-                  const isCurrent = currentLocation.name.toLowerCase() === c.toLowerCase();
-                  return (
-                    <button
-                      key={c}
-                      onClick={() => handleQuickFly(c)}
-                      className={`px-2.5 py-0.5 rounded-full transition-all backdrop-blur-md cursor-pointer ${
-                        isCurrent
-                          ? 'bg-cyan-500 text-black font-bold border border-cyan-400 shadow-md shadow-cyan-500/25'
-                          : 'bg-black/60 text-slate-300 border border-slate-800 hover:text-white'
-                      }`}
-                    >
-                      {c}
-                    </button>
-                  );
-                })}
-              </div>
             </div>
           </div>
 

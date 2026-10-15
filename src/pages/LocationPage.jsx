@@ -8,6 +8,8 @@ import { storyService } from '../services/storyService';
 import { weatherService } from '../services/weatherService';
 import { airQualityService } from '../services/airQualityService';
 import { GoogleMapsViewer } from '../components/google/GoogleMapsViewer';
+import { ShareModal } from '../components/modals/ShareModal';
+import confetti from 'canvas-confetti';
 
 export const LocationPage = () => {
   const { 
@@ -24,6 +26,7 @@ export const LocationPage = () => {
   } = useApp();
 
   const [activeTab, setActiveTab] = useState("story"); // 'story', 'history', 'telemetry', 'gallery'
+  const [shareModalOpen, setShareModalOpen] = useState(false);
   const isSaved = savedLocations.includes(currentLocation.id);
 
   const storyModes = storyService.getStoryModes();
@@ -44,10 +47,7 @@ export const LocationPage = () => {
   ];
 
   const handleShare = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Location dossier link copied to clipboard!");
-    }
+    setShareModalOpen(true);
   };
 
   return (
@@ -146,20 +146,25 @@ export const LocationPage = () => {
             {/* Bookmark & Share Controls */}
             <div className="flex items-center gap-2 self-end mb-2">
               <button
-                onClick={() => toggleSaveLocation(currentLocation.id)}
+                onClick={() => {
+                  toggleSaveLocation(currentLocation.id);
+                  if (!isSaved) {
+                    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
+                  }
+                }}
                 className={`p-3 rounded-2xl border transition-all cursor-pointer ${
                   isSaved 
                     ? 'border-cyan-400 bg-cyan-500 text-black shadow-md shadow-cyan-500/30'
                     : 'border-slate-700 bg-slate-900/80 text-slate-300 hover:text-white hover:border-cyan-500/50 backdrop-blur-md'
                 }`}
-                title={isSaved ? "Saved in Bookmarks" : "Save Location"}
+                title={isSaved ? "Saved to your Collection on Home page" : "Save Location to Home Collection"}
               >
                 <Bookmark className="w-5 h-5" />
               </button>
               <button
                 onClick={handleShare}
                 className="p-3 rounded-2xl border border-slate-700 bg-slate-900/80 text-slate-300 hover:text-white hover:border-cyan-500/50 backdrop-blur-md transition-colors cursor-pointer"
-                title="Share Dossier"
+                title="Share Dossier via WhatsApp, Telegram, IG, FB"
               >
                 <Share2 className="w-5 h-5" />
               </button>
@@ -453,6 +458,13 @@ export const LocationPage = () => {
         )}
 
       </div>
+
+      {/* Share Dossier Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        location={currentLocation}
+      />
     </div>
   );
 };

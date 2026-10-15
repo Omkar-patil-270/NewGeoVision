@@ -3,12 +3,15 @@ import { useApp } from '../context/AppContext';
 import { storageService } from '../services/storageService';
 import { locationService } from '../services/locationService';
 import { 
-  Bookmark, Globe, Trash2, ArrowRight, Volume2, Sparkles, MapPin, ArrowLeft
+  Bookmark, Globe, Trash2, ArrowRight, Volume2, Sparkles, MapPin, ArrowLeft, Share2
 } from 'lucide-react';
+import { ShareModal } from '../components/modals/ShareModal';
 
 export const SavedPage = () => {
   const { savedLocations, toggleSaveLocation, selectLocation, playNarration, goBack } = useApp();
   const [savedStories, setSavedStories] = useState(storageService.getSavedStories());
+  const [shareLoc, setShareLoc] = useState(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const locationsList = savedLocations.map(id => locationService.getLocationById(id)).filter(Boolean);
 
@@ -94,13 +97,25 @@ export const SavedPage = () => {
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => selectLocation(loc.id, 'location')}
-                        className="w-full py-2 px-3 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors"
-                      >
-                        <span>Explore Dossier</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => selectLocation(loc.id, 'location')}
+                          className="flex-1 py-2 px-3 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold flex items-center justify-center gap-1.5 shadow-xs transition-colors"
+                        >
+                          <span>Explore Dossier</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShareLoc(loc);
+                            setShareModalOpen(true);
+                          }}
+                          className="p-2 rounded-xl bg-stone-100 hover:bg-orange-50 text-stone-600 hover:text-primary border border-stone-200 transition-colors cursor-pointer"
+                          title="Share Location Dossier via WhatsApp, Telegram, IG, FB"
+                        >
+                          <Share2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 );
@@ -160,6 +175,13 @@ export const SavedPage = () => {
         </div>
 
       </div>
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        location={shareLoc}
+      />
     </div>
   );
 };

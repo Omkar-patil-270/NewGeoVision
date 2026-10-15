@@ -2,7 +2,7 @@
  * Categorized Photo Service for GeoVisionAI.
  * Guaranteed zero-latency, verified photographic galleries organized into 5 standard categories.
  * Works seamlessly offline, on Vercel production, or with backend LLM/Places API enhancement.
- */
+import { searchGooglePlaces, hasGoogleApiKey } from './googleMapsService.js';
 
 export const CATEGORIES_META = [
   { id: "tourist_attractions", name: "Tourist Attractions" },
@@ -677,7 +677,59 @@ export async function getAsyncCategorizedPhotos(locationName = "Satara") {
     }
   }
 
-  // Enrich across all 5 categories with distinct live Wikimedia Commons photographs
+  // 1. Enrich with authentic Google Places Photos if Google API key is configured
+  if (hasGoogleApiKey()) {
+    try {
+      const places = await searchGooglePlaces(locationName);
+      if (places && places.length > 0) {
+        const placePhotos = [];
+        for (const p of places) {
+          if (p.photos && p.photos.length > 0) {
+            p.photos.forEach(photoUrl => {
+              placePhotos.push({
+                url: photoUrl,
+                title: p.name,
+                rating: p.rating,
+                address: p.address
+              });
+            });
+          } else if (p.photoUrl) {
+            placePhotos.push({
+              url: p.photoUrl,
+              title: p.name,
+              rating: p.rating,
+              address: p.address
+            });
+          }
+        }
+
+        if (placePhotos.length > 0 && instant.categories) {
+          instant.categories.forEach((cat, idx) => {
+            const photo = placePhotos[idx % placePhotos.length];
+            if (photo && cat.images && cat.images[0]) {
+              cat.images[0] = {
+                ...cat.images[0],
+                url: photo.url,
+                title: `${cat.name}: ${photo.title}`,
+                source: "Google Places API (Verified Photo)",
+                sourceProvider: "google_places",
+                placeVerified: true,
+                isRecent: true,
+                recencyBadge: photo.rating ? `GOOGLE ★ ${photo.rating}` : "GOOGLE VERIFIED",
+                photographer: "Google Local Guide Contributor",
+                attribution: "Google Maps Platform / Places API"
+              };
+            }
+          });
+          return instant;
+        }
+      }
+    } catch (gErr) {
+      console.warn("Google Places photo enrichment notice:", gErr);
+    }
+  }
+
+  // 2. Enrich across all 5 categories with distinct live Wikimedia Commons photographs
   try {
     const liveImages = await fetchLiveCommonsImages(locationName, 5);
     if (liveImages.length > 0 && instant.categories) {

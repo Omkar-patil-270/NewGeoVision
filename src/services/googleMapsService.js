@@ -195,10 +195,14 @@ export const searchGooglePlaces = async (query, lat, lng, radius = 50000) => {
       service.textSearch(request, (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results && results.length > 0) {
           const formatted = results.map((place) => {
-            let photoUrl = null;
-            if (place.photos && place.photos.length > 0) {
-              photoUrl = place.photos[0].getUrl({ maxWidth: 1200, maxHeight: 900 });
-            }
+            const allPhotos = (place.photos || []).map(p => {
+              try {
+                return typeof p.getUrl === 'function' ? p.getUrl({ maxWidth: 1200, maxHeight: 900 }) : null;
+              } catch {
+                return null;
+              }
+            }).filter(Boolean);
+
             return {
               id: place.place_id,
               name: place.name,
@@ -209,7 +213,8 @@ export const searchGooglePlaces = async (query, lat, lng, radius = 50000) => {
                 lat: place.geometry?.location?.lat(),
                 lng: place.geometry?.location?.lng()
               },
-              photoUrl: photoUrl,
+              photoUrl: allPhotos[0] || null,
+              photos: allPhotos,
               types: place.types || []
             };
           });

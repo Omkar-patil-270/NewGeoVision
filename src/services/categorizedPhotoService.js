@@ -2,6 +2,7 @@
  * Categorized Photo Service for GeoVisionAI.
  * Guaranteed zero-latency, verified photographic galleries organized into 5 standard categories.
  * Works seamlessly offline, on Vercel production, or with backend LLM/Places API enhancement.
+ */
 import { searchGooglePlaces, hasGoogleApiKey } from './googleMapsService.js';
 
 export const CATEGORIES_META = [
